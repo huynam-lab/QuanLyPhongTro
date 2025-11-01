@@ -87,6 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Css\BangGia.css" />
     <Content Include="Assets\Css\DangKy.css" />
     <Content Include="Assets\Css\DangNhap.css" />
     <Content Include="Assets\Css\Footer.css" />
@@ -98,6 +99,17 @@
     <Content Include="Assets\Images\dadangky.jpg" />
     <Content Include="Assets\Images\dmca-badge-w250-2x1-04.png" />
     <Content Include="Assets\Images\i-shopeepay-white.svg" />
+    <Content Include="Assets\Images\imgbanggia\dangtin.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinnoibat1.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinnoibat2.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinthuong1.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinthuong2.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinvip11.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinvip12.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinvip21.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinvip22.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinvip31.jpg" />
+    <Content Include="Assets\Images\imgbanggia\tinvip32.jpg" />
     <Content Include="Assets\Images\logo-jcb.svg" />
     <Content Include="Assets\Images\logo-mastercard.svg" />
     <Content Include="Assets\Images\logo-visa.svg" />
