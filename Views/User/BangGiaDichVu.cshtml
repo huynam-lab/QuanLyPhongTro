@@ -1,8 +1,469 @@
-﻿
-@{
-    ViewBag.Title = "BangGiaDichVu";
+﻿@{
+    ViewBag.Title = "Bảng giá tin đăng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>BangGiaDichVu</h2>
+<link rel="stylesheet" href="~/Assets/Css/BangGia.css" />
+<section class="pt-price-table">
+    <h1 class="title">Bảng giá tin đăng</h1>
+    <div class="sub">Áp dụng từ 31/05/2024</div>
 
+    <div class="wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th> </th>
+                    <th class="col-viphot">Tin VIP Nổi Bật <span class="stars">★★★★★</span></th>
+                    <th class="col-vip1">Tin VIP 1 <span class="stars">★★★★☆</span></th>
+                    <th class="col-vip2">Tin VIP 2 <span class="stars">★★★☆☆</span></th>
+                    <th class="col-vip3">Tin VIP 3 <span class="stars">★★☆☆☆</span></th>
+                    <th class="col-norm">Tin thường</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Giá ngày</strong></td>
+                    <td>
+                        <div class="price">50.000đ</div>
+                        <div class="note">(Tối thiểu 3 ngày)</div>
+                    </td>
+                    <td>
+                        <div class="price">30.000đ</div>
+                        <div class="note">(Tối thiểu 3 ngày)</div>
+                    </td>
+                    <td>
+                        <div class="price">20.000đ</div>
+                        <div class="note">(Tối thiểu 3 ngày)</div>
+                    </td>
+                    <td>
+                        <div class="price">10.000đ</div>
+                        <div class="note">(Tối thiểu 3 ngày)</div>
+                    </td>
+                    <td>
+                        <div class="price">2.000đ</div>
+                        <div class="note">(Tối thiểu 5 ngày)</div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><strong>Giá tuần</strong><div class="note">(7 ngày)</div></td>
+                    <td><div class="price">315.000đ</div></td>
+                    <td><div class="price">190.000đ</div></td>
+                    <td><div class="price">133.000đ</div></td>
+                    <td><div class="price">63.000đ</div></td>
+                    <td><div class="price">12.000đ</div></td>
+                </tr>
+
+                <tr>
+                    <td><strong>Giá tháng</strong><div class="note">(30 ngày)</div></td>
+                    <td>
+                        <span class="old">1.500.000đ</span>
+                        <span class="sale">Giảm 20%</span>
+                        <div class="price">1.200.000đ</div>
+                    </td>
+                    <td>
+                        <span class="old">900.000đ</span>
+                        <span class="sale">Giảm 11%</span>
+                        <div class="price">800.000đ</div>
+                    </td>
+                    <td>
+                        <span class="old">600.000đ</span>
+                        <span class="sale">Giảm 10%</span>
+                        <div class="price">540.000đ</div>
+                    </td>
+                    <td>
+                        <span class="old">300.000đ</span>
+                        <span class="sale">Giảm 20%</span>
+                        <div class="price">240.000đ</div>
+                    </td>
+                    <td>
+                        <span class="old">60.000đ</span>
+                        <span class="sale">Giảm 20%</span>
+                        <div class="price">48.000đ</div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><strong>Giá đẩy tin</strong></td>
+                    <td><div class="price">5.000đ</div></td>
+                    <td><div class="price">3.000đ</div></td>
+                    <td><div class="price">2.000đ</div></td>
+                    <td><div class="price">2.000đ</div></td>
+                    <td><div class="price">2.000đ</div></td>
+                </tr>
+
+                <tr>
+                    <td><strong>Màu sắc tiêu đề</strong></td>
+                    <td class="strong" style="color:#ef4444">MÀU ĐỎ, IN HOA</td>
+                    <td class="strong" style="color:#ec4899">MÀU HỒNG, IN HOA</td>
+                    <td class="strong" style="color:#f97316">MÀU CAM, IN HOA</td>
+                    <td class="strong" style="color:#2563eb">MÀU XANH, IN HOA</td>
+                    <td class="strong">Màu mặc định, viết thường</td>
+                </tr>
+
+                <tr>
+                    <td><strong>Kích thước tin</strong></td>
+                    <td class="big">Rất lớn</td>
+                    <td class="big">Lớn</td>
+                    <td>Trung bình</td>
+                    <td>Trung bình</td>
+                    <td>Nhỏ</td>
+                </tr>
+
+                <tr>
+                    <td><strong>Tự động duyệt (*)</strong></td>
+                    <td><span class="ok">✓</span></td>
+                    <td><span class="ok">✓</span></td>
+                    <td><span class="ok">✓</span></td>
+                    <td><span class="ok">✓</span></td>
+                    <td><span class="no">○</span></td>
+                </tr>
+
+                <tr>
+                    <td><strong>Hiển thị nút gọi điện</strong></td>
+                    <td><span class="ok">✓</span></td>
+                    <td><span class="ok">✓</span></td>
+                    <td><span class="ok">✓</span></td>
+                    <td><span class="ok">✓</span></td>
+                    <td><span class="no">○</span></td>
+                </tr>
+
+                <tr>
+                    <td> </td>
+                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level="vip-hot" })">Xem demo</a></td>
+                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level=1 })">Xem demo</a></td>
+                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level=2 })">Xem demo</a></td>
+                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level=3 })">Xem demo</a></td>
+                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level="normal" })">Xem demo</a></td>
+                </tr>
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td colspan="6">
+                        (*) Các tin VIP sẽ được hiển thị ngay sau khi khách hàng đăng tin mà không cần chờ kiểm duyệt. Tin đăng sẽ được kiểm duyệt nội dung sau.
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</section>
+
+<section class="pt-demo">
+    <div class="pt-container">
+        <h2 class="title">Minh họa tin đăng</h2>
+
+        <div>
+            <div class="sub">Tin VIP Nổi Bật <span class="stars">★★★★★</span></div>
+            <p>
+                <span class="em-red">TIÊU ĐỀ IN HOA MÀU ĐỎ</span>, gắn biểu tượng 5 ngôi sao màu vàng và hiển thị to và nhiều hình hơn các tin khác.
+                Nằm trên tất cả các tin khác, được hưởng nhiều ưu tiên và hiệu quả giao dịch cao nhất.
+            </p>
+            <p>Đồng thời xuất hiện đầu tiên ở mục tin nổi bật xuyên suốt khu vực chuyên mục đó.</p>
+        </div>
+
+        <div class="grid">
+            <!-- Laptop mockup -->
+            <div class="device laptop">
+                <div class="bezel">
+                    <div class="screen">
+                        <!-- Thay ảnh desktop tại đây -->
+                        <img src="~/Assets/Images/imgbanggia/tinnoibat1.jpg" alt="Minh họa VIP Nổi Bật - Desktop">
+                    </div>
+                </div>
+                <div class="hinge"></div>
+            </div>
+
+            <!-- Phone mockup -->
+            <div class="device phone">
+                <div class="bezel">
+                    <div class="notch"></div>
+                    <div class="screen">
+                        <!-- Thay ảnh mobile tại đây -->
+                        <img src="~/Assets/Images/imgbanggia/tinnoibat2.jpg" alt="Minh họa VIP Nổi Bật - Mobile">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================= Tin VIP 1 ================= -->
+<section class="pt-demo" style="background:#fff;">
+    <div class="pt-container">
+        <div class="sub">Tin VIP 1 <span class="stars">★★★★☆</span></div>
+        <p>
+            <span class="em-red" style="color:#ec4899;">TIÊU ĐỀ IN HOA MÀU HỒNG</span>, gắn biểu tượng 4 ngôi sao màu vàng ở tiêu đề tin đăng.
+            Hiển thị sau tin VIP Nổi Bật và trên các tin khác.
+        </p>
+
+        <div class="grid">
+            <div class="device laptop">
+                <div class="bezel">
+                    <div class="screen">
+                        <img src="~/Assets/Images/imgbanggia/tinvip11.jpg" alt="Minh họa VIP1 Desktop" />
+                    </div>
+                </div>
+                <div class="hinge"></div>
+            </div>
+
+            <div class="device phone">
+                <div class="bezel">
+                    <div class="notch"></div>
+                    <div class="screen">
+                        <img src="~/Assets/Images/imgbanggia/tinvip12.jpg" alt="Minh họa VIP1 Mobile" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ================= Tin VIP 2 ================= -->
+<section class="pt-demo" style="background:#fff;">
+    <div class="pt-container">
+        <div class="sub">Tin VIP 2 <span class="stars">★★★☆☆</span></div>
+        <p>
+            <span class="em-red" style="color:#f97316;">TIÊU ĐỀ IN HOA MÀU CAM</span>, gắn biểu tượng 3 ngôi sao màu vàng ở tiêu đề tin đăng.
+            Hiển thị sau tin VIP Nổi Bật, Tin VIP 1 và trên các tin khác.
+        </p>
+
+        <div class="grid">
+            <div class="device laptop">
+                <div class="bezel">
+                    <div class="screen">
+                        <img src="~/Assets/Images/imgbanggia/tinvip21.jpg" alt="Minh họa VIP2 Desktop" />
+                    </div>
+                </div>
+                <div class="hinge"></div>
+            </div>
+
+            <div class="device phone">
+                <div class="bezel">
+                    <div class="notch"></div>
+                    <div class="screen">
+                        <img src="~/Assets/Images/imgbanggia/tinvip22.jpg" alt="Minh họa VIP2 Mobile" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ================= Tin VIP 3 ================= -->
+<section class="pt-demo" style="background:#fff;">
+    <div class="pt-container">
+        <div class="sub">Tin VIP 3 <span class="stars">★★☆☆☆</span></div>
+        <p>
+            <span class="em-red" style="color:#2563eb;">TIÊU ĐỀ IN HOA MÀU XANH</span>, gắn biểu tượng 2 ngôi sao màu vàng ở tiêu đề tin đăng.
+            Hiển thị sau tin VIP Nổi Bật, Tin VIP 1, Tin VIP 2 và trên các tin khác.
+        </p>
+
+        <div class="grid">
+            <div class="device laptop">
+                <div class="bezel">
+                    <div class="screen">
+                        <img src="~/Assets/Images/imgbanggia/tinvip31.jpg" alt="Minh họa VIP3 Desktop" />
+                    </div>
+                </div>
+                <div class="hinge"></div>
+            </div>
+
+            <div class="device phone">
+                <div class="bezel">
+                    <div class="notch"></div>
+                    <div class="screen">
+                        <img src="~/Assets/Images/imgbanggia/tinvip32.jpg" alt="Minh họa VIP3 Mobile" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ================= Tin thường ================= -->
+<section class="pt-demo" style="background:#fff;">
+    <div class="pt-container">
+        <div class="sub" style="color:#1e3a8a;">Tin thường</div>
+        <p>
+            <span class="em-red" style="color:#1e3a8a;font-weight:600;">Tiêu đề màu mặc định, viết thường.</span>
+            Hiển thị sau các tin VIP.
+        </p>
+
+        <div class="grid">
+            <div class="device laptop">
+                <div class="bezel">
+                    <div class="screen">
+                        <img src="~/Assets/Images/imgbanggia/tinthuong1.jpg" alt="Minh họa Tin thường Desktop" />
+                    </div>
+                </div>
+                <div class="hinge"></div>
+            </div>
+
+            <div class="device phone">
+                <div class="bezel">
+                    <div class="notch"></div>
+                    <div class="screen">
+                        <img src="~/Assets/Images/imgbanggia/tinthuong2.jpg" alt="Minh họa Tin thường Mobile" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="pt-testi">
+    <div class="pt-container">
+        <h2 class="title">Khách hàng nói về chúng tôi</h2>
+        <div class="sub">Sự hài lòng của khách hàng là động lực phát triển của PhongTro123.com</div>
+
+        <div class="grid">
+            <!-- 1 -->
+            <article class="card">
+                <div class="head">
+                    <div class="avatar"></div>
+                    <div>
+                        <div class="name">Chú Kim Phú</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="content">
+                    Tôi hài lòng với dịch vụ đăng tin cho thuê phòng trên website phongtro123.com.
+                    Giao diện dễ dùng và nhanh chóng, giúp tôi tạo tin đăng thuận tiện. Chỉ sau vài ngày,
+                    tôi đã nhận được nhiều lượt quan tâm và cuộc gọi từ người tìm phòng. Đội ngũ hỗ trợ nhiệt tình, phản hồi nhanh.
+                </div>
+            </article>
+
+            <!-- 2 -->
+            <article class="card">
+                <div class="head">
+                    <div class="avatar"></div>
+                    <div>
+                        <div class="name">Chị Ngọc Anh</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="content">
+                    Website cho phép đăng tải thông tin cho thuê cực kỳ đơn giản. Việc đăng hình ảnh,
+                    thông tin phòng rất dễ và hữu ích cho khu trọ có nhiều sinh viên thuê. Tính năng quảng cáo hiệu quả, đáng tin cậy.
+                </div>
+            </article>
+
+            <!-- 3 -->
+            <article class="card">
+                <div class="head">
+                    <div class="avatar"></div>
+                    <div>
+                        <div class="name">Anh Nam</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="content">
+                    Tôi đã kết nối được với nhiều người thuê tiềm năng trong thời gian ngắn.
+                    Nếu có thêm bộ lọc chi tiết theo diện tích, loại phòng trọ… thì càng tuyệt vời hơn. Nền tảng ngày càng hoàn thiện.
+                </div>
+            </article>
+
+            <!-- 4 -->
+            <article class="card">
+                <div class="head">
+                    <div class="avatar"></div>
+                    <div>
+                        <div class="name">Cô Phạm Hằng</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="content">
+                    So với quảng cáo truyền thống, đăng tin trên Phongtro123 giúp tôi tiết kiệm chi phí
+                    mà hiệu quả cao. Việc đăng tin, quản lý thông tin phòng rất đơn giản, ngay cả với người lớn tuổi như tôi.
+                </div>
+            </article>
+
+            <!-- 5 -->
+            <article class="card">
+                <div class="head">
+                    <div class="avatar"></div>
+                    <div>
+                        <div class="name">Chị Dung</div>
+                        <div class="stars">★★★★☆</div>
+                    </div>
+                </div>
+                <div class="content">
+                    Nhờ website, tôi cho thuê được phòng nhanh sau vài ngày đăng. Tính năng tìm kiếm giúp lọc tin hiệu quả,
+                    quản lý cuộc trò chuyện với người thuê rất tiện lợi.
+                </div>
+            </article>
+
+            <!-- 6 -->
+            <article class="card">
+                <div class="head">
+                    <div class="avatar"></div>
+                    <div>
+                        <div class="name">Chị Thảo Trang</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="content">
+                    Giao diện thân thiện, dễ sử dụng. Tôi đánh giá cao tính năng gợi ý & đẩy tin, giúp tin của tôi nổi bật hơn và nhận được nhiều liên hệ chất lượng.
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+<section class="pt-support">
+    <div class="wrap">
+        <!-- Hình minh họa trái -->
+        <div class="art">
+            <!-- thay ảnh theo ý bạn -->
+            <img src="~/Assets/Images/imgbanggia/dangtin.jpg" alt="Hỗ trợ đăng tin">
+        </div>
+
+        <!-- Nội dung phải -->
+        <div>
+            <div class="head">
+                <div class="icon">🎧</div>
+                <h3>Hỗ trợ chủ nhà đăng tin</h3>
+                <div class="lead">Nếu bạn cần hỗ trợ đăng tin, vui lòng liên hệ số điện thoại bên dưới:</div>
+            </div>
+
+            <div class="btns">
+                <!-- Điện thoại -->
+                <a class="btn phone" href="tel:0909316890">
+                    <span class="ic">
+                        <!-- phone svg -->
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1v3.61a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.56 1 1 0 01-.24 1.02l-2.32 2.21z" /></svg>
+                    </span>
+                    ĐT: 0909316890
+                </a>
+
+                <!-- Zalo trực tiếp số -->
+                <a class="btn zalo" href="https://zalo.me/0909316890" target="_blank" rel="noopener">
+                    <span class="ic">
+                        <!-- chat bubble svg -->
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" /></svg>
+                    </span>
+                    Zalo: 0909316890
+                </a>
+            </div>
+
+            <div class="sub">Hỗ trợ ngoài giờ</div>
+
+            <div class="btns">
+                <!-- Zalo OA -->
+                <a class="btn zalo" href="https://zalo.me/Phongtro123" target="_blank" rel="noopener">
+                    <span class="ic">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" /></svg>
+                    </span>
+                    Zalo: Phongtro123
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.classList.add("page-banggia");
+        });
+    </script>
+</section>
