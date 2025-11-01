@@ -9,6 +9,8 @@
     <link href="~/Assets/Css/Header.css" rel="stylesheet" type="text/css" />
     <link href="~/Assets/Css/Main.css" rel="stylesheet" type="text/css" />
     <link href="~/Assets/Css/Footer.css" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/Css/ModalMain.css" rel="stylesheet" type="text/css" />
+    
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -21,17 +23,30 @@
             <div class="row align-items-center">
 
                 <div class="col-lg-2 col-md-3 col-sm-6 col-6 d-flex align-items-center">
-                    <a class="navbar-brand me-2" href="#">
+                    <a class="navbar-brand me-2" href="@Url.Action("Index", "User")">
                         <img src="~/Assets/Images/logo.jpg" alt="Phongtro123" style="height: 30px;" />
                     </a>
                 </div>
 
+                <!-- Khối Tìm kiếm & Bộ lọc (Vị trí bạn muốn giữ nguyên) -->
                 <div class="col-lg-5 col-md-6 d-none d-md-flex align-items-center justify-content-start">
-                    <div class="input-group search-box me-2">
-                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-geo-alt"></i></span>
-                        <input type="text" class="form-control border-start-0" placeholder="Tìm theo khu vực">
+                    <div class="input-group search-box me-2" style="max-width: 300px;">
+                        <span class="input-group-text bg-white border-end-0 border border-secondary border-opacity-25"><i class="bi bi-geo-alt"></i></span>
+                        <input type="text"
+                               class="form-control border-start-0 border border-secondary border-opacity-25"
+                               placeholder="Tìm theo khu vực"
+                               id="locationDisplay"
+                               readonly
+                               onclick="showLocationModal()">
+                        <input type="hidden" id="selectedLocationsInput" value="">
                     </div>
-                    <button class="btn btn-light filter-btn" style="min-width:100px"><i class="bi bi-filter"></i> Bộ lọc</button>
+
+                    <!-- Nút kích hoạt Modal Bộ lọc -->
+                    <button class="btn btn-light filter-btn border border-secondary border-opacity-25 fw-bold"
+                            style="min-width:100px"
+                            onclick="showFilterModal()">
+                        <i class="bi bi-filter"></i> Bộ lọc
+                    </button>
                 </div>
 
                 <div class="col-lg-5 col-md-3 col-sm-6 col-6 d-flex align-items-center justify-content-end">
@@ -253,8 +268,177 @@
         </div>
     </footer>
 
+    <!-- ======================================================= -->
+    <!-- MODAL 1: TÌM KIẾM KHU VỰC (LOCATION MODAL) -->
+    <!-- Đã thêm class modal-dialog-scrollable -->
+    <!-- ======================================================= -->
+    <div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+        <!-- Thêm class modal-dialog-scrollable ở đây -->
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" style="max-width: 550px;">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pt-4 px-4 pb-2">
+                    <h5 class="modal-title fw-bold">Tìm theo khu vực</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Body P-0 để list item sát mép -->
+                <div class="modal-body p-0">
+                    <div class="location-list" id="locationListContainer">
+                        <!-- Khu vực được chèn bởi JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Footer cố định -->
+                <div class="modal-footer border-top-0 pt-3 pb-4 px-4 flex-shrink-0">
+                    <button type="button" class="btn btn-apply w-100 py-2" data-bs-dismiss="modal" id="applyLocationFilter">
+                        Áp dụng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ======================================================= -->
+    <!-- MODAL 2: BỘ LỌC (FILTER MODAL) - GIAO DIỆN MỚI -->
+    <!-- ======================================================= -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable filter-modal-lg">
+            <div class="modal-content">
+
+                <!-- Header Bộ lọc -->
+                <div class="modal-header border-bottom-0 pt-4 px-4 pb-2">
+                    <h5 class="modal-title fw-bold" id="filterModalLabel">Bộ lọc</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Body Bộ lọc -->
+                <div class="modal-body p-4 filter-area">
+
+                    <!-- 1. Danh mục cho thuê -->
+                    <div class="mb-4">
+                        <h6 class="filter-section-title">Danh mục cho thuê</h6>
+                        <div class="d-flex flex-wrap justify-content-start gap-3">
+                            <!-- Items Danh mục -->
+                            <div class="category-item active" data-category="phongtro">
+                                <i class="bi bi-house-door-fill category-icon"></i>
+                                <span class="category-name">Phòng trọ</span>
+                            </div>
+                            <div class="category-item" data-category="nharieng">
+                                <i class="bi bi-building-fill category-icon"></i>
+                                <span class="category-name">Nhà riêng</span>
+                            </div>
+                            <div class="category-item" data-category="oghep">
+                                <i class="bi bi-people-fill category-icon"></i>
+                                <span class="category-name">Ở ghép</span>
+                            </div>
+                            <div class="category-item" data-category="matbang">
+                                <i class="bi bi-shop category-icon"></i>
+                                <span class="category-name">Mặt bằng</span>
+                            </div>
+                            <div class="category-item" data-category="canhochungcu">
+                                <i class="bi bi-grid-fill category-icon"></i>
+                                <span class="category-name">Căn hộ chung cư</span>
+                            </div>
+                            <div class="category-item" data-category="canhomini">
+                                <i class="bi bi-box-fill category-icon"></i>
+                                <span class="category-name">Căn hộ mini</span>
+                            </div>
+                            <a href="#" class="text-decoration-none text-muted mt-2 ps-2">Căn hộ dịch vụ</a>
+                        </div>
+                    </div>
+
+                    <!-- 2. Lọc theo khu vực (Dropdowns) -->
+                    <div class="mb-4 border-top pt-4">
+                        <h6 class="filter-section-title">Lọc theo khu vực</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label text-muted">Tỉnh thành</label>
+                                <select class="form-select">
+                                    <option selected>Toàn quốc</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted">Quận huyện</label>
+                                <select class="form-select">
+                                    <option selected>Tất cả</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted">Phường xã</label>
+                                <select class="form-select">
+                                    <option selected>Tất cả</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Khoảng giá (Radio tags) -->
+                    <div class="mb-4 border-top pt-4">
+                        <h6 class="filter-section-title">Khoảng giá</h6>
+                        <div class="tag-group d-flex flex-wrap justify-content-start gap-2">
+                            <button type="button" class="btn active" data-price-range="all">Tất cả</button>
+                            <button type="button" class="btn" data-price-range="<1">Dưới 1 triệu</button>
+                            <button type="button" class="btn" data-price-range="1-2">1 - 2 triệu</button>
+                            <button type="button" class="btn" data-price-range="2-3">2 - 3 triệu</button>
+                            <button type="button" class="btn" data-price-range="3-5">3 - 5 triệu</button>
+                            <button type="button" class="btn" data-price-range="5-7">5 - 7 triệu</button>
+                            <button type="button" class="btn" data-price-range="7-10">7 - 10 triệu</button>
+                            <button type="button" class="btn" data-price-range="10-15">10 - 15 triệu</button>
+                            <button type="button" class="btn" data-price-range=">15">Trên 15 triệu</button>
+                        </div>
+                    </div>
+
+                    <!-- 4. Khoảng diện tích (Checkbox tags) -->
+                    <div class="mb-4 border-top pt-4">
+                        <h6 class="filter-section-title">Khoảng diện tích</h6>
+                        <div class="tag-group d-flex flex-wrap justify-content-start gap-2">
+                            <button type="button" class="btn active" data-area-range="all">Tất cả</button>
+                            <button type="button" class="btn" data-area-range="<20">Dưới 20m²</button>
+                            <button type="button" class="btn" data-area-range="20-30">20 - 30m²</button>
+                            <button type="button" class="btn" data-area-range="30-50">30 - 50m²</button>
+                            <button type="button" class="btn" data-area-range="50-70">50 - 70m²</button>
+                            <button type="button" class="btn" data-area-range="70-90">70 - 90m²</button>
+                            <button type="button" class="btn" data-area-range=">90">Trên 90m²</button>
+                        </div>
+                    </div>
+
+                    <!-- 5. Đặc điểm nổi bật (Checkbox tags) -->
+                    <div class="mb-4 border-top pt-4">
+                        <h6 class="filter-section-title">Đặc điểm nổi bật</h6>
+                        <div class="tag-group d-flex flex-wrap justify-content-start gap-2" id="utilityTags">
+                            <button type="button" class="btn" data-utility="full-furniture">Đầy đủ nội thất</button>
+                            <button type="button" class="btn" data-utility="gac">Có gác</button>
+                            <button type="button" class="btn" data-utility="bep">Kệ bếp</button>
+                            <button type="button" class="btn" data-utility="may-lanh">Có máy lạnh</button>
+                            <button type="button" class="btn" data-utility="may-giat">Có máy giặt</button>
+                            <button type="button" class="btn" data-utility="tu-lanh">Có tủ lạnh</button>
+                            <button type="button" class="btn" data-utility="thang-may">Có thang máy</button>
+                            <button type="button" class="btn" data-utility="khong-chung-chu">Không chung chủ</button>
+                            <button type="button" class="btn" data-utility="gio-giac-tu-do">Giờ giấc tự do</button>
+                            <button type="button" class="btn" data-utility="bao-ve">Có bảo vệ 24/24</button>
+                            <button type="button" class="btn" data-utility="ham-xe">Có hầm để xe</button>
+                            <!-- Thêm các đặc điểm khác ở đây -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer Bộ lọc (Nút Áp dụng) -->
+                <div class="modal-footer border-top-0 pt-0 pb-4 px-4 flex-shrink-0">
+                    <button type="button" class="btn btn-apply w-100 py-3 mt-3" onclick="applyFilterAndClose()">
+                        Áp dụng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Assets/Js/ModalMain.js"></script>
     <script>
         $(document).ready(function () {
             // 1️⃣ Lấy URL hiện tại (chỉ phần path, không query string)

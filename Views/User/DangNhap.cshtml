@@ -1,8 +1,97 @@
-﻿
-@{
-    ViewBag.Title = "DangNhap";
+﻿@{
+    ViewBag.Title = "Đăng Nhập";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>DangNhap</h2>
+<link href="~/Assets/Css/DangNhap.css" rel="stylesheet" />
 
+<div class="pt-main-content-wrapper">
+    <div class="login-container">
+
+        <!-- Tab Switcher (Đăng nhập / Tạo tài khoản mới) -->
+        <div class="login-tabs" id="loginTabs">
+            <a href="@Url.Action("DangNhap", "User")" class="active-tab text-decoration-none" data-tab="login">Đăng nhập</a>
+            <a href="@Url.Action("DangKy", "User")" class="text-decoration-none" data-tab="register">Tạo tài khoản mới</a>
+        </div>
+
+        <!-- Nội dung Tab Đăng Nhập -->
+        <div id="login-tab-content" class="tab-content-item active">
+            <form id="loginForm" method="post" action="@Url.Action("DangNhap", "User")">
+
+                <input type="text" class="form-control-custom" id="phoneNumber" placeholder="Số điện thoại" required>
+
+                <input type="password" class="form-control-custom" id="password" placeholder="Mật khẩu" required>
+
+                <button type="submit" class="btn-primary-custom">Đăng nhập</button>
+
+                <a href="@Url.Action("QuenMatKhau", "User")" class="forgot-link">Bạn quên mật khẩu?</a>
+            </form>
+        </div>
+
+        <!-- Nội dung Tab Tạo Tài Khoản Mới (Dạng Placeholder) -->
+        <div id="register-tab-content" class="tab-content-item">
+            <form id="registerForm" method="post" action="@Url.Action("DangKy", "User")">
+
+                <input type="text" class="form-control-custom" id="regName" placeholder="Tên của bạn" required>
+
+                <input type="text" class="form-control-custom" id="regPhone" placeholder="Số điện thoại" required>
+
+                <input type="password" class="form-control-custom" id="regPassword" placeholder="Mật khẩu" required>
+
+                <button type="submit" class="btn-primary-custom">Đăng ký</button>
+
+                <p class="legal-text text-center">
+                    Bạn đã có tài khoản? <a href="#" data-tab-switch="login">Đăng nhập ngay</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Thông báo và bản quyền -->
+        <p class="legal-text text-center">
+            Qua việc đăng nhập hoặc tạo tài khoản, bạn đồng ý với các
+            <a href="@Url.Action("QuyDinhSuDung", "User")">quy định sử dụng</a>
+            cũng như <a href="@Url.Action("ChinhSachBaoMat", "User")">chính sách bảo mật</a> của chúng tôi.
+        </p>
+        <p class="legal-text text-center">Bản quyền &copy; 2015 - 2025 Phongtro123.com</p>
+
+    </div>
+</div>
+
+<script>
+    // Script để xử lý chuyển đổi giữa Đăng nhập và Đăng ký (Tab Switcher)
+    $(document).ready(function() {
+        // Hàm chuyển đổi tab
+        function switchTab(targetTab) {
+            // Cập nhật trạng thái active cho thanh tab
+            $('#loginTabs a').removeClass('active-tab');
+            $(`a[data-tab="${targetTab}"]`).addClass('active-tab');
+
+            // Cập nhật nội dung tab
+            $('.tab-content-item').removeClass('active');
+            $(`#${targetTab}-tab-content`).addClass('active');
+        }
+
+        // Lắng nghe sự kiện click trên các tab
+        $('#loginTabs a').on('click', function(e) {
+            e.preventDefault();
+            const targetTab = $(this).data('tab');
+            switchTab(targetTab);
+        });
+
+        // Lắng nghe sự kiện click trên link "Đăng nhập ngay" trong tab Đăng ký
+        $('a[data-tab-switch]').on('click', function(e) {
+            e.preventDefault();
+            const targetTab = $(this).data('tab-switch');
+            switchTab(targetTab);
+        });
+
+        // Xử lý khi URL có hash (ví dụ: #register)
+        if (window.location.hash) {
+            const hash = window.location.hash.substring(1); // Lấy giá trị hash (ví dụ: login-tab)
+            const targetTab = hash.replace('-tab', '');
+            if (targetTab === 'register' || targetTab === 'login') {
+                switchTab(targetTab);
+            }
+        }
+    });
+</script>
