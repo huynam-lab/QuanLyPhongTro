@@ -1,0 +1,97 @@
+﻿/* --- Bố Cục Chính (3 Cột) --- */
+.pt-main {
+    background-color: #fdf5ed;
+}
+
+/* Vùng chứa tối đa */
+.pt-main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 15px;
+}
+
+/* Điều chỉnh margin của hàng */
+.pt-main-row {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+/* Cài đặt chung cho các cột */
+.pt-left-sidebar, .pt-right-sidebar, .pt-main-content-wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Kích thước ảnh mặc định */
+.img-fluid {
+    width: 120px;
+}
+
+/* --- Fixed Ad Styles (Áp dụng cho Desktop lớn) --- */
+
+@media (min-width: 992px) { /* Giữ quy tắc fixed từ 992px (hoặc 1200px) để CSS/JS chạy */
+    /* Wrapper cho Banner Trái (FIXED) */
+    .pt-fixed-ad-wrapper {
+        position: fixed;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* CĂN GIỮA DỌC */
+        align-items: center; /* Căn giữa ngang */
+    }
+
+    /* Wrapper cho Banner Phải (FIXED) */
+    .pt-fixed-ad-wrapper-right {
+        position: fixed;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* CĂN GIỮA DỌC */
+        align-items: center; /* Căn giữa ngang */
+    }
+
+        /* Đảm bảo ảnh không bị tràn */
+        .pt-fixed-ad-wrapper img, .pt-fixed-ad-wrapper-right img {
+            max-width: 100%;
+            max-height: 90vh;
+        }
+}
+
+
+/* --- Responsive Custom Breakpoint (Tắt 2 cột tại 1340px) --- */
+
+/* Màn hình từ 992px đến 1339.98px: Ẩn Ads và Main chiếm 100% */
+@media (max-width: 1339.98px) {
+
+    /* Ghi đè class Bootstrap để ẩn 2 cột quảng cáo */
+    .pt-left-sidebar, .pt-right-sidebar {
+        display: none !important;
+    }
+
+    /* Ghi đè width của cột Nội dung Chính để chiếm 100% */
+    .pt-main-content-wrapper {
+        flex: 0 0 auto !important;
+        width: 100% !important; /* Bắt buộc chiếm 12/12 */
+    }
+}
+
+/* --- Responsive Layout (Tablet & Mobile) --- */
+
+/* Màn hình Tablet (từ 768px đến 991.98px) */
+/* Bố cục này sẽ bị ghi đè bởi quy tắc max-width: 1339.98px ở trên, 
+   khiến nội dung chính vẫn chiếm 100% trên Tablet. */
+
+/* Màn hình Mobile (dưới 768px) */
+@media (max-width: 767.98px) {
+    /* Đảm bảo Main Content chiếm toàn bộ */
+    .pt-main-content-wrapper {
+        width: 100% !important;
+    }
+
+    /* Ẩn hoàn toàn cột phải và cột trái */
+    .pt-right-sidebar, .pt-left-sidebar {
+        display: none !important;
+    }
+}

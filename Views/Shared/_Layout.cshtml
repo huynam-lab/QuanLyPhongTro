@@ -7,6 +7,7 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
     <link href="~/Assets/Css/Header.css" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/Css/Main.css" rel="stylesheet" type="text/css" />
     <link href="~/Assets/Css/Footer.css" rel="stylesheet" type="text/css" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -51,11 +52,11 @@
         <nav class="header-nav bg-white shadow-sm p-0 d-none d-lg-block">
             <div class="container-fluid" style="display:flex ; justify-content:center">
                 <ul class="nav">
-                    <li class="nav-item"><a class="nav-link text-dark active-menu fw-bold" href="#">Phòng trọ</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">Căn hộ chung cư</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">Căn hộ mini</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">Blog</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">Bảng giá dịch vụ</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark active-menu fw-bold" href="#1">Phòng trọ</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#2">Căn hộ chung cư</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#3">Căn hộ mini</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#4">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#5">Bảng giá dịch vụ</a></li>
                 </ul>
             </div>
         </nav>
@@ -134,10 +135,33 @@
 
     <!-- ===== Main content ===== -->
     <main class="pt-main">
-        <div class="container">
-            @RenderBody()
+
+        <!-- Vùng chứa chính (Đã thay đổi sang container-fluid và áp dụng max-width qua CSS) -->
+        <div class="container-fluid pt-main-container">
+            <div class="row pt-main-row">
+
+                <!-- Cột 1: Banner Quảng cáo Trái (Ẩn trên Tablet và Mobile) -->
+                <div class="col-lg-2 d-none d-lg-block pt-left-sidebar" >
+                    <div class="pt-fixed-ad-wrapper" >
+                        <img src="~/Assets/Images/bds123_120_300.gif" alt="Banner Left" class="img-fluid rounded shadow-sm">
+                    </div>
+                </div>
+
+
+                <div class="col-lg-8 col-md-8 col-12 pt-main-content-wrapper">
+                    @RenderBody()
+                </div>
+
+                <div class="col-lg-2 col-md-4 d-none d-md-block pt-right-sidebar">
+                    <div class="pt-fixed-ad-wrapper-right">
+                        <img src="~/Assets/Images/banner-thuecanho.jpg" alt="Banner Right" class="img-fluid rounded shadow-sm">
+                    </div>
+                </div>
+
+            </div>
         </div>
     </main>
+
 
     <!-- ===== Footer ===== -->
     <footer class="pt-footer">
@@ -207,7 +231,26 @@
 
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Lắng nghe sự kiện click trên bất kỳ thẻ <a> nào trong menu chính
+            $('.header-nav .nav-link').on('click', function (e) {
+                // Ngăn chặn hành vi mặc định của thẻ <a> (chuyển trang) để xử lý class
+                // Nếu bạn muốn nó vẫn chuyển trang, hãy bỏ dòng này:
+                // e.preventDefault();
 
+                // 1. Xóa class active và fw-bold khỏi TẤT CẢ các thẻ <a> trong menu
+                $('.header-nav .nav-link').removeClass('active-menu fw-bold');
+
+                // 2. Thêm class active và fw-bold vào thẻ <a> vừa được click
+                $(this).addClass('active-menu fw-bold');
+
+                // 3. (Tùy chọn) Thêm logic chuyển trang nếu đã bỏ e.preventDefault()
+                // window.location.href = $(this).attr('href');
+            });
+        });
+
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
