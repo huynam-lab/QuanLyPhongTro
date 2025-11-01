@@ -166,7 +166,7 @@
 /* ===== Responsive Adjustments (Cập nhật điểm ngắt 1100px) ===== */
 
 /* Điều chỉnh trên Desktop (min-width: 1100px) */
-@media (min-width: 1040px) {
+@media (min-width: 1080px) {
     /* Đảm bảo Slogan hiển thị trên Desktop rộng */
     .header-top .slogan {
         display: block !important;
@@ -179,7 +179,7 @@
 }
 
 /* Ẩn các nút link, Slogan và Kích hoạt Hamburger (dưới 1100px) */
-@media (max-width: 1039.98px) {
+@media (max-width: 1079.98px) {
 
     /* Ẩn các nút link: Tin đã lưu, Đăng ký, Đăng nhập, Đăng tin (Dùng d-lg-block từ HTML để nhắm mục tiêu) */
     .header-top .d-none.d-lg-block {

@@ -5,7 +5,7 @@
 
 /* Vùng chứa tối đa */
 .pt-main-container {
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 20px 15px;
 }
@@ -24,7 +24,7 @@
 
 /* Kích thước ảnh mặc định */
 .img-fluid {
-    width: 120px;
+    width: 100px;
 }
 
 /* --- Fixed Ad Styles (Áp dụng cho Desktop lớn) --- */

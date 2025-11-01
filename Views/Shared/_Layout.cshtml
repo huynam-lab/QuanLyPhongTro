@@ -63,7 +63,7 @@
                         <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                     </a>
 
-                    <a href="@Url.Action("DangTin", "User")" class="btn btn-danger ms-2 post-btn d-none d-lg-block" style="min-width:110px">
+                    <a href="@Url.Action("DangTin", "User")" class="btn btn-danger ms-2 post-btn d-none d-lg-block" style="min-width:120px">
                         <i class="bi bi-pencil-square me-1"></i> Đăng tin
                     </a>
 
@@ -179,19 +179,23 @@
         <div class="container-fluid pt-main-container">
             <div class="row pt-main-row">
 
-                <!-- Cột 1: Banner Quảng cáo Trái (Ẩn trên Tablet và Mobile) -->
-                <div class="col-lg-2 d-none d-lg-block pt-left-sidebar">
+                <!-- Cột 1: Banner Quảng cáo Trái (Giảm kích thước xuống col-lg-1) -->
+                <!-- Thêm d-flex, justify-content-center, align-items-center để căn giữa banner -->
+                <div class="col-lg-1 d-none d-lg-block pt-left-sidebar d-flex justify-content-center align-items-center">
                     <div class="pt-fixed-ad-wrapper">
                         <img src="~/Assets/Images/bds123_120_300.gif" alt="Banner Left" class="img-fluid rounded shadow-sm">
                     </div>
                 </div>
 
 
-                <div class="col-lg-8 col-md-8 col-12 pt-main-content-wrapper">
+                <!-- Cột Nội dung Chính (Tăng kích thước lên col-lg-10) -->
+                <div class="col-lg-10 col-md-8 col-12 pt-main-content-wrapper">
                     @RenderBody()
                 </div>
 
-                <div class="col-lg-2 col-md-4 d-none d-md-block pt-right-sidebar">
+                <!-- Cột 3: Banner Quảng cáo Phải (Giảm kích thước xuống col-lg-1) -->
+                <!-- Thêm d-flex, justify-content-center, align-items-center để căn giữa banner -->
+                <div class="col-lg-1 col-md-4 d-none d-md-block pt-right-sidebar d-flex justify-content-center align-items-center">
                     <div class="pt-fixed-ad-wrapper-right">
                         <img src="~/Assets/Images/banner-thuecanho.jpg" alt="Banner Right" class="img-fluid rounded shadow-sm">
                     </div>
