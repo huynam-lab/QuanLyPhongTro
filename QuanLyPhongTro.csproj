@@ -94,6 +94,7 @@
     <Content Include="Assets\Css\ModalMain.css" />
     <Content Include="Assets\Images\banner-thuecanho.jpg" />
     <Content Include="Assets\Images\bds123_120_300.gif" />
+    <Content Include="Assets\Images\contact-us-pana-orange.svg" />
     <Content Include="Assets\Images\dadangky.jpg" />
     <Content Include="Assets\Images\dmca-badge-w250-2x1-04.png" />
     <Content Include="Assets\Images\i-shopeepay-white.svg" />
@@ -102,7 +103,9 @@
     <Content Include="Assets\Images\logo-visa.svg" />
     <Content Include="Assets\Images\momo_square_pinkbg.svg" />
     <Content Include="Assets\Images\zalopay-new.png" />
+    <Content Include="Assets\Js\Message.js" />
     <Content Include="Assets\Js\ModalMain.js" />
+    <Content Include="Assets\Js\Scroll.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
