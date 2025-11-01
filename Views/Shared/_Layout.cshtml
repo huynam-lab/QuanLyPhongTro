@@ -4,37 +4,213 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/Assets/Css/Header.css" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/Css/Footer.css" rel="stylesheet" type="text/css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <script src="~/Scripts/modernizr-2.6.2.js"></script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+    <header class="pt-header sticky-top">
+        <div class="container-fluid header-top p-3">
+            <div class="row align-items-center">
+
+                <div class="col-lg-2 col-md-3 col-sm-6 col-6 d-flex align-items-center">
+                    <a class="navbar-brand me-2" href="#">
+                        <img src="~/Assets/Images/logo.jpg" alt="Phongtro123" style="height: 30px;" />
+                    </a>
+                </div>
+
+                <div class="col-lg-5 col-md-6 d-none d-md-flex align-items-center justify-content-start">
+                    <div class="input-group search-box me-2">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-geo-alt"></i></span>
+                        <input type="text" class="form-control border-start-0" placeholder="Tìm theo khu vực">
+                    </div>
+                    <button class="btn btn-light filter-btn" style="min-width:100px"><i class="bi bi-filter"></i> Bộ lọc</button>
+                </div>
+
+                <div class="col-lg-5 col-md-3 col-sm-6 col-6 d-flex align-items-center justify-content-end">
+
+                    <a href="#" class="btn btn-link text-decoration-none text-dark d-none d-lg-block"><i class="bi bi-bookmark-fill text-warning me-1"></i> Tin đã lưu</a>
+                    <a href="#" class="btn btn-link text-decoration-none text-dark d-none d-lg-block"><i class="bi bi-person me-1"></i> Đăng ký</a>
+                    <a href="#" class="btn btn-link text-decoration-none text-dark d-none d-lg-block"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>
+                    <a href="#" class="btn btn-danger ms-2 post-btn d-none d-lg-block" style="min-width:110px"><i class="bi bi-pencil-square me-1"></i> Đăng tin</a>
+
+                    <button class="btn btn-light d-lg-none ms-2 menu-toggle-btn" style="display:flex" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                        <i class="bi bi-list"></i> <p style="margin:0 0 0 10px">Danh Mục</p>
+                    </button>
+
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+        </div>
+
+        <nav class="header-nav bg-white shadow-sm p-0 d-none d-lg-block">
+            <div class="container-fluid" style="display:flex ; justify-content:center">
+                <ul class="nav">
+                    <li class="nav-item"><a class="nav-link text-dark active-menu fw-bold" href="#">Phòng trọ</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Nhà nguyên căn</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Căn hộ chung cư</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Căn hộ mini</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#"><i class="bi bi-grid-fill me-1"></i> Dịch vụ</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Mặt bằng</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Bảng giá dịch vụ</a></li>
                 </ul>
             </div>
+        </nav>
+    </header>
+    <div class="offcanvas offcanvas-end pt-offcanvas" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+
+        <div class="offcanvas-header pt-4 pb-0 border-bottom">
+            <h5 class="offcanvas-title fw-bold" id="offcanvasRightLabel">
+                <a href="#"><img src="~/Assets/Images/logo.jpg" alt="Phongtro123" style="height: 30px;" /></a>
+            </h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+
+        <div class="offcanvas-body p-0">
+
+            <div class="p-3 bg-light border-bottom">
+                <a href="#" class="btn btn-danger w-100 p-2"><i class="bi bi-pencil-square me-2"></i> Đăng tin mới</a>
+            </div>
+            <div class="d-flex p-3 border-bottom">
+                <a href="#" class="btn btn-outline-danger w-50 me-2">Đăng nhập</a>
+                <a href="#" class="btn btn-danger w-50">Đăng ký</a>
+            </div>
+
+            <ul class="list-group list-group-flush offcanvas-menu">
+                <li class="list-group-item">
+                    <a href="#" class="d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-bookmark-fill me-3 text-warning"></i> Tin đã lưu</div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-house me-3 text-muted"></i> Cho thuê phòng trọ</div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-building me-3 text-muted"></i> Cho thuê nhà nguyên căn</div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-grid-3x3-gap me-3 text-muted"></i> Cho thuê căn hộ</div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-person me-3 text-muted"></i> Tìm người ở ghép</div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-shop me-3 text-muted"></i> Cho thuê mặt bằng</div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-file-text me-3 text-muted"></i> Blog</div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-cash me-3 text-muted"></i> Bảng giá dịch vụ</div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+    <!-- ===== Main content ===== -->
+    <main class="pt-main">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
 
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    <!-- ===== Footer ===== -->
+    <footer class="pt-footer">
+        <div class="container-fluid footer-content pt-5 pb-5">
+            <div class="row pt-2 pb-4">
+
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                    <h5 class="footer-title fw-bold mb-3">VỀ PHONGTRO123.COM</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Quy chế hoạt động</a></li>
+                        <li><a href="#">Quy định sử dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                    <h5 class="footer-title fw-bold mb-3">DÀNH CHO KHÁCH HÀNG</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#">Câu hỏi thường gặp</a></li>
+                        <li><a href="#">Hướng dẫn đăng tin</a></li>
+                        <li><a href="#">Bảng giá dịch vụ</a></li>
+                        <li><a href="#">Quy định đăng tin</a></li>
+                        <li><a href="#">Giải quyết khiếu nại</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                    <h5 class="footer-title fw-bold mb-3">PHƯƠNG THỨC THANH TOÁN</h5>
+                    <div class="payment-icons d-flex flex-wrap gap-2">
+                        <img src="~/Assets/Images/logo-visa.svg" alt="Visa" class="payment-icon" />
+                        <img src="~/Assets/Images/logo-mastercard.svg" alt="Mastercard" class="payment-icon" />
+                        <img src="~/Assets/Images/logo-jcb.svg" alt="JCB" class="payment-icon" />
+                        <img src="~/Assets/Images/momo_square_pinkbg.svg" alt="MoMo" class="payment-icon" />
+                        <img src="~/Assets/Images/zalopay-new.png" alt="ZaloPay" class="payment-icon" />
+                        <img src="~/Assets/Images/i-shopeepay-white.svg" alt="ShopeePay" class="payment-icon" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                    <h5 class="footer-title fw-bold mb-3">THEO DÕI PHONGTRO123.COM</h5>
+                    <div class="social-icons d-flex gap-2">
+                        <a href="#" class="social-icon facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon youtube"><i class="bi bi-youtube"></i></a>
+                        <a href="#" class="social-icon zalo"><img src="~/Content/Images/zalo_icon.png" alt="Zalo" /></a>
+                        <a href="#" class="social-icon tiktok"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row border-top pt-4 mt-4 company-info">
+                <div class="col-12">
+                    <h5 class="fw-bold mb-2">CÔNG TY TNHH LUBKCORP</h5>
+                    <p>Căn 02.34, Lầu 2, Tháp 3, The Sun Avenue, Số 28 Mai Chí Thọ, Phường An Phú, Thành phố Thủ Đức, Thành phố Hồ Chí Minh, Việt Nam.</p>
+                    <p class="mb-2">Tổng đài CSKH: <span class="fw-bold">0909 316 890</span> - Email: <span class="fw-bold">cskh.phongtro123@gmail.com</span> - Giấy phép đăng ký kinh doanh số 0313588502 do Sở Kế hoạch và Đầu tư TP.HCM cấp ngày 24 tháng 12 năm 2015.</p>
+
+                    <div class="certification-icons d-flex gap-3 mt-3">
+                        <img src="~/Assets/Images/dadangky.jpg" alt="Đã đăng ký Bộ Công Thương" class="certification-icon" />
+                        <img src="~/Assets/Images/dmca-badge-w250-2x1-04.png" alt="DMCA Protected" class="certification-icon" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("scripts", required: false)
 </body>
 </html>

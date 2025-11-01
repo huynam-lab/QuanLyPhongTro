@@ -1,0 +1,145 @@
+﻿/* ===== FOOTER STYLES ===== */
+
+.pt-footer {
+    background-color: #fee39a; /* Màu nền vàng nhạt */
+    color: #333; /* Màu chữ mặc định */
+    font-size: 0.9rem;
+}
+
+    .pt-footer .footer-content {
+        max-width: 1400px; /* Căn giữa và giới hạn chiều rộng */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pt-footer .footer-title {
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 1rem;
+        font-weight: 700; /* Đậm */
+    }
+
+    /* Style cho các link trong cột */
+    .pt-footer .footer-links li {
+        margin-bottom: 0.5rem;
+    }
+
+    .pt-footer .footer-links a {
+        color: #555;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+        .pt-footer .footer-links a:hover {
+            color: #e04135; /* Màu đỏ khi hover */
+            text-decoration: underline;
+        }
+
+    /* Icon Phương thức Thanh toán */
+    .pt-footer .payment-icon {
+        width: 60px; /* Chiều rộng cố định cho mỗi logo */
+        height: 35px;
+        object-fit: contain;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 2px;
+        background-color: white;
+    }
+
+    /* Icon Mạng Xã hội */
+    .pt-footer .social-icons .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+        .pt-footer .social-icons .social-icon:hover {
+            opacity: 0.8;
+        }
+
+    .pt-footer .social-icon.facebook {
+        background-color: #4267B2;
+    }
+
+    .pt-footer .social-icon.youtube {
+        background-color: #FF0000;
+    }
+
+    .pt-footer .social-icon.tiktok {
+        background-color: #000000;
+    }
+
+    .pt-footer .social-icon.zalo {
+        background-color: #008FFC;
+        padding: 5px; /* Điều chỉnh cho icon Zalo */
+    }
+
+        .pt-footer .social-icon.zalo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+    /* Thông tin Công ty và Chứng nhận */
+    .pt-footer .company-info {
+        border-color: #e0e0e0 !important;
+    }
+
+        .pt-footer .company-info h5 {
+            color: #000;
+        }
+
+        .pt-footer .company-info p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+    .pt-footer .certification-icon {
+        width: 130px; /* Chiều rộng cho logo chứng nhận */
+        height: auto;
+        object-fit: contain;
+    }
+
+
+/* ===== Responsive Adjustments (Đảm bảo bố cục 2 cột trên Mobile/Tablet) ===== */
+
+@media (max-width: 767.98px) {
+    .pt-footer .row > div {
+        margin-bottom: 20px !important; /* Thêm khoảng cách giữa các cột trên mobile */
+    }
+}
+/* Thêm Margin/Padding cho toàn bộ nội dung trên Mobile/Tablet (dưới 992px) */
+/* Áp dụng padding cho container-fluid để nội dung không bị sát lề */
+@media (max-width: 991.98px) {
+
+    /* Thêm padding ngang cho container-fluid để tạo khoảng cách 15px hai bên */
+    .container-fluid {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    /* Điều chỉnh cho Header Top để đảm bảo các thành phần bên trong cũng được căn lề đúng */
+    .pt-header .header-top {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Nếu bạn có dùng thẻ <main> hoặc .pt-main, bạn cũng có thể thêm padding cho nó */
+    .pt-main {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    /* Đối với các mục menu trong header-mobile-menu */
+    #header-mobile-menu .list-group-item a {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
