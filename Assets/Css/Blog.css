@@ -396,3 +396,6 @@ body {
         padding: 10px;
     }
 }
+.pt-card-body h5:hover {
+    color: #ff5722 !important;
+}
