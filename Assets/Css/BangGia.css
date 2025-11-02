@@ -194,7 +194,7 @@
         margin-bottom: 16px
     }
 
-@@media (max-width: 768px) {
+@media (max-width: 768px) {
     .pt-price-table .title {
         font-size: 22px
     }
@@ -246,7 +246,7 @@
         margin-top: 18px
     }
 
-@@media (max-width: 980px) {
+@media (max-width: 980px) {
     .pt-demo .grid {
         grid-template-columns: 1fr;
         gap: 18px
@@ -377,7 +377,7 @@
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     }
 
-@@media (min-width: 900px) {
+@media (min-width: 900px) {
     .pt-testi .grid {
         grid-template-columns: 1fr 1fr 1fr;
     }
@@ -446,7 +446,7 @@
         align-items: center;
     }
 
-@@media (max-width: 980px) {
+@media (max-width: 980px) {
     .pt-support .wrap {
         grid-template-columns: 1fr;
     }
