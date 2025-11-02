@@ -1,7 +1,340 @@
 ﻿
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
 }
 
-<h2>Index</h2>
+<link href="~/Areas/Admin/Assets/ChuNhacss.css" rel="stylesheet" type="text/css" />
+<div class="container-fluid py-3">
 
+    <div class="post-sticky-wrap">
+        <h3 class="section-title">Đăng tin cho thuê</h3>
+
+        <nav class="section-nav" id="postNav">
+            <a href="#khuvuc" class="active">Khu vực</a>
+            <a href="#mota">Thông tin mô tả</a>
+            <a href="#hinhanh">Hình ảnh</a>
+            <a href="#video">Video</a>
+            <a href="#lienhe">Thông tin liên hệ</a>
+        </nav>
+    </div>
+    <div style="width:100%; display:flex;">
+        <div style="width:15%; display:block;"></div>
+        <div style="width:70%">
+            <!-- ===== LOẠI CHUYÊN MỤC ===== -->
+            <div class="card p-4" id="loaitin">
+                <h5 class="mb-3">Loại chuyên mục</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Loại chuyên mục <span class="text-danger">*</span></label>
+                        <select class="form-select">
+                            <option selected disabled>-- Chọn loại chuyên mục --</option>
+                            <option>Phòng trọ</option>
+                            <option>Nhà nguyên căn</option>
+                            <option>Căn hộ mini</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== KHU VỰC ===== -->
+            <div class="card p-4" id="khuvuc">
+                <h5 class="mb-4">Khu vực</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Phường/Xã</label>
+                        <select class="form-select">
+                            <option selected disabled>-- Chọn phường/xã --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Đường/Phố</label>
+                        <select class="form-select">
+                            <option selected disabled>-- Chọn đường/phố --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Số nhà</label>
+                        <input type="text" class="form-control" placeholder="Nhập số nhà" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control bg-light" placeholder="Địa chỉ" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== THÔNG TIN MÔ TẢ ===== -->
+            <div class="card p-4" id="mota">
+                <h5 class="mb-4">Thông tin mô tả</h5>
+
+                <div class="mb-3">
+                    <label class="form-label">Tiêu đề <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" placeholder="Nhập tiêu đề bài đăng" />
+                    <div class="text-muted mt-1">(Tối thiểu 30 ký tự, tối đa 100 ký tự)</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Nội dung mô tả <span class="text-danger">*</span></label>
+                    <textarea class="form-control" rows="6" placeholder="Nhập nội dung mô tả chi tiết..." style="height:400px !important;"></textarea>
+                    <div class="text-muted mt-1">(Tối thiểu 50 ký tự, tối đa 5000 ký tự)</div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Giá cho thuê <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="Ví dụ: 3000000" />
+                            <select class="form-select" style="max-width: 160px;">
+                                <option>đồng/tháng</option>
+                                <option>đồng/m²</option>
+                            </select>
+                        </div>
+                        <div class="text-muted mt-1">Nhập đầy đủ số, ví dụ 1 triệu thì nhập 1000000</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Diện tích <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="Nhập diện tích" />
+                            <span class="input-group-text">m²</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-4">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119179.01192149612!2d105.60681050000001!3d21.0189125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345574d20b8f67%3A0xb34019170665308c!2zU8OibiB24bqtbiDEkeG7mW5nIFF14buRYyBnaWEgTeG7uSDEkMOsbmg!5e0!3m2!1svi!2s!4v1762070177300!5m2!1svi!2s"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <!-- ===== ĐẶC ĐIỂM NỔI BẬT ===== -->
+            <div class="card p-4">
+                <h5 class="mb-3">Đặc điểm nổi bật</h5>
+                <div class="row checkbox-grid">
+                    <div class="col-md-4">
+                        <div><input type="checkbox" /> Đầy đủ nội thất</div>
+                        <div><input type="checkbox" /> Có máy lạnh</div>
+                        <div><input type="checkbox" /> Có thang máy</div>
+                        <div><input type="checkbox" /> Có bảo vệ 24/24</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div><input type="checkbox" /> Có gác</div>
+                        <div><input type="checkbox" /> Có máy giặt</div>
+                        <div><input type="checkbox" /> Không chung chủ</div>
+                        <div><input type="checkbox" /> Có hầm để xe</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div><input type="checkbox" /> Có kệ bếp</div>
+                        <div><input type="checkbox" /> Có tủ lạnh</div>
+                        <div><input type="checkbox" /> Giờ giấc tự do</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ====== HÌNH ẢNH ====== -->
+            <section id="hinhanh">
+                <div class="card p-4">
+                    <h5 class="mb-3">Hình ảnh</h5>
+
+                    <div class="upload-area text-center py-5" id="imageUploadBox">
+                        <i class="bi bi-camera fs-1 text-primary mb-2"></i>
+                        <p class="fw-semibold mb-0">Tải ảnh từ thiết bị</p>
+                        <input type="file" id="imageInput" accept="image/*" multiple hidden />
+                    </div>
+
+                    <ul class="mt-3 note">
+                        <li>Tải lên tối đa 20 ảnh trong một bài đăng</li>
+                        <li>Dung lượng ảnh tối đa 10MB</li>
+                        <li>Hình ảnh phải liên quan đến phòng trọ, nhà cho thuê</li>
+                        <li>Không chèn văn bản, số điện thoại lên ảnh</li>
+                    </ul>
+
+                    <!-- Khung hiển thị ảnh preview -->
+                    <div class="preview-area mt-3 d-flex flex-wrap gap-2" id="imagePreview"></div>
+                </div>
+            </section>
+
+            <!-- ====== VIDEO ====== -->
+            <section id="video">
+                <div class="card p-4">
+                    <h5 class="mb-3">Video</h5>
+
+                    <label class="form-label">Video Link (Youtube/Tiktok)</label>
+                    <input type="text" class="form-control mb-3" placeholder="Dán link video tại đây" />
+
+                    <div class="note mb-3">
+                        <b>Lưu ý:</b> Bạn có thể chọn video từ Youtube hoặc Tiktok để hiển thị trên bài viết của mình.<br>
+                    </div>
+
+                    <div class="upload-area text-center py-5" id="videoUploadBox">
+                        <i class="bi bi-camera-video fs-1 text-primary mb-2"></i>
+                        <p class="fw-semibold mb-0">Tải video từ thiết bị</p>
+                        <input type="file" id="videoInput" accept="video/*" hidden />
+                    </div>
+
+                    <!-- Preview video -->
+                    <div class="preview-area mt-3" id="videoPreview"></div>
+                </div>
+            </section>
+            <!-- ===== THÔNG TIN LIÊN HỆ ===== -->
+            <div class="card p-4" id="lienhe">
+                <h5 class="mb-3">Thông tin liên hệ</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="Nhập họ tên" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="Nhập số điện thoại" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== NÚT ĐĂNG ===== -->
+            <div class="text-center mt-4 mb-5" style="padding-top:50px">
+                <button class="btn btn-primary px-5 py-2 fw-semibold rounded-pill">
+                    <i class="bi bi-check-circle me-2"></i> Đăng tin ngay
+                </button>
+            </div>
+
+
+
+        </div>
+        <div style="width:15%; display:block;"></div>
+    </div>
+
+
+
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // =====================================================
+        // 🧭 THANH ĐIỀU HƯỚNG CUỘN MƯỢT
+        // =====================================================
+        const navLinks = Array.from(document.querySelectorAll('#postNav a'));
+        const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+        let scrolling = false;
+
+        function setActive(hash) {
+            navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === hash));
+        }
+
+        // Cuộn mượt khi click
+        navLinks.forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const id = a.getAttribute('href');
+                const section = document.querySelector(id);
+                if (!section) return;
+
+                scrolling = true;
+                setActive(id);
+
+                // Tính toán vị trí cần cuộn đến (chừa ra header sticky)
+                const offsetTop = section.getBoundingClientRect().top + window.scrollY - 100;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+
+                // Mở khóa lại observer sau 0.8s
+                setTimeout(() => scrolling = false, 800);
+            });
+        });
+
+        // =====================================================
+        // 🧩 CẬP NHẬT TAB ACTIVE KHI CUỘN
+        // =====================================================
+        function updateActiveOnScroll() {
+            if (scrolling) return;
+            let current = sections[0];
+            let minDiff = Infinity;
+
+            // Tính điểm giữa màn hình
+            const viewportMid = window.scrollY + window.innerHeight / 3;
+
+            sections.forEach(sec => {
+                if (!sec) return;
+                const offsetTop = sec.offsetTop;
+                const diff = Math.abs(offsetTop - viewportMid);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    current = sec;
+                }
+            });
+
+            if (current) {
+                setActive('#' + current.id);
+            }
+        }
+
+        window.addEventListener('scroll', updateActiveOnScroll);
+        updateActiveOnScroll();
+
+        // =====================================================
+        // 📸 UPLOAD ẢNH
+        // =====================================================
+        const imageBox = document.getElementById('imageUploadBox');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        if (imageBox && imageInput && imagePreview) {
+            imageBox.addEventListener('click', () => imageInput.click());
+
+            imageInput.addEventListener('change', () => {
+                imagePreview.innerHTML = '';
+                Array.from(imageInput.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('preview-img');
+                        imagePreview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+
+        // =====================================================
+        // 🎥 UPLOAD VIDEO
+        // =====================================================
+        const videoBox = document.getElementById('videoUploadBox');
+        const videoInput = document.getElementById('videoInput');
+        const videoPreview = document.getElementById('videoPreview');
+
+        if (videoBox && videoInput && videoPreview) {
+            videoBox.addEventListener('click', () => videoInput.click());
+
+            videoInput.addEventListener('change', () => {
+                videoPreview.innerHTML = '';
+                const file = videoInput.files[0];
+                if (file) {
+                    const url = URL.createObjectURL(file);
+                    const video = document.createElement('video');
+                    video.src = url;
+                    video.controls = true;
+                    video.width = 320;
+                    video.classList.add('preview-video');
+                    videoPreview.appendChild(video);
+                }
+            });
+        }
+
+        // =====================================================
+        // 🧱 XỬ LÝ TỰ ĐỘNG GÁN ID CHO SECTION (nếu chưa có)
+        // =====================================================
+        const requiredIds = ['#khuvuc', '#mota', '#hinhanh', '#video', '#lienhe'];
+        requiredIds.forEach(id => {
+            const section = document.querySelector(id);
+            if (!section) {
+                console.warn(`⚠️ Section ${id} không tồn tại, cuộn tới nó sẽ không hoạt động.`);
+            }
+        });
+    });
+</script>

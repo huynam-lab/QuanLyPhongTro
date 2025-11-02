@@ -1,0 +1,198 @@
+﻿
+/* sticky wrapper for title + nav */
+.post-sticky-wrap {
+    position: sticky;
+    top: 40px; /* height of your top navbar */
+    z-index: 1000;
+    background: #fff;
+}
+
+.section-title {
+    font-size: 20px;
+    margin: 0;
+    padding: 18px 20px 6px 20px;
+    font-weight: 500;
+}
+
+.section-nav {
+    display: flex;
+    gap: 28px;
+    padding: 10px 20px 12px 20px;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+}
+
+    .section-nav a {
+        text-decoration: none;
+        color: #212529;
+        font-size: 16px;
+        padding-bottom: 6px;
+        position: relative;
+        transition: .2s;
+    }
+
+        .section-nav a.active {
+            color: #e53935;
+        }
+
+            .section-nav a.active::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -2px;
+                width: 100%;
+                height: 2px;
+                background: #e53935;
+                border-radius: 2px;
+            }
+
+/* when scrolling to an anchor, keep some offset below sticky header */
+section {
+    scroll-margin-top: 130px;
+}
+body {
+    font-family: "Roboto", "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    color: #333;
+}
+#khuvuc h5 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 20px;
+}
+
+.form-label-custom {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+/* Select & Input */
+.form-select-custom,
+.form-control-custom {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    height: 42px;
+    padding: 8px 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .form-select-custom:focus,
+    .form-control-custom:focus {
+        border-color: #66afe9;
+        box-shadow: 0 0 0 3px rgba(102, 175, 233, 0.2);
+        outline: none;
+    }
+
+/* Disable background for readonly */
+.form-control[readonly] {
+    background-color: #f8f9fa;
+}
+
+/* Card tổng thể */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+}
+
+/* Row spacing */
+.row.g-3 > * {
+    margin-bottom: 6px;
+}
+
+h5 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+}
+
+.card {
+    top: 40px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+    background-color: #fff;
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 5px;
+}
+
+.form-control,
+.form-select {
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+    height: 42px;
+    transition: all 0.2s ease;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        outline: none;
+    }
+
+.border-dashed {
+    border: 2px dashed #3b82f6;
+    border-radius: 8px;
+    background-color: #eff6ff;
+}
+
+.upload-box {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .upload-box:hover {
+        background-color: #e0f2fe;
+    }
+
+.note {
+    font-size: 14px;
+    color: #555;
+}
+
+    .note b {
+        color: #000;
+    }
+
+.text-muted {
+    color: #666 !important;
+}
+
+.checkbox-grid label {
+    margin-right: 40px;
+    font-weight: 400;
+    color: #333;
+}
+.upload-area {
+    border: 2px dashed #3b82f6;
+    border-radius: 10px;
+    background-color: #e8f2ff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .upload-area:hover {
+        background-color: #dbeafe;
+        border-color: #2563eb;
+    }
+
+.preview-area img,
+.preview-area video {
+    width: 140px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
