@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Css\BangGia.css" />
+    <Content Include="Assets\Css\Blog.css" />
     <Content Include="Assets\Css\DangKy.css" />
     <Content Include="Assets\Css\DangNhap.css" />
     <Content Include="Assets\Css\Footer.css" />
@@ -95,6 +96,12 @@
     <Content Include="Assets\Css\ModalMain.css" />
     <Content Include="Assets\Images\banner-thuecanho.jpg" />
     <Content Include="Assets\Images\bds123_120_300.gif" />
+    <Content Include="Assets\Images\blog\5-dau-hieu-thue-nham-phong-tro-ac-mong_1747125049.png" />
+    <Content Include="Assets\Images\blog\cach-tinh-tien-dien-nuoc-tai-phong-tro-_1741246658.jpg" />
+    <Content Include="Assets\Images\blog\du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh_1751449092.png" />
+    <Content Include="Assets\Images\blog\gia-phong-tro-tphcm-t8-2025-nguoi-thue-phai-luu-y-gi_1755071790.png" />
+    <Content Include="Assets\Images\blog\mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025_1757754712.png" />
+    <Content Include="Assets\Images\blog\thue-phong-tro-can-nhung-giay-to-gi_1740122970.png" />
     <Content Include="Assets\Images\contact-us-pana-orange.svg" />
     <Content Include="Assets\Images\dadangky.jpg" />
     <Content Include="Assets\Images\dmca-badge-w250-2x1-04.png" />

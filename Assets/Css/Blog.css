@@ -1,0 +1,398 @@
+﻿/* Global Reset & Font */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa; /* Màu nền nhẹ cho toàn trang */
+}
+
+.pt-blog-page-content {
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+
+/* 1. Tiêu đề Blog */
+.pt-blog-heading {
+    color: #333;
+    font-weight: 700 !important;
+}
+
+/* 2. Breadcrumb */
+.pt-breadcrumb {
+    --bs-breadcrumb-divider: '>';
+    font-size: 0.9rem;
+}
+
+/* 3. Nút Lọc/Chủ đề */
+.pt-btn-filter {
+    background-color: #f8f9fa; /* Màu nền nhẹ */
+    color: #495057;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    padding: 6px 15px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    text-decoration: none; /* Bỏ gạch chân */
+}
+
+    .pt-btn-filter:hover {
+        background-color: #e9ecef;
+        color: #212529;
+    }
+
+.pt-btn-filter-active {
+    background-color: #fff3e0; /* Màu nền cam/vàng nhạt */
+    color: #ff5722; /* Màu chữ cam nổi bật */
+    border: 1px solid #ff5722;
+    border-radius: 20px;
+    padding: 6px 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none; /* Bỏ gạch chân */
+}
+
+/* 4. Card Bài viết */
+.pt-blog-card-link {
+    text-decoration: none; /* Bỏ gạch chân cho link bao ngoài */
+    display: block;
+    height: 100%;
+    color: inherit;
+}
+
+.pt-blog-card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .pt-blog-card:hover {
+        transform: translateY(-5px); /* Hiệu ứng nổi nhẹ khi di chuột */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+
+/* Container chứa ảnh và text overlay */
+.pt-card-img-container {
+    position: relative;
+    padding-top: 66.66%; /* 3:2 Aspect Ratio */
+    overflow: hidden;
+}
+
+.pt-card-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.pt-blog-card:hover .pt-card-img {
+    transform: scale(1.05); /* Hiệu ứng zoom ảnh nhẹ */
+}
+
+/* Text Overlay trên ảnh */
+.pt-img-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+    color: white;
+}
+
+    .pt-img-overlay h4 {
+        font-size: 1.1rem;
+        line-height: 1.4;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        margin-bottom: 0;
+    }
+
+/* Body của Card */
+.pt-card-body {
+    padding: 15px;
+}
+
+.pt-card-category {
+    color: #ff5722 !important; /* Màu cam cho Category */
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.pt-card-body .card-title {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.pt-card-body .card-text {
+    color: #6c757d !important;
+}
+
+/* 5. Phân trang */
+.pt-custom-pagination .page-link {
+    color: #333;
+    border: 1px solid #dee2e6;
+    margin: 0 5px;
+    border-radius: 8px !important;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+    .pt-custom-pagination .page-link:hover {
+        background-color: #ffeedd;
+        border-color: #ff5722;
+        color: #ff5722;
+    }
+
+.pt-custom-pagination .page-item.active .page-link,
+.pt-active-page {
+    background-color: #ff5722;
+    border-color: #ff5722;
+    color: white;
+}
+
+/* 6. Tin đăng mới cập nhật */
+.pt-new-listings {
+    margin-top: 60px;
+}
+
+.pt-listing-card {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+    text-decoration: none;
+    color: inherit;
+}
+
+    .pt-listing-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+.pt-listing-img {
+    width: 100%;
+    height: 150px; /* Chiều cao cố định cho ảnh listing */
+    object-fit: cover;
+}
+
+.pt-listing-price {
+    color: #ff5722;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.pt-listing-address {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* 7. Bài viết mới nhất (Dạng List - Ảnh 3) */
+.pt-recent-list-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: inherit;
+}
+
+    .pt-recent-list-item:hover .pt-recent-title {
+        color: #ff5722;
+    }
+
+    .pt-recent-list-item:last-child {
+        border-bottom: none;
+    }
+
+.pt-recent-img {
+    width: 120px;
+    height: 80px;
+    min-width: 120px; /* Ngăn co lại */
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.pt-recent-title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 5px;
+    transition: color 0.2s;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.pt-recent-info {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/*===================================================================*/
+/* ====== HỖ TRỢ CHỦ NHÀ ĐĂNG TIN ====== */
+.pt-support-wrap {
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+
+.pt-support-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    border: 1px solid #eef2f6;
+}
+
+.pt-support-illust {
+    background: #f6f9ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+    .pt-support-illust img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 10px;
+    }
+
+.pt-support-content {
+    max-width: 560px;
+}
+
+.pt-support-icon {
+    width: 52px;
+    height: 52px;
+    background: #eef4ff;
+    color: #3063f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.pt-support-title {
+    margin: 0 0 4px;
+    font-weight: 800;
+    letter-spacing: .2px;
+}
+
+.pt-support-desc {
+    color: #5c6770;
+    margin-bottom: 14px;
+}
+
+/* Buttons */
+.pt-support-btn {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+/* Hotline cam */
+.pt-btn-hotline {
+    background: #ff6433;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(255,100,51,.25);
+}
+
+    .pt-btn-hotline:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 18px rgba(255,100,51,.35);
+    }
+
+/* Zalo xanh */
+.pt-btn-zalo {
+    background: #1677ff;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(22,119,255,.25);
+}
+
+    .pt-btn-zalo:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 18px rgba(22,119,255,.35);
+    }
+
+/* Zalo viền */
+.pt-btn-zalo-outline {
+    background: #fff;
+    color: #1677ff;
+    border-color: #1677ff;
+}
+
+    .pt-btn-zalo-outline:hover {
+        background: #f0f6ff;
+        border-color: #3a8bff;
+        color: #0f5ed1;
+    }
+
+.pt-support-sub {
+    font-size: .92rem;
+    color: #7a8794;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .pt-support-card {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .pt-support-illust {
+        padding: 12px;
+    }
+
+    .pt-support-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+
+/* RESPONSIVE CSS */
+@media (max-width: 991.98px) {
+    .pt-recent-list-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pt-recent-img {
+        width: 100%;
+        height: 150px;
+        min-width: auto;
+    }
+
+    .pt-recent-title {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .pt-blog-heading {
+        font-size: 1.5rem !important;
+    }
+
+    .pt-img-overlay h4 {
+        font-size: 1rem;
+    }
+
+    .pt-card-body .card-title {
+        font-size: 1rem;
+    }
+
+    .pt-listing-card .card-body {
+        padding: 10px;
+    }
+}
