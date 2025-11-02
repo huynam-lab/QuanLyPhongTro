@@ -25,6 +25,22 @@ namespace QuanLyPhongTro.Controllers
         {
             return View();
         }
+        public ActionResult TinTuc()
+        {
+            return View();
+        }
+        public ActionResult ChiaSeKinhNghiem()
+        {
+            return View();
+        }
+        public ActionResult HoiDap()
+        {
+            return View();
+        }
+        public ActionResult MauHopDong()
+        {
+            return View();
+        }
         public ActionResult BangGiaDichVu()
         {
             return View();

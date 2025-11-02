@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Blog";
+    ViewBag.Title = "HoiDap";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Assets/Css/Blog.css" rel="stylesheet" />
@@ -10,18 +10,21 @@
     <nav class="mb-4" aria-label="breadcrumb">
         <ol class="breadcrumb pt-breadcrumb">
             <li class="breadcrumb-item"><a href="@Url.Action("Index", "User")" class="text-decoration-none text-primary">Trang chủ</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Blog</li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="@Url.Action("Blog", "User")" class="text-decoration-none text-primary">Blog</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Hỏi Đáp</li>
         </ol>
     </nav>
 
     <!-- 2. Tiêu đề Lớn -->
-    <h1 class="h4 fw-bold mb-4 pt-blog-heading">Tin tức thị trường, chia sẻ kinh nghiệm Bất động sản</h1>
+    <h1 class="h4 fw-bold mb-4 pt-blog-heading">Hỏi đáp - Giải đáp các thắc mắc về lĩnh vực thuê và cho thuê</h1>
 
     <!-- 3. Thanh Lọc/Chủ đề (Filter/Category Tabs) -->
     <div class="d-flex flex-wrap gap-2 mb-5 pt-blog-filters">
         <a href="@Url.Action("TinTuc", "User")" class="btn btn-sm pt-btn-filter">Tin tức</a>
         <a href="@Url.Action("ChiaSeKinhNghiem", "User")" class="btn btn-sm pt-btn-filter">Chia sẻ kinh nghiệm</a>
-        <a href="@Url.Action("HoiDap", "User")" class="btn btn-sm pt-btn-filter">Hỏi đáp</a>
+        <a href="@Url.Action("HoiDap", "User")" class="btn btn-sm pt-btn-filter-active">Hỏi đáp</a>
         <a href="@Url.Action("MauHopDong", "User")" class="btn btn-sm pt-btn-filter">Mẫu hợp đồng</a>
     </div>
 
@@ -268,3 +271,5 @@
         </div>
     </section>
 </div>
+
+

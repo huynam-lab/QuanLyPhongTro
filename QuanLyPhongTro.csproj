@@ -677,6 +677,10 @@
     <Content Include="Views\User\DangKy.cshtml" />
     <Content Include="Views\User\DangNhap.cshtml" />
     <Content Include="Views\User\DangTin.cshtml" />
+    <Content Include="Views\User\TinTuc.cshtml" />
+    <Content Include="Views\User\ChiaSeKinhNghiem.cshtml" />
+    <Content Include="Views\User\HoiDap.cshtml" />
+    <Content Include="Views\User\MauHopDong.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
