@@ -1,0 +1,548 @@
+﻿body {
+    background: #fff !important;
+}
+/* ===== PRICING TABLE (scoped) ===== */
+    .pt-main {
+        background-color: #fff;
+        }
+    body.page-banggia .pt-container {
+        max-width: none !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    body.page-banggia .pt-price-table .wrap {
+        max-width: none !important;
+        width: 100% !important;
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0; /* bỏ bo góc để full-bleed */
+        box-shadow: none; /* bỏ bóng ở 2 bên cho liền mép */
+    }
+    .pt-price-table {
+        --bd: #e5e7eb;
+        --muted: #6b7280;
+        --head: #111827
+    }
+
+    .pt-price-table .wrap {
+        background: #fff;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        overflow: auto;
+        box-shadow: 0 10px 28px rgba(15,23,42,.06);
+    }
+
+    .pt-price-table table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 980px;
+    }
+
+    .pt-price-table th, .pt-price-table td {
+        border-bottom: 1px solid var(--bd);
+        border-right: 1px solid var(--bd);
+        padding: 16px;
+        text-align: center;
+        vertical-align: middle;
+        background: #fff;
+    }
+
+        .pt-price-table th:first-child, .pt-price-table td:first-child {
+            text-align: left;
+            position: sticky;
+            left: 0;
+            background: #fff;
+            z-index: 1;
+        }
+
+    .pt-price-table thead th {
+        color: #fff;
+        font-weight: 800;
+        font-size: 16px;
+        border-top: 1px solid var(--bd);
+    }
+
+        .pt-price-table thead th:first-child {
+            background: #f9fafb;
+            color: #111827;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+    .pt-price-table .col-viphot {
+        background: #ef4444;
+    }
+   
+    /* Đỏ: VIP Nổi bật */
+    .pt-price-table .col-vip1 {
+        background: #ec4899;
+    }
+    /* Hồng: VIP 1    */
+    .pt-price-table .col-vip2 {
+        background: #f97316;
+    }
+    /* Cam: VIP 2     */
+    .pt-price-table .col-vip3 {
+        background: #2563eb;
+    }
+    /* Xanh: VIP 3    */
+    .pt-price-table .col-norm {
+        background: #1e3a8a;
+    }
+    /* Xanh đậm: Thường */
+
+    .pt-price-table .stars {
+        display: block;
+        font-size: 14px;
+        margin-top: 6px;
+        opacity: .95
+    }
+
+    .pt-price-table .price {
+        font-weight: 900;
+        font-size: 18px;
+        color: #111827
+    }
+
+    .pt-price-table .note {
+        font-size: 12px;
+        color: var(--muted)
+    }
+
+    .pt-price-table .old {
+        color: #9ca3af;
+        text-decoration: line-through;
+        display: block
+    }
+
+    .pt-price-table .sale {
+        color: #16a34a;
+        font-weight: 700;
+        font-size: 13px;
+        display: block;
+        margin-top: 2px
+    }
+
+    .pt-price-table .strong {
+        font-weight: 900
+    }
+
+    .pt-price-table .big {
+        font-weight: 700
+    }
+
+    .pt-price-table .btn {
+        display: inline-block;
+        background: #2563eb;
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+        .pt-price-table .btn:hover {
+            filter: brightness(.95)
+        }
+
+    .pt-price-table .ok {
+        display: inline-flex;
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        align-items: center;
+        justify-content: center;
+        background: #e8f7f6;
+        color: #0b8b86;
+        font-weight: 900;
+        font-size: 14px;
+    }
+
+    .pt-price-table .no {
+        display: inline-flex;
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        align-items: center;
+        justify-content: center;
+        background: #f3f4f6;
+        color: #9ca3af;
+        font-weight: 900;
+        font-size: 14px;
+    }
+
+    .pt-price-table tfoot td {
+        background: #fafafa;
+        color: var(--muted);
+        font-size: 13px;
+        border-right: 0;
+    }
+
+    .pt-price-table .title {
+        text-align: center;
+        margin: 16px 0 8px;
+        font-weight: 900;
+        font-size: 28px;
+        color: #111827;
+    }
+
+    .pt-price-table .sub {
+        text-align: center;
+        color: #6b7280;
+        margin-bottom: 16px
+    }
+
+@media (max-width: 768px) {
+    .pt-price-table .title {
+        font-size: 22px
+    }
+}
+
+
+/* ===== MINH HOẠ TIN ĐĂNG (scoped) ===== */
+.pt-demo {
+    padding: 36px 0
+}
+
+    .pt-demo .title {
+        font-size: 42px;
+        font-weight: 900;
+        color: #111827;
+        margin: 0 0 14px
+    }
+
+    .pt-demo .sub {
+        font-size: 24px;
+        font-weight: 800;
+        margin: 6px 0 10px
+    }
+
+    .pt-demo .stars {
+        color: #fbbf24;
+        font-size: 18px;
+        margin-left: 6px
+    }
+
+    .pt-demo p {
+        color: #4b5563;
+        line-height: 1.75;
+        margin: 10px 0
+    }
+
+    .pt-demo .em-red {
+        color: #ef4444;
+        font-weight: 900;
+        letter-spacing: .3px
+    }
+
+    /* layout */
+    .pt-demo .grid {
+        display: grid;
+        grid-template-columns: 1.2fr .8fr;
+        gap: 28px;
+        align-items: end;
+        margin-top: 18px
+    }
+
+@media (max-width: 980px) {
+    .pt-demo .grid {
+        grid-template-columns: 1fr;
+        gap: 18px
+    }
+
+    .pt-demo .title {
+        font-size: 34px
+    }
+
+    .pt-demo .sub {
+        font-size: 20px
+    }
+}
+
+/* ---- Device frames (pure CSS) ---- */
+.pt-demo .device {
+    position: relative;
+    display: flex;
+    justify-content: center
+}
+
+.pt-demo img {
+    max-width: 100%;
+    display: block
+}
+
+/* Laptop */
+.pt-demo .laptop {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+    .pt-demo .laptop .screen {
+        overflow: hidden;
+        border-radius: 12px;
+        background: #fff;
+        height: auto;
+    }
+
+    .pt-demo .laptop .hinge {
+        height: 14px;
+        border-radius: 0 0 16px 16px;
+        background: linear-gradient(180deg,#bbb,#9aa);
+        margin: 0 auto;
+        max-width: 86%;
+        box-shadow: inset 0 2px 3px rgba(0,0,0,.15);
+    }
+
+/* Phone */
+.pt-demo .phone {
+    width: 100%;
+    max-width: 300px;
+    justify-self: center;
+}
+
+    .pt-demo .phone .screen {
+        overflow: hidden;
+        border-radius: 28px;
+        background: #fff
+    }
+
+    .pt-demo .phone .notch {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 34%;
+        height: 18px;
+        background: #111;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+.devices {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.device.laptop {
+    width: 640px; /* hoặc max-width: 50% */
+    height: auto;
+}
+
+.device.phone {
+    width: 240px; /* 👈 giảm kích cỡ điện thoại */
+    height: auto;
+}
+
+@media (max-width: 980px) {
+    .device.laptop {
+        width: 90%;
+    }
+
+    .device.phone {
+        width: 140px;
+    }
+}
+
+/* ===== TESTIMONIALS (scoped) ===== */
+.pt-testi {
+    padding: 42px 0;
+    background: #fff
+}
+
+    .pt-testi .title {
+        font-size: 36px;
+        font-weight: 900;
+        text-align: center;
+        color: #111827;
+        margin: 0 0 6px
+    }
+
+    .pt-testi .sub {
+        font-size: 16px;
+        color: #6b7280;
+        text-align: center;
+        margin-bottom: 24px
+    }
+
+    .pt-testi .grid {
+        display: grid;
+        gap: 18px;
+        max-width: 1200px;
+        margin: 0 auto;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+
+@media (min-width: 900px) {
+    .pt-testi .grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.pt-testi .card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15,23,42,.05);
+    padding: 18px 16px;
+}
+
+.pt-testi .head {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 8px
+}
+
+.pt-testi .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="%23c7cdd4"><path d="M12 12c2.761 0 5-2.686 5-6s-2.239-6-5-6-5 2.686-5 6 2.239 6 5 6zm0 2c-3.866 0-7 2.239-7 5v3h14v-3c0-2.761-3.134-5-7-5z"/></svg>');
+    background-size: 60% auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex: 0 0 44px;
+}
+
+.pt-testi .name {
+    font-weight: 800;
+    color: #0f172a
+}
+
+.pt-testi .stars {
+    color: #fbbf24;
+    font-size: 14px;
+    letter-spacing: .5px
+}
+
+.pt-testi .content {
+    color: #374151;
+    line-height: 1.7
+}
+
+/* ===== SUPPORT BOX (scoped) ===== */
+.pt-support {
+    padding: 36px 0;
+    background: #fff;
+}
+
+    .pt-support .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 28px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        box-shadow: 0 10px 28px rgba(15,23,42,.06);
+        display: grid;
+        grid-template-columns: 1fr 1.1fr;
+        gap: 28px;
+        align-items: center;
+    }
+
+@media (max-width: 980px) {
+    .pt-support .wrap {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pt-support .art {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+    .pt-support .art img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+.pt-support .head {
+    text-align: center;
+}
+
+.pt-support .icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.pt-support h3 {
+    font-size: 32px;
+    font-weight: 900;
+    margin: 0 0 6px;
+    color: #0f172a;
+}
+
+.pt-support .lead {
+    color: #475569;
+    margin-bottom: 18px;
+}
+
+.pt-support .btns {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pt-support .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 800;
+    border: 0;
+    box-shadow: 0 4px 0 rgba(0,0,0,.07);
+}
+
+    .pt-support .btn .ic {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+    }
+
+    .pt-support .btn.phone {
+        background: #e6552f;
+        color: #fff;
+    }
+
+    .pt-support .btn.zalo {
+        background: #1677ff;
+        color: #fff;
+    }
+
+.pt-support .sub {
+    text-align: center;
+    color: #6b7280;
+    margin: 18px 0 10px;
+}
+body.page-banggia .pt-left-sidebar,
+body.page-banggia .pt-right-sidebar,
+body.page-banggia .col-lg-1.d-none.d-lg-block.pt-left-sidebar,
+body.page-banggia .col-lg-1.d-none.d-lg-block.pt-right-sidebar {
+    display: none !important;
+}
+body.page-banggia .col-lg-10,
+body.page-banggia .pt-main-col {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}
+
+/* Đảm bảo wrapper/bảng ở giữa, có max-width đẹp */
+body.page-banggia .pt-price-table .wrap,
+body.page-banggia .pt-container {
+    max-width: 1200px; /* hoặc 1360px tùy bạn */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 16px;
+    padding-right: 16px;
+}

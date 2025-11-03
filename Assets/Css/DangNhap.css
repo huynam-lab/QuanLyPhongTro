@@ -1,0 +1,136 @@
+﻿/* CSS tùy chỉnh cho trang Đăng nhập */
+.login-container {
+    /* Đảm bảo container nằm gọn trong nội dung chính của layout */
+    max-width: 500px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Tab Switcher Style */
+.login-tabs {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 25px;
+}
+
+    .login-tabs a {
+        flex-grow: 1;
+        text-align: center;
+        padding: 15px 10px;
+        font-size: 1.25rem; /* Tương đương h5 */
+        font-weight: 500;
+        color: #888;
+        text-decoration: none;
+        position: relative;
+        transition: color 0.3s ease;
+    }
+
+        .login-tabs a.active-tab {
+            color: #ff5722; /* Màu cam chủ đạo */
+            font-weight: 700;
+        }
+
+            .login-tabs a.active-tab::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background-color: #ff5722; /* Đường kẻ dưới màu cam */
+            }
+
+/* Form Inputs */
+.form-control-custom {
+    height: 50px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0 15px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: none;
+    transition: border-color 0.3s;
+}
+
+    .form-control-custom:focus {
+        border-color: #ff5722;
+        outline: none;
+    }
+
+/* Button Style (Màu cam chủ đạo) */
+.btn-primary-custom {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background-color: #ff5722;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 10px;
+}
+
+    .btn-primary-custom:hover {
+        background-color: #e54c1f;
+        box-shadow: 0 4px 8px rgba(255, 87, 34, 0.3);
+    }
+
+/* Liên kết nhỏ */
+.forgot-link {
+    display: block;
+    margin-top: 10px;
+    text-align: left;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
+
+/* Thông báo pháp lý */
+.legal-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 30px;
+    line-height: 1.5;
+}
+
+    .legal-text a {
+        color: #ff5722;
+        text-decoration: none;
+    }
+
+        .legal-text a:hover {
+            text-decoration: underline;
+        }
+
+/* Ẩn/Hiện Tab Content */
+.tab-content-item {
+    display: none;
+}
+
+    .tab-content-item.active {
+        display: block;
+    }
+
+/* Responsive cho Mobile */
+@media (max-width: 576px) {
+    .login-container {
+        margin: 20px 10px;
+        padding: 20px;
+    }
+
+    .login-tabs a {
+        font-size: 1.1rem;
+        padding: 10px 5px;
+    }
+}

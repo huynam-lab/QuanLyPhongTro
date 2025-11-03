@@ -1,0 +1,155 @@
+﻿/* ---------------------------------------------------------------------- */
+/* CSS TÁI SỬ DỤNG TỪ DANGNHAP.CSHTML (Vui lòng đảm bảo CSS này có mặt   */
+/* trong DangNhap.cshtml hoặc chuyển sang file .css dùng chung)          */
+/* ---------------------------------------------------------------------- */
+.login-container {
+    max-width: 500px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-family: 'Inter', sans-serif;
+}
+
+.login-tabs {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 25px;
+}
+
+    .login-tabs a {
+        flex-grow: 1;
+        text-align: center;
+        padding: 15px 10px;
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #888;
+        text-decoration: none;
+        position: relative;
+        transition: color 0.3s ease;
+    }
+
+        .login-tabs a.active-tab {
+            color: #ff5722;
+            font-weight: 700;
+        }
+
+            .login-tabs a.active-tab::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background-color: #ff5722;
+            }
+
+.form-control-custom {
+    height: 50px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0 15px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: none;
+    transition: border-color 0.3s;
+}
+
+    .form-control-custom:focus {
+        border-color: #ff5722;
+        outline: none;
+    }
+
+.btn-primary-custom {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background-color: #ff5722;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 10px;
+}
+
+    .btn-primary-custom:hover {
+        background-color: #e54c1f;
+        box-shadow: 0 4px 8px rgba(255, 87, 34, 0.3);
+    }
+
+.legal-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 30px;
+    line-height: 1.5;
+}
+
+    .legal-text a {
+        color: #ff5722;
+        text-decoration: none;
+    }
+
+        .legal-text a:hover {
+            text-decoration: underline;
+        }
+
+.input-label {
+    display: block;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+/* Responsive cho Mobile */
+@media (max-width: 576px) {
+    .login-container {
+        margin: 20px 10px;
+        padding: 20px;
+    }
+}
+/* ---------------------------------------------------------------------- */
+
+/* CSS RIÊNG CHO TRANG ĐĂNG KÝ */
+.radio-group label {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 20px;
+    cursor: pointer;
+    font-weight: normal;
+    color: #333;
+}
+
+.radio-group input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    margin-right: 8px;
+    position: relative;
+    top: 0;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+    .radio-group input[type="radio"]:checked {
+        border-color: #ff5722;
+    }
+
+        .radio-group input[type="radio"]:checked::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: #ff5722;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }

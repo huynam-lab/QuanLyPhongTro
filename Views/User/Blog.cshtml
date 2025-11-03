@@ -1,0 +1,222 @@
+﻿
+@{
+    ViewBag.Title = "Blog";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Assets/Css/Blog.css" rel="stylesheet" />
+<div class="container pt-blog-page-content">
+
+    <!-- 1. Breadcrumb -->
+    <nav class="mb-4" aria-label="breadcrumb">
+        <ol class="breadcrumb pt-breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "User")" class="text-decoration-none text-primary">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Blog</li>
+        </ol>
+    </nav>
+
+    <!-- 2. Tiêu đề Lớn -->
+    <h1 class="h4 fw-bold mb-4 pt-blog-heading">Tin tức thị trường, chia sẻ kinh nghiệm Bất động sản</h1>
+
+    <!-- 3. Thanh Lọc/Chủ đề (Filter/Category Tabs) -->
+    <div class="d-flex flex-wrap gap-2 mb-5 pt-blog-filters">
+        <a href="@Url.Action("TinTuc", "User")" class="btn btn-sm pt-btn-filter">Tin tức</a>
+        <a href="@Url.Action("ChiaSeKinhNghiem", "User")" class="btn btn-sm pt-btn-filter">Chia sẻ kinh nghiệm</a>
+        <a href="@Url.Action("HoiDap", "User")" class="btn btn-sm pt-btn-filter">Hỏi đáp</a>
+        <a href="@Url.Action("MauHopDong", "User")" class="btn btn-sm pt-btn-filter">Mẫu hợp đồng</a>
+    </div>
+
+
+    <!-- 4. Danh sách Bài viết (Grid Layout) -->
+    <div class="row pt-blog-list-grid">
+
+        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
+        <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+                <div class="card pt-blog-card h-100 shadow-sm border-0">
+                    <div class="pt-card-img-container">
+                        <!-- Ảnh đại diện -->
+                        <img src="~/Assets/Images/blog/du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh_1751449092.png" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
+                    </div>
+                    <div class="card-body pt-card-body">
+                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Tin tức thị trường</p>
+                        <h5 class="card-title fw-bold">Sáp nhập tỉnh thành có ảnh hưởng gì đến thị trường cho thuê phòng trọ?</h5>
+                        <p class="card-text small text-muted">Dự báo thị trường cho thuê phòng trọ sau thông tin sáp nhập tỉnh thànhTác động của thị trường cho thuê phòng trọ khi sáp nhập1. Tác động tích…</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
+        <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+                <div class="card pt-blog-card h-100 shadow-sm border-0">
+                    <div class="pt-card-img-container">
+                        <!-- Ảnh đại diện -->
+                        <img src="~/Assets/Images/blog/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025_1757754712.png" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
+                    </div>
+                    <div class="card-body pt-card-body">
+                        <p class="pt-card-category small text-uppercase fw-bold mb-1">KINH NGHIỆM</p>
+                        <h5 class="card-title fw-bold">Năm 2025: Người đi làm sẽ ưa chuộng loại phòng trọ nào?</h5>
+                        <p class="card-text small text-muted">Mô hình phòng trọ người đi làm ưa chuộng năm 2025Những loại hình phòng trọ người đi làm ưa chuộng năm 20251. Phòng trọ truyền thống có n...</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
+        <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+                <div class="card pt-blog-card h-100 shadow-sm border-0">
+                    <div class="pt-card-img-container">
+                        <!-- Ảnh đại diện -->
+                        <img src="~/Assets/Images/blog/tien-coc-thue-tro-co-lay-lai-duoc-khong_1720661417.jpg" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
+                    </div>
+                    <div class="card-body pt-card-body">
+                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Hỏi đáp</p>
+                        <h5 class="card-title fw-bold">Tiền đặt cọc thuê phòng trọ có lấy lại được không?</h5>
+                        <p class="card-text small text-muted">Tiền cọc thuê trọ có lấy lại được không?Team tư vấn/CSKH Phongtro123 trả lời:Chào Hà Vy, cảm ơn bạn đã tin tưởng và gửi yêu cầu tư vấn đến…</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
+        <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+                <div class="card pt-blog-card h-100 shadow-sm border-0">
+                    <div class="pt-card-img-container">
+                        <!-- Ảnh đại diện -->
+                        <img src="~/Assets/Images/blog/mau-hop-dong_1619246086.jpg" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
+                    </div>
+                    <div class="card-body pt-card-body">
+                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Mẫu hợp đồng</p>
+                        <h5 class="card-title fw-bold">Mẫu hợp đồng cho thuê mặt bằng 2023 (Mặt bằng kinh doanh, văn phòng, ki-ốt)</h5>
+                        <p class="card-text small text-muted">Phân tích hợp đồng cho thuê mặt bằngPhongtro123.com khuyến khích bạn nên tự chủ động soạn hợp đồng sao cho đạt được đồng...</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- 5. Phân trang (Pagination) -->
+    <div class="d-flex justify-content-center mt-5 pt-pagination-wrapper">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pt-custom-pagination">
+                <li class="page-item"><a class="page-link" href="#">« Trang trước</a></li>
+                <li class="page-item active"><a class="page-link pt-active-page" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                <li class="page-item"><a class="page-link" href="#">» Trang sau</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 6. TIN ĐĂNG MỚI CẬP NHẬT (Listing Section) -->
+    <!-- ============================================================= -->
+    <div class="pt-new-listings" style="background-color: #fff; padding: 24px 24px 0 24px; border-radius :10px">
+        <h2 class="h5 fw-bold mb-4 pt-blog-heading">Tin đăng mới cập nhật</h2>
+
+        <div class="row">
+            <!-- Listing 1 -->
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                <a href="/listing/details/1" class="card pt-listing-card h-100 shadow-sm">
+                    <img src="https://placehold.co/400x250/F44336/white?text=Nhà+Trọ+Mới" class="pt-listing-img" alt="Phòng trọ Thủ Đức">
+                    <div class="card-body">
+                        <p class="pt-listing-price mb-1">3.5 Triệu/Tháng</p>
+                        <h6 class="card-title fw-bold text-truncate mb-1" title="Phòng trọ mới xây, đầy đủ nội thất, gần khu công nghệ cao">Phòng trọ mới xây, đầy đủ nội thất, gần khu công nghệ cao</h6>
+                        <p class="pt-listing-address mb-0">
+                            <i class="fa-solid fa-location-dot me-1"></i> P. Linh Trung, TP. Thủ Đức
+                        </p>
+                        <p class="text-muted small mt-2 mb-0">
+                            <span class="me-3"><i class="fa-solid fa-bed me-1"></i> 1 P. Ngủ</span>
+                            <span class="me-3"><i class="fa-solid fa-ruler-combined me-1"></i> 25 m²</span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Listing 2 -->
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                <a href="/listing/details/2" class="card pt-listing-card h-100 shadow-sm">
+                    <img src="https://placehold.co/400x250/2196F3/white?text=Căn+Hộ+Dịch+Vụ" class="pt-listing-img" alt="Căn hộ dịch vụ Q10">
+                    <div class="card-body">
+                        <p class="pt-listing-price mb-1">7.0 Triệu/Tháng</p>
+                        <h6 class="card-title fw-bold text-truncate mb-1" title="Căn hộ dịch vụ cao cấp, ban công thoáng mát tại Quận 10">Căn hộ dịch vụ cao cấp, ban công thoáng mát tại Quận 10</h6>
+                        <p class="pt-listing-address mb-0">
+                            <i class="fa-solid fa-location-dot me-1"></i> Q. 10, TP. Hồ Chí Minh
+                        </p>
+                        <p class="text-muted small mt-2 mb-0">
+                            <span class="me-3"><i class="fa-solid fa-bed me-1"></i> Studio</span>
+                            <span class="me-3"><i class="fa-solid fa-ruler-combined me-1"></i> 30 m²</span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Listing 3 -->
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                <a href="/listing/details/3" class="card pt-listing-card h-100 shadow-sm">
+                    <img src="https://placehold.co/400x250/FF9800/white?text=Nhà+Nguyên+Căn" class="pt-listing-img" alt="Nhà nguyên căn Gò Vấp">
+                    <div class="card-body">
+                        <p class="pt-listing-price mb-1">15 Triệu/Tháng</p>
+                        <h6 class="card-title fw-bold text-truncate mb-1" title="Nhà nguyên căn 1 trệt 2 lầu, thích hợp mở văn phòng/ở gia đình">Nhà nguyên căn 1 trệt 2 lầu, thích hợp mở văn phòng/ở gia đình</h6>
+                        <p class="pt-listing-address mb-0">
+                            <i class="fa-solid fa-location-dot me-1"></i> P. 11, Q. Gò Vấp
+                        </p>
+                        <p class="text-muted small mt-2 mb-0">
+                            <span class="me-3"><i class="fa-solid fa-bed me-1"></i> 3 P. Ngủ</span>
+                            <span class="me-3"><i class="fa-solid fa-ruler-combined me-1"></i> 80 m²</span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- bổ sung vào đây nhé -->
+    <!-- 7. HỖ TRỢ CHỦ NHÀ ĐĂNG TIN -->
+    <section class="pt-support-wrap">
+        <div class="pt-support-card">
+            <div class="row align-items-center g-4">
+                <!-- Hình minh hoạ -->
+                <div class="col-lg-5">
+                    <div class="pt-support-illust">
+                        <img src="~/Assets/Images/contact-us-pana-orange.svg" alt="Hỗ trợ đăng tin" />
+                    </div>
+                </div>
+
+                <!-- Nội dung -->
+                <div class="col-lg-7">
+                    <div class="pt-support-content">
+                        <div class="pt-support-icon">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <h3 class="pt-support-title">Hỗ trợ chủ nhà đăng tin</h3>
+                        <p class="pt-support-desc">
+                            Nếu bạn cần hỗ trợ đăng tin, vui lòng liên hệ số điện thoại bên dưới:
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-3 pt-2">
+                            <a href="tel:0909316890" class="pt-support-btn pt-btn-hotline">
+                                <i class="fa-solid fa-phone-volume me-2"></i>
+                                ĐT: 0909316890
+                            </a>
+                            <a href="https://zalo.me/0909316890" class="pt-support-btn pt-btn-zalo">
+                                <i class="fa-solid fa-message me-2"></i>
+                                Zalo: 0909316890
+                            </a>
+                        </div>
+
+                        <div class="pt-support-sub mt-4">Hỗ trợ ngoài giờ</div>
+                        <a href="https://zalo.me/Phongtro123" class="pt-support-btn pt-btn-zalo-outline mt-2">
+                            <i class="fa-solid fa-comment-dots me-2"></i>
+                            Zalo: Phongtro123
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

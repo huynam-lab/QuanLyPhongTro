@@ -5,7 +5,7 @@
 
 /* Vùng chứa tối đa */
 .pt-main-container {
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 20px 15px;
 }
@@ -24,7 +24,7 @@
 
 /* Kích thước ảnh mặc định */
 .img-fluid {
-    width: 120px;
+    width: 100px;
 }
 
 /* --- Fixed Ad Styles (Áp dụng cho Desktop lớn) --- */
@@ -93,5 +93,166 @@
     /* Ẩn hoàn toàn cột phải và cột trái */
     .pt-right-sidebar, .pt-left-sidebar {
         display: none !important;
+    }
+}
+
+/*======================================================================*/
+
+/* --- Nút Nổi Ở Góc Dưới Bên Phải --- */
+
+/* Wrapper chứa 2 nút (để cố định vị trí) */
+.pt-floating-buttons {
+    position: fixed;
+    bottom: 60px; /* Cách đáy 20px */
+    right: 30px; /* Cách lề phải 20px */
+    z-index: 1000; /* Đảm bảo nút luôn nằm trên cùng */
+    display: flex;
+    flex-direction: column; /* Xếp chồng dọc */
+    gap: 10px; /* Khoảng cách giữa 2 nút */
+}
+
+/* Kiểu dáng chung cho các nút */
+.pt-floating-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Hình tròn */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Nút Chat (Màu cam/hồng) */
+.pt-chat-btn {
+    background-color: #ff5722; /* Màu cam đậm */
+    color: white;
+    font-size: 20px;
+}
+
+/* Nút Quay lên (Màu trắng/xám nhẹ) */
+.pt-scroll-top-btn {
+    background-color: white;
+    color: #495057; /* Màu xám đậm */
+    font-size: 20px;
+    border: 1px solid #dee2e6;
+}
+
+/* Hiệu ứng hover (tùy chọn) */
+.pt-floating-btn:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Đảm bảo nút không hiển thị trên màn hình quá hẹp nếu cần */
+@media (max-width: 400px) {
+    .pt-floating-buttons {
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
+
+/*========================================================================*/
+
+
+/* --- Sidebar Chat (Slide-in) --- */
+
+.pt-chat-sidebar {
+    position: fixed;
+    top: 0;
+    right: -360px; /* Ban đầu ẩn hoàn toàn ra ngoài màn hình */
+    width: 340px; /* Độ rộng của sidebar */
+    height: 100%;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1050; /* Cao hơn các nút nổi và Modal */
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Hiệu ứng trượt mượt */
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung dài */
+    border-left: 1px solid #ddd;
+}
+
+    /* Class kích hoạt khi chat mở */
+    .pt-chat-sidebar.open {
+        right: 0; /* Trượt vào màn hình */
+    }
+
+/* Header */
+.pt-chat-header {
+    background-color: #f8f9fa; /* Màu nền header */
+    border-bottom: 1px solid #eee;
+    padding: 15px;
+}
+
+.pt-chat-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+/* Kiểu dáng các nút liên hệ */
+.pt-btn-call {
+    background-color: #ff5722; /* Màu cam đậm */
+    color: white;
+    font-weight: bold;
+}
+
+    .pt-btn-call:hover {
+        background-color: #e64a19;
+        color: white;
+    }
+
+.pt-btn-zalo {
+    background-color: #0084ff; /* Màu Zalo chuẩn */
+    color: white;
+    font-weight: bold;
+}
+
+    .pt-btn-zalo:hover {
+        background-color: #0073e6;
+        color: white;
+    }
+
+.pt-btn-zalo-secondary {
+    background-color: #f1f4f8; /* Màu xám nhẹ */
+    color: #0084ff;
+    font-weight: bold;
+    border: 1px solid #0084ff;
+}
+
+    .pt-btn-zalo-secondary:hover {
+        background-color: #e2e6eb;
+    }
+
+/* Điều chỉnh hình ảnh hỗ trợ */
+.pt-chat-body img {
+    border: 5px solid #ff9977; /* Border theo màu cam chủ đạo */
+}
+
+/* Overlay (tùy chọn) - Hiển thị lớp mờ khi Sidebar mở */
+.pt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease;
+}
+
+    .pt-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+/* Media Query cho Mobile để tránh quá chiếm diện tích */
+@media (max-width: 576px) {
+    .pt-chat-sidebar {
+        width: 100%; /* Chiếm toàn bộ chiều ngang trên Mobile */
+        right: -100%;
     }
 }

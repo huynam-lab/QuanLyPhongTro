@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Tạo Tài Khoản Mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Assets/Css/DangKy.css" rel="stylesheet" />
+
+<div class="pt-main-content-wrapper">
+    <div class="login-container">
+
+        <!-- Tab Switcher (Đăng nhập / Tạo tài khoản mới) -->
+        <!-- Lưu ý: Nếu trang Đăng ký là trang mặc định, nó sẽ active -->
+        <div class="login-tabs" id="registerTabs">
+            <a href="@Url.Action("DangNhap", "User")" class="text-decoration-none" data-tab="login">Đăng nhập</a>
+            <a href="@Url.Action("DangKy", "User")" class="active-tab text-decoration-none" data-tab="register">Tạo tài khoản mới</a>
+        </div>
+
+        <!-- Nội dung Form Đăng Ký -->
+        <form id="registerForm" method="post" action="@Url.Action("DangKy", "User")">
+
+            <!-- Họ tên -->
+            <input type="text" class="form-control-custom" id="regName" placeholder="Họ tên" required>
+
+            <!-- Số điện thoại (Tô màu xanh nhạt như trong mẫu) -->
+            <input type="text" class="form-control-custom" id="regPhone" placeholder="Số điện thoại"
+                   style=" color: #5a5a5a;" required>
+
+            <!-- Mật khẩu (Tô màu xanh nhạt như trong mẫu) -->
+            <input type="password" class="form-control-custom" id="regPassword" placeholder="Mật khẩu"
+                   style=" color: #5a5a5a;" required>
+
+            <div class="radio-group mb-4">
+                <span class="input-label">Loại tài khoản</span>
+                <label>
+                    <input type="radio" name="accountType" value="timkiem" checked> Tìm kiếm
+                </label>
+                <label>
+                    <input type="radio" name="accountType" value="chinhchu"> Chính chủ
+                </label>
+                <label>
+                    <input type="radio" name="accountType" value="moigioi"> Môi giới
+                </label>
+            </div>
+
+            <button type="submit" class="btn-primary-custom">Tạo tài khoản</button>
+        </form>
+
+        <!-- Thông báo pháp lý và bản quyền -->
+        <p class="legal-text text-center">
+            Qua việc đăng nhập hoặc tạo tài khoản, bạn đồng ý với các
+            <a href="@Url.Action("QuyDinhSuDung", "User")">quy định sử dụng</a>
+            cũng như <a href="@Url.Action("ChinhSachBaoMat", "User")">chính sách bảo mật</a> của chúng tôi.
+        </p>
+        <p class="legal-text text-center">Bản quyền &copy; 2015 - 2025 Phongtro123.com</p>
+
+    </div>
+</div>
+
+<script>
+    // Script để xử lý chuyển đổi tab (Nếu bạn muốn tab "Đăng nhập" chuyển màu khi click)
+    $(document).ready(function() {
+        // Hàm này chỉ đảm bảo tab "Tạo tài khoản mới" được đánh dấu là active khi ở trang này
+        // Việc chuyển trang thực tế được xử lý bằng asp-action="DangNhap" trong thẻ <a>
+
+        // Kiểm tra hash hoặc đường dẫn để đánh dấu tab (chỉ cần thiết nếu dùng chung form)
+        // Vì đây là trang DangKy riêng, chúng ta chỉ cần đảm bảo tab Đăng ký luôn active
+        // và link DangNhap hoạt động bình thường.
+
+        // Tuy nhiên, để đảm bảo tính responsive cho tab, chúng ta sẽ lắng nghe click
+        // để chuyển trang mượt mà hơn.
+
+        $('#registerTabs a[data-tab="login"]').on('click', function(e) {
+             // Để chuyển đến trang đăng nhập
+             window.location.href = $(this).attr('href');
+        });
+    });
+</script>
