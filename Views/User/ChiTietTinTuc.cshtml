@@ -1,0 +1,187 @@
+﻿@{
+    ViewBag.Title = "Chi tiết tin tức";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var id = ViewBag.Id is null ? 0 : (int)ViewBag.Id;
+}
+
+<link href="~/Assets/Css/ChiTietTinTuc.css" rel="stylesheet" />
+
+<div class="container pt-article-page">
+    
+    @* ====== GIAO DIỆN 1: id = 1  (Sáp nhập tỉnh thành…) ====== *@
+    @if (id == 1)
+    {
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
+
+                    <!-- HEADER & BREADCRUMB -->
+                    <header class="mb-4">
+                        @* ====== BREADCRUMB CHUNG ====== *@
+                        <nav class="mb-3" aria-label="breadcrumb">
+                            <ol class="breadcrumb pt-breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-decoration-none text-primary" href="@Url.Action("Index","User")">Trang chủ</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a class="text-decoration-none text-primary" href="@Url.Action("Blog","User")">Blog</a>
+                                </li>
+                                <li class="breadcrumb-item" aria-current="page">
+                                    <a class="text-decoration-none text-primary" href="@Url.Action("TinTuc","User")">Tin Tức Thị Trường</a>
+                                </li>
+                            </ol>
+                        </nav>
+                        <h1 class="article-title">Sáp nhập tỉnh thành có ảnh hưởng gì đến thị trường cho thuê phòng trọ?</h1>
+                    </header>
+
+                    <!-- NỘI DUNG MỞ ĐẦU (Ảnh 2) -->
+                    <div class="article-content">
+                        <p class="first-paragraph">Việc sáp nhập các tỉnh, thành không chỉ làm thay đổi bản đồ hành chính, mà còn thôi lớn mở ra nhiều lĩnh vực kinh tế – trong đó có thị trường cho thuê phòng trọ. Khi ranh giới hành chính được vẽ lại, tâm lý người thuê nhà thay đổi, dòng vốn đổ về các khu vực mới tiềm năng, và giờ có phòng trọ có thể biến động không ngờ. Hãy cùng Phongtro123 dự đoán những tác động mà việc sáp nhập tỉnh thành có thể mang lại cho lĩnh vực cho thuê trọ đang ngày càng sôi động.</p>
+
+                        <!-- ẢNH BANNER CHÍNH (Ảnh 2) -->
+                        <figure class="figure mb-4" style="width:100%">
+                            <img src="~/Assets/Images/blog/du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh_1751449092.png"  class="article-image" alt="Dự báo thị trường thuê phòng trọ sau thông tin sáp nhập tỉnh thành">
+                            <figcaption class="article-caption">Dự báo thị trường thuê phòng trọ sau thông tin sáp nhập tỉnh thành</figcaption>
+                        </figure>
+                    </div>
+
+                    <!-- MỤC I: TÁC ĐỘNG (Ảnh 2) -->
+                    <h2 class="main-heading">Tác động của thị trường cho thuê phòng trọ khi sáp nhập</h2>
+
+                    <h3 class="sub-heading">1. Tác động tích cực và cơ hội</h3>
+                    <div class="article-content">
+                        <p>Trước hết, khi các tỉnh được sáp nhập, <strong class="content-strong">hạ tầng giao thông – xã hội sẽ được đầu tư mạnh mẽ và đồng bộ hơn</strong>, tạo điều kiện thuận lợi cho người dân di chuyển, học tập và làm việc liên tỉnh. Do đó, nhu cầu tìm nơi ở tại các tỉnh thành lớn như <strong class="content-strong">Hồ Chí Minh</strong> hay Hà Nội tăng cao. Nhất là ở những khu vực giáp ranh hoặc trung tâm mới được hình thành.</p>
+                        <p>Thứ hai, <strong class="content-strong">tái cấu trúc địa giới hành chính sẽ thúc đẩy quá trình đô thị hóa</strong>, thu hút các doanh nghiệp lớn đầu tư. Các dự án nhà ở xã hội, khu dân cư mới có thể được quy hoạch và xây dựng, nhưng phòng trọ vẫn sẽ là lựa chọn tối ưu cho nhiều đối tượng, đặc biệt là sinh viên, người lao động có thu nhập trung bình và thấp.</p>
+                        <p>Cuối cùng, <strong class="content-strong">giá trị bất động sản</strong> tại những khu vực trước đây ít được chú ý có khả năng tăng mạnh nhờ sự phát triển đồng đều hơn về hạ tầng và quy hoạch. Đối với nhà đầu tư, đây là thời điểm "vàng" để đón đầu xu hướng, nâng cấp chất lượng phòng trọ và mở rộng quy mô kinh doanh.</p>
+                    </div>
+
+                    <!-- MỤC II: THÁCH THỨC VÀ RỦI RO (Ảnh 3) -->
+                    <h3 class="sub-heading">2. Thách thức và rủi ro</h3>
+                    <div class="article-content">
+                        <p>Một trong những thách thức lớn nhất là <strong class="content-strong">biến động về nguồn cung và cầu về phòng trọ</strong>. Khi các tỉnh thành sáp nhập, đặc biệt là khi các khu vực nông thôn được đưa vào các thành phố lớn hơn, quỹ đất có thể được quy hoạch lại cho các mục đích phát triển công nghiệp hoặc thương mại. Điều này có thể dẫn đến việc <strong class="content-strong">giảm nguồn cung phòng trọ giá rẻ</strong> ở những khu vực từng là điểm nóng của sinh viên và người lao động nhập cư. Ví dụ, một số huyện ngoại thành Hà Nội được sáp nhập sâu hơn vào trung tâm, các dự án nhà ở xã hội hoặc chung cư thương mại có thể thay thế những khu trọ nhỏ lẻ, đẩy giá thuê lên cao và gây khó khăn cho người thu nhập thấp.</p>
+                        <p>Bên cạnh đó, khi ranh giới hành chính mở đi, các chủ nhà trọ ở khu vực mới sáp nhập sẽ phải <strong class="content-strong">cạnh tranh trực tiếp với những khu vực đã phát triển hơn</strong>. Điều này buộc chủ trọ phải cải thiện chất lượng phòng ốc hoặc giảm giá thuê để thu hút khách, dẫn đến suy giảm lợi nhuận. Ví dụ, một khu trọ ở Hưng Yên, nếu được sáp nhập vào một khu vực phát triển của Hà Nội, sẽ phải cạnh tranh với các phòng trọ tiện nghi hơn trong nội thành, nơi có nhiều tiện ích công cộng và giao thông thuận tiện hơn.</p>
+                    </div>
+
+                    <!-- MỤC III: LỜI KHUYÊN (Ảnh 3, 1) -->
+                    <h2 class="main-heading">Lời khuyên cho người chủ nhà và người thuê trọ</h2>
+
+                    <h3 class="sub-heading">1. Đối với người thuê trọ</h3>
+                    <div class="article-content">
+                        <p>Khi Việt Nam tiến hành sáp nhập các tỉnh thành, người tìm thuê phòng trọ cần chủ động <strong class="content-strong">cập nhật thông tin địa giới hành chính</strong> mới để tránh nhầm lẫn khi xem và ký hợp đồng thuê. Chẳng hạn, sau khi sáp nhập, một số phường có thể đổi tên hoặc chuyển sang quận/huyện khác, gây khó khăn trong việc xác định vị trí phòng trọ.</p>
+                        <p>Hơn nữa, việc sáp nhập cũng có thể làm thay đổi giá thuê do thay đổi quy hoạch, cơ sở hạ tầng hoặc nhu cầu thị trường. Một căn phòng tại xã A trước kia giá 1,2 triệu/tháng, sau khi trở thành một phần của phường trung tâm mới, có thể tăng lên 1,8 triệu. Không ít người thuê phải trả giá cao cho những căn phòng nhỏ vì không hiểu rõ vị trí thực tế. Để cập nhật thông tin giá thuê phòng trọ chính xác và mới nhất, người thuê có thể tham khảo từ các trang web như <strong class="content-strong">Phongtro123.com</strong> hoặc **Nhà Tốt**.</p>
+                        <!-- ẢNH MINH HỌA PHÒNG TRỌ (Ảnh 3) -->
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/tim-thue-phong-tro-gia-re-tai-phongtro123-com_1751449400.png" class="article-image" alt="Tìm thuê phòng trọ giá rẻ tại Phongtro123.com">
+                            <figcaption class="article-caption">Tìm thuê phòng trọ giá rẻ tại Phongtro123.com</figcaption>
+                        </figure>
+                    </div>
+
+                    <h3 class="sub-heading">2. Đối với chủ nhà trọ</h3>
+                    <div class="article-content">
+                        <!-- Mục 2.1 Nghiên cứu quy hoạch (Ảnh 1) -->
+                        <p class="mb-3"><strong class="content-strong">Nghiên cứu quy hoạch và hạ tầng mới:</strong> Nếu các khu công nghiệp, trường đại học từ Bình Dương được sáp nhập vào TPHCM, nhu cầu nhà ở cho công nhân và sinh viên sẽ tăng lên ở các khu vực giáp ranh như Quận 9 (nay là TP. Thủ Đức), Thủ Đức cũ, hay huyện Củ Chi nếu có sự kết nối giao thông thuận tiện hơn. Chủ trọ nên xem xét nâng cấp cơ sở vật chất hoặc thậm chí xây mới các phòng trọ tiện nghi, đáp ứng nhu cầu cao hơn của người thuê mới.</p>
+
+                        <!-- Mục 2.2 Điều chỉnh giá thuê (Ảnh 1) -->
+                        <p class="mb-3"><strong class="content-strong">Điều chỉnh giá thuê linh hoạt:</strong> Giá thuê có thể tăng ở những khu vực trước đây ít phát triển, nhưng nay lại trở thành của ngõ hoặc trung tâm mới. Ngược lại, những khu vực từng là trung tâm nhưng nay lại trở thành "vùng ven" của một đô thị lớn hơn có thể cần điều chỉnh giá để giữ chân khách thuê.</p>
+
+                        <!-- Mục 2.3 Chú trọng chính sách (Ảnh 1) -->
+                        <p class="mb-3"><strong class="content-strong">Chú trọng đến chính sách và thủ tục hành chính mới:</strong> Các quy định về đăng ký tạm trú, tạm vắng, thuế có thể thay đổi sau sáp nhập. Việc nắm rõ và tuân thủ các quy định này sẽ giúp chủ trọ tránh rắc rối pháp lý và tạo môi trường kinh doanh minh bạch, chuyên nghiệp.</p>
+
+                        <!-- KẾT LUẬN (Ảnh 1) -->
+                        <p class="mt-4 text-center article-conclusion">**Trên đây là những dự đoán về thị trường phòng trọ sau khi Việt Nam sáp nhập tỉnh thành.** Mong rằng với những thông tin hữu ích này sẽ giúp chủ người thuê hay chủ trọ tối ưu hóa lợi ích và tìm kiếm cơ hội kinh doanh tốt nhất.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    @* ====== GIAO DIỆN 2: id = 2  (Giá phòng trọ TPHCM…) ====== *@
+    else if (id == 2)
+    {
+        <article class="pt-article">
+            <header class="pt-article-header">
+                <h1 class="pt-article-title">Giá phòng trọ TPHCM tháng 8/2025: Tăng hay giảm?</h1>
+                <p class="pt-article-lead">
+                    Tổng hợp dữ liệu từ các quận trọng điểm, xu hướng giá thuê và khuyến nghị cho chủ trọ – người thuê trong tháng này.
+                </p>
+            </header>
+
+            <figure class="pt-article-figure">
+                <img src="~/Assets/Images/blog/sample-gia-phong.jpg" alt="Giá phòng trọ TPHCM" class="img-fluid rounded-3 shadow-sm" />
+            </figure>
+
+            <section class="pt-article-section">
+                <h2 class="pt-article-h2">1) Toàn cảnh</h2>
+                <p>Khu vực trung tâm giữ giá, các quận ven tăng nhẹ nhờ hạ tầng hoàn thiện.</p>
+            </section>
+
+            <section class="pt-article-section">
+                <h2 class="pt-article-h2">2) Bảng tham chiếu nhanh</h2>
+                <div class="table-responsive">
+                    <table class="table align-middle pt-article-table">
+                        <thead>
+                            <tr>
+                                <th>Khu vực</th>
+                                <th>Studio</th>
+                                <th>1PN</th>
+                                <th>2PN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Q.1,3</td><td>6–8tr</td><td>8–11tr</td><td>12–16tr</td></tr>
+                            <tr><td>Q.10,11</td><td>4.5–6tr</td><td>6–8tr</td><td>9–12tr</td></tr>
+                            <tr><td>TP. Thủ Đức</td><td>4–5.5tr</td><td>5.5–7tr</td><td>8–11tr</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="pt-article-section">
+                <div class="pt-article-callout is-info">
+                    <i class="fa-solid fa-circle-info me-2"></i>
+                    <span>Giá chỉ mang tính tham khảo tại thời điểm viết. Vui lòng kiểm tra lại trước khi cọc.</span>
+                </div>
+            </section>
+        </article>
+    }
+
+    @* ====== GIAO DIỆN 3: id = 3  (Mô hình người đi làm ưa chuộng) ====== *@
+    else if (id == 3)
+    {
+        <article class="pt-article">
+            <header class="pt-article-header">
+                <h1 class="pt-article-title">Năm 2025: Người đi làm sẽ ưa chuộng loại phòng trọ nào?</h1>
+                <p class="pt-article-lead">
+                    Xu hướng phòng trọ tập trung vào sự riêng tư, an toàn và các tiện ích cơ bản – nhưng vừa túi tiền.
+                </p>
+            </header>
+
+            <section class="pt-article-grid-2">
+                <div class="pt-article-box">
+                    <img src="https://placehold.co/600x380/0B6B6F/ffffff?text=Ph%C3%B2ng+kh%C3%A9p+k%C3%ADn" alt="Khép kín" />
+                    <h5 class="mt-3 mb-1">Phòng khép kín 20–25m²</h5>
+                    <p class="mb-0">WC riêng, máy lạnh, cửa sổ/ban công. Phù hợp 1–2 người đi làm.</p>
+                </div>
+                <div class="pt-article-box">
+                    <img src="https://placehold.co/600x380/8E24AA/ffffff?text=Nh%C3%A0+tr%E1%BB%8D+c%C3%B3+thang+máy" alt="Thang máy" />
+                    <h5 class="mt-3 mb-1">Nhà trọ có thang máy, thẻ từ</h5>
+                    <p class="mb-0">An ninh và tiện lợi – đặc biệt với các toà từ 5 tầng trở lên.</p>
+                </div>
+            </section>
+
+            <section class="pt-article-section">
+                <h2 class="pt-article-h2">Checklist tối thiểu</h2>
+                <ul class="pt-article-list">
+                    <li>Điện – nước minh bạch; hợp đồng rõ.</li>
+                    <li>Chỗ để xe, camera; giờ giấc hợp lý.</li>
+                    <li>Vệ sinh khu vực chung; xử lý rác đúng quy định.</li>
+                </ul>
+            </section>
+        </article>
+    }
+    else
+    {
+        <div class="alert alert-warning">Không tìm thấy bài viết.</div>
+    }
+</div>
