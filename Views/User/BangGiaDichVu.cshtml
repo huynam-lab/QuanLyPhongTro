@@ -130,11 +130,11 @@
 
                 <tr>
                     <td> </td>
-                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level="vip-hot" })">Xem demo</a></td>
-                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level=1 })">Xem demo</a></td>
-                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level=2 })">Xem demo</a></td>
-                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level=3 })">Xem demo</a></td>
-                    <td><a class="btn" href="@Url.Action("Demo","Post", new { level="normal" })">Xem demo</a></td>
+                    <td><a class="btn" href="#demo-viphot" data-scroll>Xem demo</a></td>
+                    <td><a class="btn" href="#demo-vip1" data-scroll>Xem demo</a></td>
+                    <td><a class="btn" href="#demo-vip2" data-scroll>Xem demo</a></td>
+                    <td><a class="btn" href="#demo-vip3" data-scroll>Xem demo</a></td>
+                    <td><a class="btn" href="#demo-normal" data-scroll>Xem demo</a></td>
                 </tr>
             </tbody>
 
@@ -149,7 +149,7 @@
     </div>
 </section>
 
-<section class="pt-demo">
+<section id="demo-viphot" class="pt-demo">
     <div class="pt-container">
         <h2 class="title">Minh họa tin đăng</h2>
 
@@ -180,7 +180,7 @@
                     <div class="notch"></div>
                     <div class="screen">
                         <!-- Thay ảnh mobile tại đây -->
-                        <img src="~/Assets/Images/imgbanggia/tinnoibat2.jpg" alt="Minh họa VIP Nổi Bật - Mobile">
+                        <img src="~/Assets/Images/imgbanggia/tinnoibat2.jpggit" alt="Minh họa VIP Nổi Bật - Mobile">
                     </div>
                 </div>
             </div>
@@ -188,7 +188,7 @@
     </div>
 </section>
 <!-- ================= Tin VIP 1 ================= -->
-<section class="pt-demo" style="background:#fff;">
+<section id="demo-vip1" class="pt-demo" style="background:#fff;">
     <div class="pt-container">
         <div class="sub">Tin VIP 1 <span class="stars">★★★★☆</span></div>
         <p>
@@ -220,7 +220,7 @@
 
 
 <!-- ================= Tin VIP 2 ================= -->
-<section class="pt-demo" style="background:#fff;">
+<section id="demo-vip2" class="pt-demo" style="background:#fff;">
     <div class="pt-container">
         <div class="sub">Tin VIP 2 <span class="stars">★★★☆☆</span></div>
         <p>
@@ -252,7 +252,7 @@
 
 
 <!-- ================= Tin VIP 3 ================= -->
-<section class="pt-demo" style="background:#fff;">
+<section id="demo-vip3" class="pt-demo" style="background:#fff;">
     <div class="pt-container">
         <div class="sub">Tin VIP 3 <span class="stars">★★☆☆☆</span></div>
         <p>
@@ -284,7 +284,7 @@
 
 
 <!-- ================= Tin thường ================= -->
-<section class="pt-demo" style="background:#fff;">
+<section id="demo-normal" class="pt-demo" style="background:#fff;">
     <div class="pt-container">
         <div class="sub" style="color:#1e3a8a;">Tin thường</div>
         <p>
