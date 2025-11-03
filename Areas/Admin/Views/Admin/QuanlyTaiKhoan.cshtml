@@ -1,0 +1,197 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+}
+
+<link href="~/Areas/Admin/Assets/ChuNhacss.css" rel="stylesheet" type="text/css" />
+<style>
+    .btn-update {
+        display: block;
+        width: 100%;
+        background-color: #ff5722;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 10px 0;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    }
+
+        .btn-update:hover {
+            background-color: #ff7043;
+            transform: translateY(-1px);
+        }
+
+        .btn-update:active {
+            transform: translateY(0);
+            background-color: #e64a19;
+        }
+
+    .nav-tabs .nav-link {
+        color: #333;
+        font-weight: 500;
+        border: none;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+        .nav-tabs .nav-link.active {
+            color: #ff5722;
+            border-bottom: 3px solid #ff5722;
+            background: none;
+        }
+
+    .tab-content {
+        display: none;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+    /* Nút cập nhật */
+    .btn-update {
+        display: block;
+        width: 100%;
+        background-color: #ff5722;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 12px 0;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        margin-top: 10px;
+    }
+
+        .btn-update:hover {
+            background-color: #ff7043;
+        }
+</style>
+<div class="container-fluid py-3">
+
+    <div class="post-sticky-wrap">
+        <h3 class="section-title">Quản lý tài khoản</h3>
+
+        <ul class="nav nav-tabs mb-4" id="accountTabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#thongtin">Thông tin cá nhân</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#doimatkhau">Đổi mật khẩu</a>
+            </li>
+        </ul>
+    </div>
+    <!-- Phần nội dung chính -->
+    <div style="width:100%; display:flex;">
+        <div style="width:25%; display:block;"></div>
+        <div style="width:50%">
+
+            <!-- THÔNG TIN CÁ NHÂN -->
+            <div id="thongtin" class="tab-content active">
+                <div class="container">
+                    <div class="card shadow-sm border-0" style="max-width: 600px; margin: 0 auto;">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <img src="~/Kho/Img/Phuong_Ba_Dinh/109_1372.jpg"
+                                     class="rounded-circle border" width="90" height="90" alt="avatar">
+                                <h5 class="mt-2 mb-0 fw-semibold">huynam</h5>
+                                <small class="text-muted">0911494729</small>
+                                <div class="mt-2">
+                                    <button class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-camera"></i> Đổi ảnh đại diện
+                                    </button>
+                                </div>
+                            </div>
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small mb-1">Số điện thoại</label>
+                                    <input type="text" class="form-control bg-light" value="0911494729">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small mb-1">Tên liên hệ</label>
+                                    <input type="text" class="form-control" value="huynam">
+                                </div>
+                                <div class="mb-3" id="goToChangePass">
+                                    <label class="form-label text-muted small mb-1">Mật khẩu</label>
+                                    <input type="password" class="form-control" value="********" readonly style="cursor:pointer;">
+                                    <small class="text-primary" style="cursor:pointer;">Nhấn để đổi mật khẩu</small>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn-update">Cập nhật</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ĐỔI MẬT KHẨU -->
+            <div id="doimatkhau" class="tab-content">
+                <div class="card p-4">
+                    <h5 class="fw-semibold mb-3">Thay đổi mật khẩu</h5>
+                    <input type="password" class="form-control mb-3" placeholder="Nhập mật khẩu cũ">
+                    <a href="#" class="small text-primary mb-3 d-inline-block">Bạn quên mật khẩu?</a>
+                    <input type="password" class="form-control mb-3" placeholder="Nhập mật khẩu mới">
+                    <input type="password" class="form-control mb-3" placeholder="Xác nhận mật khẩu mới">
+                    <button class="btn-update">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+        <div style="width:25%; display:block;"></div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const tabs = document.querySelectorAll("#accountTabs .nav-link");
+        const contents = document.querySelectorAll(".tab-content");
+
+        // Hàm chuyển tab
+        const switchTab = (hash) => {
+            tabs.forEach(t => t.classList.remove("active"));
+            contents.forEach(c => c.classList.remove("active"));
+
+            const activeTab = document.querySelector(`#accountTabs a[href="${hash}"]`);
+            const activeContent = document.querySelector(hash);
+
+            if (activeTab && activeContent) {
+                activeTab.classList.add("active");
+                activeContent.classList.add("active");
+                // Cập nhật URL hash (VD: #doimatkhau)
+                history.replaceState(null, null, hash);
+            }
+        };
+
+        // Gán sự kiện click cho từng tab
+        tabs.forEach(tab => {
+            tab.addEventListener("click", e => {
+                e.preventDefault();
+                const hash = tab.getAttribute("href");
+                switchTab(hash);
+            });
+        });
+
+        // Giữ nguyên tab khi reload trang
+        const currentHash = window.location.hash;
+        if (currentHash && document.querySelector(currentHash)) {
+            switchTab(currentHash);
+        } else {
+            switchTab("#thongtin"); // mặc định
+        }
+    });
+    // Khi click vào ô mật khẩu -> chuyển sang tab Đổi mật khẩu
+    document.addEventListener("click", (e) => {
+        const changeArea = document.querySelector("#goToChangePass");
+        if (changeArea && changeArea.contains(e.target)) {
+            const targetTab = document.querySelector('#accountTabs a[href="#doimatkhau"]');
+            if (targetTab) targetTab.click(); // Giả lập click tab "Đổi mật khẩu"
+        }
+    });
+
+</script>

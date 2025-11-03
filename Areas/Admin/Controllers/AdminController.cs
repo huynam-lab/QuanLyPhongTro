@@ -13,5 +13,16 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
         {
             return View();
         }
-    }
+        public ActionResult DSTinDang()
+
+            {
+            return View();
+            }
+        public ActionResult QuanlyTaiKhoan()
+
+            {
+            return View();
+            }
+
+        }
 }
