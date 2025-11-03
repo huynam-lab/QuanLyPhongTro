@@ -150,11 +150,11 @@
 
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav me-auto" style="font-size: 13px; font-weight: 400;">
-                    <li class="nav-item"><a class="nav-link" href="#">Phòng trọ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Căn hộ mini</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Chung cư</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Bảng giá dịch vụ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "User", new { area = "" })">Phòng trọ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CanHoMini", "User", new { area = "" })">Căn hộ mini</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CanHoChungCu", "User", new { area = "" })">Chung cư</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Blog", "User", new { area = "" })">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("BangGiaDichVu", "User", new { area = "" })">Bảng giá dịch vụ</a></li>
                 </ul>
 
                 <ul class="navbar-nav ms-auto align-items-center" style="font-size:13px; font-weight:400;">
@@ -166,12 +166,12 @@
                             huynam
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Tài khoản</a></li>
+                            <li><a class="dropdown-item"href="@Url.Action("QuanLyTaiKhoan", "Admin", new { area = "Admin" })">Tài khoản</a></li>
                             <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item ms-3">
-                        <a href="#" class="btn btn-dangtin"><i class="bi bi-pencil-square me-1"></i>Đăng tin</a>
+                    <li class="nav-item ms-3">                 
+                        <a href="@Url.Action("Index", "Admin", new { area = "Admin" })" class="btn btn-dangtin"><i class="bi bi-pencil-square me-1"></i>Đăng tin</a>
                     </li>
                 </ul>
             </div>
@@ -199,7 +199,7 @@
 
             @*<a href="#"><i class="bi bi-clock-history me-2"></i>Lịch sử nạp tiền</a>
             <a href="#"><i class="bi bi-wallet2 me-2"></i>Lịch sử thanh toán</a>*@
-            <a href="#"><i class="bi bi-tags me-2"></i>Bảng giá dịch vụ</a>
+            <a href="@Url.Action("BangGiaDichVu", "User", new { area = "" })"><i class="bi bi-tags me-2"></i>Bảng giá dịch vụ</a>
         </div>
 
         <div class="nav-section">
@@ -226,7 +226,6 @@
             });
         });
     </script>
-
 </body>
 
 

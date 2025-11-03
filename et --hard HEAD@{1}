@@ -1,0 +1,26 @@
+[33me2f82f7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m HEAD@{0}: rebase (finish): returning to refs/heads/master
+[33me2f82f7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m HEAD@{1}: rebase (pick): merge HuyNam va master
+[33md08c8f6[m HEAD@{2}: commit: da ket noi data base
+[33m53878d9[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/KieuDung[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{3}: pull origin master --rebase (start): checkout 53878d9a2a1ff2a921f4f0cc1eb62961dac13201
+[33m74378a8[m HEAD@{4}: commit: merge HuyNam va master
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{5}: merge HuyNam: Fast-forward
+[33m924ffcf[m HEAD@{6}: reset: moving to HEAD
+[33m924ffcf[m HEAD@{7}: reset: moving to HEAD
+[33m924ffcf[m HEAD@{8}: checkout: moving from HuyNam to master
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{9}: reset: moving to HEAD
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{10}: reset: moving to HEAD
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{11}: checkout: moving from master to HuyNam
+[33m924ffcf[m HEAD@{12}: reset: moving to HEAD
+[33m924ffcf[m HEAD@{13}: reset: moving to HEAD
+[33m924ffcf[m HEAD@{14}: checkout: moving from HuyNam to master
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{15}: reset: moving to HEAD
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{16}: reset: moving to HEAD
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{17}: checkout: moving from master to HuyNam
+[33m924ffcf[m HEAD@{18}: reset: moving to HEAD
+[33m924ffcf[m HEAD@{19}: checkout: moving from HuyNam to master
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{20}: reset: moving to HEAD
+[33mce4a5dc[m[33m ([m[1;31morigin/HuyNam[m[33m, [m[1;32mHuyNam[m[33m)[m HEAD@{21}: commit (merge): ket noi data base
+[33mb2d5c86[m HEAD@{22}: commit: thiet lap trang chu nha
+[33m924ffcf[m HEAD@{23}: pull origin master: Fast-forward
+[33m8176ed0[m HEAD@{24}: checkout: moving from master to HuyNam
+[33m924ffcf[m HEAD@{25}: clone: from https://github.com/huynam-lab/QuanLyPhongTro.git
