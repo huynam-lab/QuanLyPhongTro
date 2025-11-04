@@ -21,10 +21,28 @@ namespace QuanLyPhongTro.Controllers
         {
             return View();
         }
+        // =============== start blog
         public ActionResult Blog()
         {
             return View();
         }
+        public ActionResult TinTuc()
+        {
+            return View();
+        }
+        public ActionResult ChiaSeKinhNghiem()
+        {
+            return View();
+        }
+        public ActionResult HoiDap()
+        {
+            return View();
+        }
+        public ActionResult MauHopDong()
+        {
+            return View();
+        }
+        // =============== end blog
         public ActionResult BangGiaDichVu()
         {
             return View();
@@ -45,5 +63,31 @@ namespace QuanLyPhongTro.Controllers
         {
             return View();
         }
+        //  =============== start chi tiet tin
+        public ActionResult ChiTietTinTuc(int id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
+
+        public ActionResult ChiTietChiaSeKinhNghiem(int id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
+
+        public ActionResult ChiTietHoiDap(int id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
+
+        public ActionResult ChiTietMauHopDong(int id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
+
+        //  =============== end chi tiet tin
     }
 }

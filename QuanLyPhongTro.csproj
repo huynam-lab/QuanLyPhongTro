@@ -88,6 +88,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Css\BangGia.css" />
+    <Content Include="Assets\Css\Blog.css" />
+    <Content Include="Assets\Css\ChiTietTinTuc.css" />
     <Content Include="Assets\Css\DangKy.css" />
     <Content Include="Assets\Css\DangNhap.css" />
     <Content Include="Assets\Css\Footer.css" />
@@ -95,6 +97,21 @@
     <Content Include="Assets\Css\ModalMain.css" />
     <Content Include="Assets\Images\banner-thuecanho.jpg" />
     <Content Include="Assets\Images\bds123_120_300.gif" />
+    <Content Include="Assets\Images\blog\100m2-dien-tich-dat-xay-dung-duoc-bao-nhieu-phong-tro_1735638293.jpg" />
+    <Content Include="Assets\Images\blog\5-dau-hieu-thue-nham-phong-tro-ac-mong_1747125049.png" />
+    <Content Include="Assets\Images\blog\cach-tinh-tien-dien-nuoc-tai-phong-tro-_1741246658.jpg" />
+    <Content Include="Assets\Images\blog\dong-tien-tro-dau-thang-hay-cuoi-thang_1720575516.jpg" />
+    <Content Include="Assets\Images\blog\du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh_1751449092.png" />
+    <Content Include="Assets\Images\blog\gia-phong-tro-tphcm-t8-2025-nguoi-thue-phai-luu-y-gi_1755071790.png" />
+    <Content Include="Assets\Images\blog\hop-dong-cho-thue-phong-tro-nha-tro-phongtro123_1621583062.jpg" />
+    <Content Include="Assets\Images\blog\mau-hop-dong_1619246086.jpg" />
+    <Content Include="Assets\Images\blog\mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025_1757754712.png" />
+    <Content Include="Assets\Images\blog\thue-phong-tro-can-nhung-giay-to-gi_1740122970.png" />
+    <Content Include="Assets\Images\blog\tien-coc-thue-tro-co-lay-lai-duoc-khong_1720661417.jpg" />
+    <Content Include="Assets\Images\blog\tim-thue-phong-tro-gia-re-tai-phongtro123-com_1751449400.png" />
+    <Content Include="Assets\Images\blog\top-5-cau-hoi-nen-hoi-chu-nha-khi-xem-phong-tro_1734342402.jpg" />
+    <Content Include="Assets\Images\blog\vi-sao-tien-dien-nuoc-o-phong-tro-thuong-cao-hon_1739955806.png" />
+    <Content Include="Assets\Images\contact-us-pana-orange.svg" />
     <Content Include="Assets\Images\dadangky.jpg" />
     <Content Include="Assets\Images\dmca-badge-w250-2x1-04.png" />
     <Content Include="Assets\Images\i-shopeepay-white.svg" />
@@ -114,7 +131,9 @@
     <Content Include="Assets\Images\logo-visa.svg" />
     <Content Include="Assets\Images\momo_square_pinkbg.svg" />
     <Content Include="Assets\Images\zalopay-new.png" />
+    <Content Include="Assets\Js\Message.js" />
     <Content Include="Assets\Js\ModalMain.js" />
+    <Content Include="Assets\Js\Scroll.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -667,6 +686,14 @@
     <Content Include="Views\User\DangKy.cshtml" />
     <Content Include="Views\User\DangNhap.cshtml" />
     <Content Include="Views\User\DangTin.cshtml" />
+    <Content Include="Views\User\TinTuc.cshtml" />
+    <Content Include="Views\User\ChiaSeKinhNghiem.cshtml" />
+    <Content Include="Views\User\HoiDap.cshtml" />
+    <Content Include="Views\User\MauHopDong.cshtml" />
+    <Content Include="Views\User\ChiTietTinTuc.cshtml" />
+    <Content Include="Views\User\ChiTietChiaSeKinhNghiem.cshtml" />
+    <Content Include="Views\User\ChiTietHoiDap.cshtml" />
+    <Content Include="Views\User\ChiTietMauHopDong.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -205,6 +205,25 @@
         </div>
     </main>
 
+    <!-- ===== Floating Action Buttons ===== -->
+    <div class="pt-floating-buttons">
+
+        <!-- Nút Chat -->
+        <!-- Thêm class để dễ dàng xử lý sự kiện trong JS -->
+        <button id="chatButton" class="pt-floating-btn pt-chat-btn" aria-label="Nút chat">
+            <!-- Icon tin nhắn (Sử dụng Bootstrap Icon: bi bi-chat-dots) -->
+            <i class="bi bi-chat-dots"></i>
+        </button>
+
+        <!-- Nút Quay lên đầu trang -->
+        <!-- Thêm class để dễ dàng xử lý sự kiện trong JS -->
+        <button id="scrollToTopButton" class="pt-floating-btn pt-scroll-top-btn" aria-label="Quay lên đầu trang">
+            <!-- Icon mũi tên lên (Sử dụng Bootstrap Icon: bi bi-arrow-up) -->
+            <i class="bi bi-arrow-up"></i>
+        </button>
+
+    </div>
+
 
     <!-- ===== Footer ===== -->
     <footer class="pt-footer">
@@ -439,11 +458,54 @@
         </div>
     </div>
 
+    <!-- ===== Sidebar Chat Hỗ trợ (Cố định) ===== -->
+    <div id="chatSidebar" class="pt-chat-sidebar">
+        <div class="pt-chat-header d-flex justify-content-between align-items-center p-3">
+            <span class="pt-chat-title">Hỗ trợ</span>
+            <button id="closeChatButton" class="btn-close" aria-label="Đóng Chat"></button>
+        </div>
+
+        <div class="pt-chat-body p-4">
+            <!-- Nội dung hỗ trợ... -->
+            <div class="text-center mb-4">
+                <img src="~/Assets/Images/contact-us-pana-orange.svg"
+                     alt="Nhân viên hỗ trợ"
+                     class="img-fluid rounded-circle shadow-sm mb-3">
+                <h5 class="fw-bold">Hỗ trợ chủ nhà đăng tin</h5>
+                <p class="text-muted small">
+                    Nếu bạn cần hỗ trợ, vui lòng liên hệ số điện thoại bên dưới:
+                </p>
+            </div>
+
+            <!-- Các nút liên hệ -->
+            <div class="d-grid gap-3">
+                <a href="tel:0909316890" class="btn pt-btn-call shadow-sm py-2">
+                    <i class="bi bi-telephone-fill me-2"></i> ĐT: 0909316890
+                </a>
+                <a href="https://zalo.me/0909316890" target="_blank" class="btn pt-btn-zalo shadow-sm py-2">
+                    <i class="bi bi-chat-fill me-2"></i> Zalo: 0909316890
+                </a>
+            </div>
+
+            <!-- Hỗ trợ ngoài giờ -->
+            <div class="text-center mt-4 border-top pt-3">
+                <p class="small text-muted mb-2">Hỗ trợ ngoài giờ:</p>
+                <a href="https://zalo.me/0909316890" target="_blank" class="btn pt-btn-zalo-secondary shadow-sm py-2">
+                    <i class="bi bi-chat-fill me-2"></i> Zalo: Phongtro123
+                </a>
+            </div>
+        </div>
+    </div>
+
+
 
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/Assets/Js/ModalMain.js"></script>
+    <script src="~/Assets/Js/Scroll.js"></script>
+    <script src="~/Assets/Js/Message.js"></script>
     <script>
+        // xử lý link
         $(document).ready(function () {
             // 1️⃣ Lấy URL hiện tại (chỉ phần path, không query string)
             var currentUrl = window.location.pathname.toLowerCase();

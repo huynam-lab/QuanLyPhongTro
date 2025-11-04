@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Blog";
+    ViewBag.Title = "TinTuc";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Assets/Css/Blog.css" rel="stylesheet" />
@@ -10,16 +10,19 @@
     <nav class="mb-4" aria-label="breadcrumb">
         <ol class="breadcrumb pt-breadcrumb">
             <li class="breadcrumb-item"><a href="@Url.Action("Index", "User")" class="text-decoration-none text-primary">Trang chủ</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Blog</li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="@Url.Action("Blog", "User")" class="text-decoration-none text-primary">Blog</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Tin Tức</li>
         </ol>
     </nav>
 
     <!-- 2. Tiêu đề Lớn -->
-    <h1 class="h4 fw-bold mb-4 pt-blog-heading">Tin tức thị trường, chia sẻ kinh nghiệm Bất động sản</h1>
+    <h1 class="h4 fw-bold mb-4 pt-blog-heading">Tin tức thị trường</h1>
 
     <!-- 3. Thanh Lọc/Chủ đề (Filter/Category Tabs) -->
     <div class="d-flex flex-wrap gap-2 mb-5 pt-blog-filters">
-        <a href="@Url.Action("TinTuc", "User")" class="btn btn-sm pt-btn-filter">Tin tức</a>
+        <a href="@Url.Action("TinTuc", "User")" class="btn btn-sm pt-btn-filter-active">Tin tức</a>
         <a href="@Url.Action("ChiaSeKinhNghiem", "User")" class="btn btn-sm pt-btn-filter">Chia sẻ kinh nghiệm</a>
         <a href="@Url.Action("HoiDap", "User")" class="btn btn-sm pt-btn-filter">Hỏi đáp</a>
         <a href="@Url.Action("MauHopDong", "User")" class="btn btn-sm pt-btn-filter">Mẫu hợp đồng</a>
@@ -31,7 +34,7 @@
 
         <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+            <a href="@Url.Action("ChiTietTinTuc", "User", new { id = 1 })" class="pt-blog-card-link">
                 <div class="card pt-blog-card h-100 shadow-sm border-0">
                     <div class="pt-card-img-container">
                         <!-- Ảnh đại diện -->
@@ -46,61 +49,46 @@
             </a>
         </div>
 
-        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
+        <!-- Bài viết 2 -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+            <a href="@Url.Action("ChiTietTinTuc", "User", new { id = 2 })" class="pt-blog-card-link">
                 <div class="card pt-blog-card h-100 shadow-sm border-0">
                     <div class="pt-card-img-container">
-                        <!-- Ảnh đại diện -->
-                        <img src="~/Assets/Images/blog/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025_1757754712.png" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
+                        <img src="~/Assets/Images/blog/thue-phong-tro-can-nhung-giay-to-gi_1740122970.png" class="card-img-top pt-card-img" alt="Giá phòng trọ TPHCM">
                     </div>
                     <div class="card-body pt-card-body">
-                        <p class="pt-card-category small text-uppercase fw-bold mb-1">KINH NGHIỆM</p>
-                        <h5 class="card-title fw-bold">Năm 2025: Người đi làm sẽ ưa chuộng loại phòng trọ nào?</h5>
-                        <p class="card-text small text-muted">Mô hình phòng trọ người đi làm ưa chuộng năm 2025Những loại hình phòng trọ người đi làm ưa chuộng năm 20251. Phòng trọ truyền thống có n...</p>
+                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Tin tức thị trường</p>
+                        <h5 class="card-title fw-bold">Thuê phòng trọ cần những giấy tờ gì?</h5>
+                        <p class="card-text small text-muted">Hiện nay, khi đi thuê phòng trọ, thì bạn chỉ cần mang theo Chứng minh nhân dân/Căn cước công dân (bản sao) là đã có thể thuê phòng trọ rồi - chủ yếu là…..</p>
                     </div>
                 </div>
             </a>
         </div>
 
-        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
+        <!-- Bài viết 3 -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+            <a href="@Url.Action("ChiTietTinTuc", "User", new { id = 3 })" class="pt-blog-card-link">
                 <div class="card pt-blog-card h-100 shadow-sm border-0">
                     <div class="pt-card-img-container">
-                        <!-- Ảnh đại diện -->
-                        <img src="~/Assets/Images/blog/tien-coc-thue-tro-co-lay-lai-duoc-khong_1720661417.jpg" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
+                        <img src="~/Assets/Images/blog/vi-sao-tien-dien-nuoc-o-phong-tro-thuong-cao-hon_1739955806.png" class="card-img-top pt-card-img" alt="Sáp nhập tỉnh thành">
                     </div>
                     <div class="card-body pt-card-body">
-                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Hỏi đáp</p>
-                        <h5 class="card-title fw-bold">Tiền đặt cọc thuê phòng trọ có lấy lại được không?</h5>
-                        <p class="card-text small text-muted">Tiền cọc thuê trọ có lấy lại được không?Team tư vấn/CSKH Phongtro123 trả lời:Chào Hà Vy, cảm ơn bạn đã tin tưởng và gửi yêu cầu tư vấn đến…</p>
+                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Tin tức thị trường</p>
+                        <h5 class="card-title fw-bold">Vì sao tiền điện nước trong phòng trọ thường cao hơn?</h5>
+                        <p class="card-text small text-muted">
+                            Ai đã từng thuê trọ chắc không ít lần nhăn mặt khi nhận hóa đơn điện nước. Tiền điện, tiền nước mỗi tháng không dùng quá nhiều, mà giá lại khá là…                            .
+                        </p>
                     </div>
                 </div>
             </a>
         </div>
 
-        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
-        <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
-                <div class="card pt-blog-card h-100 shadow-sm border-0">
-                    <div class="pt-card-img-container">
-                        <!-- Ảnh đại diện -->
-                        <img src="~/Assets/Images/blog/mau-hop-dong_1619246086.jpg" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
-                    </div>
-                    <div class="card-body pt-card-body">
-                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Mẫu hợp đồng</p>
-                        <h5 class="card-title fw-bold">Mẫu hợp đồng cho thuê mặt bằng 2023 (Mặt bằng kinh doanh, văn phòng, ki-ốt)</h5>
-                        <p class="card-text small text-muted">Phân tích hợp đồng cho thuê mặt bằngPhongtro123.com khuyến khích bạn nên tự chủ động soạn hợp đồng sao cho đạt được đồng...</p>
-                    </div>
-                </div>
-            </a>
-        </div>
+        
 
     </div>
 
     <!-- 5. Phân trang (Pagination) -->
-    <div class="d-flex justify-content-center mt-5 pt-pagination-wrapper">
+    @*<div class="d-flex justify-content-center mt-5 pt-pagination-wrapper">
         <nav aria-label="Page navigation">
             <ul class="pagination pt-custom-pagination">
                 <li class="page-item"><a class="page-link" href="#">« Trang trước</a></li>
@@ -111,7 +99,7 @@
                 <li class="page-item"><a class="page-link" href="#">» Trang sau</a></li>
             </ul>
         </nav>
-    </div>
+    </div>*@
 
     <!-- ============================================================= -->
     <!-- 6. TIN ĐĂNG MỚI CẬP NHẬT (Listing Section) -->
@@ -220,3 +208,5 @@
         </div>
     </section>
 </div>
+
+

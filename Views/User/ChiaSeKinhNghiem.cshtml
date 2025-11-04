@@ -1,8 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "Blog";
+    ViewBag.Title = "ChiaSeKinhNghiem";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link href="~/Assets/Css/Blog.css" rel="stylesheet" />
 <div class="container pt-blog-page-content">
 
@@ -10,17 +11,20 @@
     <nav class="mb-4" aria-label="breadcrumb">
         <ol class="breadcrumb pt-breadcrumb">
             <li class="breadcrumb-item"><a href="@Url.Action("Index", "User")" class="text-decoration-none text-primary">Trang chủ</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Blog</li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="@Url.Action("Blog", "User")" class="text-decoration-none text-primary">Blog</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Chia Sẻ Kinh Nghiệm</li>
         </ol>
     </nav>
 
     <!-- 2. Tiêu đề Lớn -->
-    <h1 class="h4 fw-bold mb-4 pt-blog-heading">Tin tức thị trường, chia sẻ kinh nghiệm Bất động sản</h1>
+    <h1 class="h4 fw-bold mb-4 pt-blog-heading">Kinh nghiệm</h1>
 
     <!-- 3. Thanh Lọc/Chủ đề (Filter/Category Tabs) -->
     <div class="d-flex flex-wrap gap-2 mb-5 pt-blog-filters">
         <a href="@Url.Action("TinTuc", "User")" class="btn btn-sm pt-btn-filter">Tin tức</a>
-        <a href="@Url.Action("ChiaSeKinhNghiem", "User")" class="btn btn-sm pt-btn-filter">Chia sẻ kinh nghiệm</a>
+        <a href="@Url.Action("ChiaSeKinhNghiem", "User")" class="btn btn-sm pt-btn-filter-active">Chia sẻ kinh nghiệm</a>
         <a href="@Url.Action("HoiDap", "User")" class="btn btn-sm pt-btn-filter">Hỏi đáp</a>
         <a href="@Url.Action("MauHopDong", "User")" class="btn btn-sm pt-btn-filter">Mẫu hợp đồng</a>
     </div>
@@ -28,23 +32,6 @@
 
     <!-- 4. Danh sách Bài viết (Grid Layout) -->
     <div class="row pt-blog-list-grid">
-
-        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
-        <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
-                <div class="card pt-blog-card h-100 shadow-sm border-0">
-                    <div class="pt-card-img-container">
-                        <!-- Ảnh đại diện -->
-                        <img src="~/Assets/Images/blog/du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh_1751449092.png" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
-                    </div>
-                    <div class="card-body pt-card-body">
-                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Tin tức thị trường</p>
-                        <h5 class="card-title fw-bold">Sáp nhập tỉnh thành có ảnh hưởng gì đến thị trường cho thuê phòng trọ?</h5>
-                        <p class="card-text small text-muted">Dự báo thị trường cho thuê phòng trọ sau thông tin sáp nhập tỉnh thànhTác động của thị trường cho thuê phòng trọ khi sáp nhập1. Tác động tích…</p>
-                    </div>
-                </div>
-            </a>
-        </div>
 
         <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
@@ -63,44 +50,43 @@
             </a>
         </div>
 
-        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
+        <!-- Bài viết 2 -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+            <a href="/blog/chi-tiet/gia-phong-tro-tphcm-t8-2025-nguoi-thue-phai-luu-y-gi" class="pt-blog-card-link">
                 <div class="card pt-blog-card h-100 shadow-sm border-0">
                     <div class="pt-card-img-container">
-                        <!-- Ảnh đại diện -->
-                        <img src="~/Assets/Images/blog/tien-coc-thue-tro-co-lay-lai-duoc-khong_1720661417.jpg" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
+                        <img src="~/Assets/Images/blog/100m2-dien-tich-dat-xay-dung-duoc-bao-nhieu-phong-tro_1735638293.jpg" class="card-img-top pt-card-img" alt="Giá phòng trọ TPHCM">
                     </div>
                     <div class="card-body pt-card-body">
-                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Hỏi đáp</p>
-                        <h5 class="card-title fw-bold">Tiền đặt cọc thuê phòng trọ có lấy lại được không?</h5>
-                        <p class="card-text small text-muted">Tiền cọc thuê trọ có lấy lại được không?Team tư vấn/CSKH Phongtro123 trả lời:Chào Hà Vy, cảm ơn bạn đã tin tưởng và gửi yêu cầu tư vấn đến…</p>
+                        <p class="pt-card-category small text-uppercase fw-bold mb-1">KINH NGHIỆM</p>
+                        <h5 class="card-title fw-bold">Bí quyết kinh doanh nhà trọ siêu lợi nhuận chỉ với 100m² đất</h5>
+                        <p class="card-text small text-muted">Kinh doanh cho thuê phòng trọ siêu lợi nhuận từ 100m2 đấtPhòng trọ bao nhiêu m² là hợp lý tại các thành phố lớn?1. Tính toán diện tích xây dựng…</p>
                     </div>
                 </div>
             </a>
         </div>
 
-        <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
+        <!-- Bài viết 3 -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+            <a href="/blog/chi-tiet/du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh" class="pt-blog-card-link">
                 <div class="card pt-blog-card h-100 shadow-sm border-0">
                     <div class="pt-card-img-container">
-                        <!-- Ảnh đại diện -->
-                        <img src="~/Assets/Images/blog/mau-hop-dong_1619246086.jpg" class="card-img-top pt-card-img" alt="Mô hình phòng trọ">
+                        <img src="~/Assets/Images/blog/top-5-cau-hoi-nen-hoi-chu-nha-khi-xem-phong-tro_1734342402.jpg" class="card-img-top pt-card-img" alt="Sáp nhập tỉnh thành">
                     </div>
                     <div class="card-body pt-card-body">
-                        <p class="pt-card-category small text-uppercase fw-bold mb-1">Mẫu hợp đồng</p>
-                        <h5 class="card-title fw-bold">Mẫu hợp đồng cho thuê mặt bằng 2023 (Mặt bằng kinh doanh, văn phòng, ki-ốt)</h5>
-                        <p class="card-text small text-muted">Phân tích hợp đồng cho thuê mặt bằngPhongtro123.com khuyến khích bạn nên tự chủ động soạn hợp đồng sao cho đạt được đồng...</p>
+                        <p class="pt-card-category small text-uppercase fw-bold mb-1">KINH NGHIỆM</p>
+                        <h5 class="card-title fw-bold">Top 5 câu hỏi khi đến xem phòng trọ sinh viên nên hỏi chủ nhà</h5>
+                        <p class="card-text small text-muted">Top 5 câu hỏi nên hỏi chủ nhà khi đến xem phòng trọHiện trạng sinh viên tìm phòng trọ tại các thành phố lớnHiện nay, việc tìm phòng trọ cho sinh…</p>
                     </div>
                 </div>
             </a>
         </div>
 
+       
     </div>
 
     <!-- 5. Phân trang (Pagination) -->
-    <div class="d-flex justify-content-center mt-5 pt-pagination-wrapper">
+    @*<div class="d-flex justify-content-center mt-5 pt-pagination-wrapper">
         <nav aria-label="Page navigation">
             <ul class="pagination pt-custom-pagination">
                 <li class="page-item"><a class="page-link" href="#">« Trang trước</a></li>
@@ -111,7 +97,7 @@
                 <li class="page-item"><a class="page-link" href="#">» Trang sau</a></li>
             </ul>
         </nav>
-    </div>
+    </div>*@
 
     <!-- ============================================================= -->
     <!-- 6. TIN ĐĂNG MỚI CẬP NHẬT (Listing Section) -->
@@ -220,3 +206,5 @@
         </div>
     </section>
 </div>
+
+
