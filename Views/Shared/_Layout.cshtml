@@ -307,7 +307,38 @@
                 <!-- Body P-0 để list item sát mép -->
                 <div class="modal-body p-0">
                     <div class="location-list" id="locationListContainer">
-                        <!-- Khu vực được chèn bởi JavaScript -->
+                        @{
+                            // Lấy dữ liệu từ ViewBag và ép kiểu
+                            var khuVucDBList = (IEnumerable<QuanLyPhongTro.Models.Khu_Vuc>)ViewBag.KhuVuc;
+
+                            // Thêm mục "Toàn quốc" cố định
+                            <div class="location-item">
+                                <label class="d-flex align-items-center w-100">
+                                    <input type="checkbox"
+                                           class="form-check-input flex-shrink-0"
+                                           data-id="all"
+                                           checked> <span class="ms-3 text-dark">Toàn quốc</span>
+                                </label>
+                                <i class="bi bi-chevron-right location-arrow"></i>
+                            </div>
+
+                            // Lặp qua danh sách từ Database
+                            if (khuVucDBList != null)
+                            {
+                                foreach (var khuVuc in khuVucDBList)
+                                {
+                                    <div class="location-item">
+                                        <label class="d-flex align-items-center w-100">
+                                            <input type="checkbox"
+                                                   class="form-check-input flex-shrink-0"
+                                                   data-id="@khuVuc.ID_KV"
+                                                   data-name="@khuVuc.Ten_KV"> <span class="ms-3 text-dark">@khuVuc.Ten_KV</span>
+                                            </label>
+                                            <i class="bi bi-chevron-right location-arrow"></i>
+                                        </div>
+                                    }
+                                }
+                        }
                     </div>
                 </div>
 
