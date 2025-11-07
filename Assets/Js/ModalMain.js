@@ -14,28 +14,28 @@ const locationModal = new bootstrap.Modal(locationModalElement);
 const filterModal = new bootstrap.Modal(filterModalElement);
 
 // Dữ liệu mẫu 20 khu vực
-const locationsData = [
-    { id: 'all', name: 'Toàn quốc', isSelected: true },
-    { id: 'hcm', name: 'Hồ Chí Minh', isSelected: false },
-    { id: 'hn', name: 'Hà Nội', isSelected: false },
-    { id: 'dn', name: 'Đà Nẵng', isSelected: false },
-    { id: 'bd', name: 'Bình Dương', isSelected: false },
-    { id: 'dnai', name: 'Đồng Nai', isSelected: false },
-    { id: 'bvt', name: 'Bà Rịa - Vũng Tàu', isSelected: false },
-    { id: 'ct', name: 'Cần Thơ', isSelected: false },
-    { id: 'kh', name: 'Khánh Hòa', isSelected: false },
-    { id: 'hp', name: 'Hải Phòng', isSelected: false },
-    { id: 'ag', name: 'An Giang', isSelected: false },
-    { id: 'gl', name: 'Gia Lai', isSelected: false },
-    { id: 'kg', name: 'Kiên Giang', isSelected: false },
-    { id: 'lca', name: 'Lào Cai', isSelected: false },
-    { id: 'nt', name: 'Ninh Thuận', isSelected: false },
-    { id: 'py', name: 'Phú Yên', isSelected: false },
-    { id: 'qn', name: 'Quảng Ninh', isSelected: false },
-    { id: 'tg', name: 'Tiền Giang', isSelected: false },
-    { id: 'vt', name: 'Vĩnh Phúc', isSelected: false },
-    { id: 'la', name: 'Long An', isSelected: false }
-];
+//const locationsData = [
+//    { id: 'all', name: 'Toàn quốc', isSelected: true },
+//    { id: 'hcm', name: 'Hồ Chí Minh', isSelected: false },
+//    { id: 'hn', name: 'Hà Nội', isSelected: false },
+//    { id: 'dn', name: 'Đà Nẵng', isSelected: false },
+//    { id: 'bd', name: 'Bình Dương', isSelected: false },
+//    { id: 'dnai', name: 'Đồng Nai', isSelected: false },
+//    { id: 'bvt', name: 'Bà Rịa - Vũng Tàu', isSelected: false },
+//    { id: 'ct', name: 'Cần Thơ', isSelected: false },
+//    { id: 'kh', name: 'Khánh Hòa', isSelected: false },
+//    { id: 'hp', name: 'Hải Phòng', isSelected: false },
+//    { id: 'ag', name: 'An Giang', isSelected: false },
+//    { id: 'gl', name: 'Gia Lai', isSelected: false },
+//    { id: 'kg', name: 'Kiên Giang', isSelected: false },
+//    { id: 'lca', name: 'Lào Cai', isSelected: false },
+//    { id: 'nt', name: 'Ninh Thuận', isSelected: false },
+//    { id: 'py', name: 'Phú Yên', isSelected: false },
+//    { id: 'qn', name: 'Quảng Ninh', isSelected: false },
+//    { id: 'tg', name: 'Tiền Giang', isSelected: false },
+//    { id: 'vt', name: 'Vĩnh Phúc', isSelected: false },
+//    { id: 'la', name: 'Long An', isSelected: false }
+//];
 
 
 // --- Dữ liệu Bộ lọc (Modal 2) ---
@@ -54,48 +54,79 @@ function showLocationModal() {
     locationModal.show();
 }
 
-function renderLocationList() {
-    locationListContainer.innerHTML = '';
-    locationsData.forEach(loc => {
-        const isChecked = loc.isSelected ? 'checked' : '';
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'location-item';
-        itemDiv.innerHTML = `
-                    <label class="d-flex align-items-center w-100">
-                        <input type="checkbox" 
-                                class="form-check-input flex-shrink-0" 
-                                data-id="${loc.id}" 
-                                ${isChecked}>
-                        <span class="ms-3 text-dark">${loc.name}</span>
-                    </label>
-                    <i class="bi bi-chevron-right location-arrow"></i>
-                `;
+//function renderLocationList() {
+//    locationListContainer.innerHTML = '';
+//    locationsData.forEach(loc => {
+//        const isChecked = loc.isSelected ? 'checked' : '';
+//        const itemDiv = document.createElement('div');
+//        itemDiv.className = 'location-item';
+//        itemDiv.innerHTML = `
+//                    <label class="d-flex align-items-center w-100">
+//                        <input type="checkbox" 
+//                                class="form-check-input flex-shrink-0" 
+//                                data-id="${loc.id}" 
+//                                ${isChecked}>
+//                        <span class="ms-3 text-dark">${loc.name}</span>
+//                    </label>
+//                    <i class="bi bi-chevron-right location-arrow"></i>
+//                `;
 
-        itemDiv.addEventListener('click', function (e) {
-            const checkbox = itemDiv.querySelector('input[type="checkbox"]');
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SPAN') {
-                checkbox.checked = !checkbox.checked;
-            }
-            handleLocationCheckboxChange(checkbox.dataset.id, checkbox.checked);
+//        itemDiv.addEventListener('click', function (e) {
+//            const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+//            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SPAN') {
+//                checkbox.checked = !checkbox.checked;
+//            }
+//            handleLocationCheckboxChange(checkbox.dataset.id, checkbox.checked);
+//        });
+
+//        itemDiv.querySelector('input[type="checkbox"]').addEventListener('change', function (e) {
+//            handleLocationCheckboxChange(e.target.dataset.id, e.target.checked);
+//        });
+
+//        locationListContainer.appendChild(itemDiv);
+//    });
+//}
+let locationsState = [];
+function initializeLocationState() {
+    locationsState = [];
+    // Lấy tất cả các checkbox trong modal
+    const checkboxes = document.querySelectorAll('#locationListContainer input[type="checkbox"]');
+    checkboxes.forEach(cb => {
+        locationsState.push({
+            id: cb.dataset.id,
+            name: cb.dataset.name || (cb.dataset.id === 'all' ? 'Toàn quốc' : 'Tên không xác định'),
+            isSelected: cb.checked
         });
 
-        itemDiv.querySelector('input[type="checkbox"]').addEventListener('change', function (e) {
+        // Thêm Event Listener cho từng checkbox
+        cb.addEventListener('change', function (e) {
             handleLocationCheckboxChange(e.target.dataset.id, e.target.checked);
         });
+    });
 
-        locationListContainer.appendChild(itemDiv);
+    // Cần phải khởi tạo lại Event Listener cho các div cha (location-item)
+    document.querySelectorAll('.location-item').forEach(itemDiv => {
+        itemDiv.addEventListener('click', function (e) {
+            const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+            // Đảm bảo không xử lý khi click trực tiếp vào checkbox/label text
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SPAN') {
+                checkbox.checked = !checkbox.checked;
+                handleLocationCheckboxChange(checkbox.dataset.id, checkbox.checked);
+            }
+        });
     });
 }
-
 function handleLocationCheckboxChange(locationId, isChecked) {
-    const locationItem = locationsData.find(loc => loc.id === locationId);
+    // 1. Cập nhật trạng thái trong mảng JS
+    const locationItem = locationsState.find(loc => loc.id === locationId);
     if (locationItem) {
         locationItem.isSelected = isChecked;
     }
 
+    // 2. Xử lý logic Toàn quốc/Khu vực cụ thể (giống logic cũ)
     if (locationId === 'all') {
         if (isChecked) {
-            locationsData.forEach(loc => {
+            locationsState.forEach(loc => {
                 if (loc.id !== 'all') {
                     loc.isSelected = false;
                 }
@@ -103,29 +134,50 @@ function handleLocationCheckboxChange(locationId, isChecked) {
         }
     } else {
         if (isChecked) {
-            locationsData.find(loc => loc.id === 'all').isSelected = false;
+            const allItem = locationsState.find(loc => loc.id === 'all');
+            if (allItem) allItem.isSelected = false;
         }
     }
 
-    const checkedCount = locationsData.filter(loc => loc.isSelected).length;
+    // 3. Đảm bảo ít nhất một mục được chọn (nếu không thì chọn 'all')
+    const checkedCount = locationsState.filter(loc => loc.isSelected).length;
     if (checkedCount === 0) {
-        locationsData.find(loc => loc.id === 'all').isSelected = true;
+        const allItem = locationsState.find(loc => loc.id === 'all');
+        if (allItem) allItem.isSelected = true;
     }
 
-    renderLocationList();
+    // 4. Đồng bộ lại trạng thái từ mảng JS ra DOM (rất quan trọng)
+    locationsState.forEach(loc => {
+        const checkbox = document.querySelector(`#locationListContainer input[data-id="${loc.id}"]`);
+        if (checkbox) {
+            // Chỉ đồng bộ nếu trạng thái trong JS khác trạng thái DOM, 
+            // tránh lặp vô tận nếu có logic phức tạp
+            if (checkbox.checked !== loc.isSelected) {
+                checkbox.checked = loc.isSelected;
+            }
+        }
+    });
 }
 
 function updateLocationDisplayField() {
-    const activeLocations = locationsData
+    const activeLocations = locationsState
         .filter(loc => loc.isSelected && loc.id !== 'all')
         .map(loc => loc.name);
+
+    // ... (phần còn lại của hàm giữ nguyên logic sử dụng activeLocations) ...
 
     if (activeLocations.length === 0) {
         locationDisplay.value = 'Tìm theo khu vực';
         selectedLocationsInput.value = '';
-        locationsData.find(loc => loc.id === 'all').isSelected = true;
+        // Đảm bảo 'all' được chọn lại trong state
+        const allItem = locationsState.find(loc => loc.id === 'all');
+        if (allItem) {
+            allItem.isSelected = true;
+            document.querySelector('#locationListContainer input[data-id="all"]').checked = true;
+        }
     } else {
         const displayNames = activeLocations.slice(0, 3).join(', ');
+        // ... (giữ nguyên phần tính toán display text)
         const remainingCount = activeLocations.length - 3;
 
         let displayText = displayNames;
@@ -141,6 +193,14 @@ function updateLocationDisplayField() {
 // Lắng nghe sự kiện Modal Khu vực đóng
 locationModalElement.addEventListener('hidden.bs.modal', function () {
     updateLocationDisplayField();
+});
+document.addEventListener('DOMContentLoaded', function () {
+    initializeLocationState(); // Thay thế renderLocationList()
+    updateLocationDisplayField();
+
+    document.getElementById('applyLocationFilter').addEventListener('click', function () {
+        updateLocationDisplayField();
+    });
 });
 
 

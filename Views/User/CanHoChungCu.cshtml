@@ -1,8 +1,53 @@
-﻿
+﻿@model IEnumerable<QuanLyPhongTro.Models.ViewModels.PhongTroVM>
 @{
-    ViewBag.Title = "CanHoChungCu";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Căn hộ chung cư";
+    var active = (string)ViewBag.ActiveTab ?? "chungcu";
 }
 
-<h2>CanHoChungCu</h2>
+<div class="container-fluid py-3" style="max-width:1140px">
+    <div class="mb-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link @(active=="chungcu"?"active text-danger fw-bold":"")"
+                   href="@Url.Action("CanHoChungCu","User")">Căn hộ chung cư</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(active=="mini"?"active text-danger fw-bold":"")"
+                   href="@Url.Action("CanHoMini","User")">Căn hộ mini</a>
+            </li>
+        </ul>
+    </div>
 
+    <div class="row">
+        <div class="col-lg-8">
+            @Html.Partial("~/Views/Shared/_PhongTroList.cshtml", Model)
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Sidebar có thể tái dùng như Index (tuỳ bạn) -->
+            <div class="sidebar-box">
+                <h6 class="fw-bold mb-2">Bộ lọc nhanh</h6>
+                <a class="d-block mb-2" href="@Url.Action("CanHoChungCu","User", new { page=1 })">Tất cả căn hộ chung cư</a>
+                <a class="d-block mb-2" href="@Url.Action("CanHoChungCu","User", new { page=1, pageSize=20 })">Hiển thị 20 tin</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* tạo gạch chân đỏ dưới tab active */
+    .nav-tabs .nav-link.active {
+        border-color: transparent;
+        position: relative;
+    }
+
+        .nav-tabs .nav-link.active::after {
+            content: "";
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: -1px;
+            height: 3px;
+            background: #e03;
+        }
+</style>
