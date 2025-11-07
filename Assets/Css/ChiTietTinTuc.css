@@ -1,12 +1,15 @@
 ﻿/* CSS Tùy chỉnh */
 :root {
-    --primary-color: #17a2b8; /* Màu xanh của tiêu đề chính */
+    --primary-color: #17a2b8; /* Màu xanh của tiêu đề chính (Theo ID=1) */
     --text-color: #333;
     --muted-color: #6c757d;
     --background-color: #f8f9fa;
     --heading-font: 'Inter', sans-serif;
     --body-font: 'Inter', sans-serif;
 }
+
+/* Tải font Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 body {
     font-family: var(--body-font);
@@ -41,7 +44,7 @@ body {
     border-bottom: 2px solid #e9ecef;
 }
 
-/* Định dạng các Sub-heading (1. Tác động tích cực, 2. Thách thức) */
+/* Định dạng các Sub-heading (1. Tác động tích cực, 2. Thách thức, 1. Thông tin các bên,...) */
 .sub-heading {
     font-size: 1.3rem;
     font-weight: 600;
@@ -80,6 +83,51 @@ body {
     font-weight: 700;
     color: #000;
 }
+
+/* BOX NỘI QUY PHÒNG TRỌ (Dành riêng cho ID=2) */
+.rules-box {
+    background-color: #f0f8ff; /* Light blue/off-white background */
+    border: 2px solid #007bff;
+    color: #007bff; /* Primary blue color */
+    padding: 25px;
+    border-radius: 12px;
+    margin: 30px 0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+    .rules-box h3 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #007bff;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #cce5ff;
+    }
+
+    .rules-box ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .rules-box li {
+        margin-bottom: 15px;
+        color: #333;
+        font-weight: 500;
+    }
+
+.icon-text {
+    display: flex;
+    align-items: flex-start;
+}
+
+    .icon-text .icon {
+        font-size: 1.2rem;
+        margin-right: 10px;
+        flex-shrink: 0;
+        color: #dc3545; /* Màu đỏ cho icon cảnh báo/quy định */
+    }
+
 
 /* Định dạng Responsive cho Mobile */
 @media (max-width: 767.98px) {
