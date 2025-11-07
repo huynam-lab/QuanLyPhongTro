@@ -2,7 +2,439 @@
 @{
     ViewBag.Title = "ChiTietChiaSeKinhNghiem";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var id = ViewBag.Id is null ? 0 : (int)ViewBag.Id;
 }
 
-<h2>ChiTietChiaSeKinhNghiem</h2>
+<link href="~/Assets/Css/ChiTietTinTuc.css" rel="stylesheet" />
 
+<div class="container pt-article-page">
+
+    @* =========================================================================
+        KHỐI RAZOR CHUNG CHO BREADCRUMB
+        ========================================================================= *@
+    @helper RenderBreadcrumb(string articleTitle)
+    {
+        <nav class="mb-3 mt-3" aria-label="breadcrumb">
+            <ol class="breadcrumb pt-breadcrumb">
+                <li class="breadcrumb-item">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("Index","User")">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("Blog","User")">Blog</a>
+                </li>
+                <li class="breadcrumb-item" aria-current="page">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("ChiaSeKinhNghiem","User")">Kinh Nghiệm</a>
+                </li>
+                @*<li class="breadcrumb-item active" aria-current="page">
+                        @articleTitle
+                    </li>*@
+            </ol>
+        </nav>
+    }
+
+
+    @* =========================================================================
+        GIAO DIỆN 1: Sáp nhập tỉnh thành
+        ========================================================================= *@
+    @if (id == 1)
+    {
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
+
+                    <!-- HEADER & BREADCRUMB -->
+                    <header class="mb-4">
+                        @RenderBreadcrumb("Năm 2025: Người đi làm sẽ ưa chuộng loại phòng trọ nào?")
+                        <h1 class="article-title">Năm 2025: Người đi làm sẽ ưa chuộng loại phòng trọ nào?</h1>
+                    </header>
+
+                    <!-- NỘI DUNG MỞ ĐẦU -->
+                    <div class="article-content">
+                        <p class="first-paragraph">
+                            Năm 2025, xu hướng thuê phòng trọ của người đi làm đang thay đổi mạnh mẽ. Không còn là những căn phòng chật chội, xuống cấp như trước, người thuê giờ đây ưu tiên sự tiện nghi, riêng tư và môi trường sống hiện đại. Với lịch trình bận rộn và áp lực công việc, họ cần một nơi ở không chỉ để nghỉ ngơi, mà còn là không gian tái tạo năng lượng. Vậy đâu sẽ là "gu" phòng trọ của dân văn phòng hiện nay? Hãy cùng Phongtro123.com khám phá qua bài viết này nhé!
+                        </p>
+
+                        <!-- ẢNH BANNER CHÍNH -->
+                        <figure class="figure mb-4" style="width:100%">
+                            <img src="~/Assets/Images/blog/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025_1757754712.png" class="article-image" alt="Mô hình phòng trọ người đi làm ưa chuộng 2025">
+                            <figcaption class="article-caption">Mô hình phòng trọ người đi làm ưa chuộng 2025</figcaption>
+                        </figure>
+                    </div>
+
+                    <!-- MỤC I: CÁC LOẠI HÌNH PHÒNG TRỌ -->
+                    <h2 class="main-heading">Những loại hình phòng trọ người đi làm ưa chuộng năm 2025</h2>
+
+                    <h3 class="sub-heading">1. Phòng trọ truyền thống có nội thất</h3>
+                    <div class="article-content">
+                        <p>
+                            Trong bối cảnh thị trường cho thuê ngày càng đa dạng, <strong class="content-strong">phòng trọ truyền thống có nội thất</strong> vẫn là lựa chọn hàng đầu của nhiều người đi làm trong năm 2025, đặc biệt là những người trẻ mới ra trường hoặc hoặc chuyển công tác. Ưu điểm nổi bật bắt đầu tiện là sự tiện lợi và tiết kiệm thời gian. Với một căn phòng đã được trang bị đầy đủ giường, tủ, bàn ghế, thậm chí là điều hòa hay bình nóng lạnh, người thuê có thể dọn vào ở ngay mà không cần tốn công sức và chi phí mua sắm đồ đạc. Theo khảo sát của Phongtro123.com, có đến 68% người đi làm tại TP.HCM ưu tiên thuê phòng trọ có sẵn nội thất để tiết kiệm chi phí đầu tư ban đầu. Thay vì phải bỏ ra 10-15 triệu để sắm sửa giường, tủ, máy lạnh hay máy giặt, họ chỉ cần xách vali vào ở, vô cùng tiện lợi cho những ai vừa đổi việc, chuyển công tác hoặc mới bắt đầu cuộc sống độc lập.
+                        </p>
+                        <p>
+                            Thêm vào đó, phòng trọ truyền thống thường <strong class="content-strong">nằm gần các khu công nghiệp, văn phòng</strong>, giúp người thuê tiết kiệm thời gian di chuyển và chi phí xăng xe. Ngoài ra, người đi làm thường có xu hướng thay đổi nơi ở khi công việc hoặc nhu cầu cá nhân thay đổi. Việc thuê phòng có sẵn nội thất giúp họ dễ dàng chuyển đi mà không phải lo lắng về việc vận chuyển hay thanh lý đồ đạc cồng kềnh.
+                        </p>
+                    </div>
+
+                    <h3 class="sub-heading">2. Phòng căn hộ mini có gác hoặc không gác</h3>
+                    <div class="article-content">
+                        <p>
+                            Năm 2025, <strong class="content-strong">phòng trọ dạng căn hộ mini</strong> – dù có gác hay không gác – đang trở thành lựa chọn “ruột” của người đi làm nhờ sự kết hợp giữa tiện nghi, riêng tư và chi phí hợp lý. Với mức giá thuê dao động từ <strong class="content-strong">3,5 – 6 triệu/tháng</strong>, người đi làm có thể sở hữu một không gian riêng biệt, có toilet riêng, khu bếp nhỏ, máy lạnh, máy giặt, thậm chí cả chỗ để xe và bảo vệ 24/7.
+                        </p>
+                        <p>
+                            Nếu là căn hộ có gác, người thuê dễ dàng phân chia khu ngủ và khu sinh hoạt – tạo cảm giác rộng rãi, gọn gàng. Nếu là căn không gác, trần cao và thiết kế tối giản lại giúp người thích phong cách hiện đại cảm thấy thư giãn hơn. Đặc biệt, nhiều căn hộ mini còn được đặt tại các quận gần trung tâm như <strong class="content-strong">Bình Thạnh, Phú Nhuận, Tân Bình</strong> – rất tiện để đi làm mà không mất nhiều thời gian di chuyển.
+                        </p>
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/phong-tro-dang-can-ho-mini-co-gac_1757754962.png" class="article-image" alt="Phòng trọ dạng căn hộ mini có gác">
+                            <figcaption class="article-caption">Phòng trọ dạng căn hộ mini có gác</figcaption>
+                        </figure>
+                    </div>
+
+                    <h3 class="sub-heading">3. Nhà trọ kết hợp kinh doanh</h3>
+                    <div class="article-content">
+                        <p>
+                            Trong năm 2025, xu hướng <strong class="content-strong">thuê nhà trọ kết hợp kinh doanh</strong> đang ngày càng được người đi làm ưa chuộng, đặc biệt là ở các thành phố lớn như TP.HCM hay Hà Nội. Lý do rất rõ ràng: “một công đôi việc” – vừa có chỗ ở ổn định, vừa tận dụng mặt bằng để kinh doanh kiếm thêm thu nhập. Một cuộc khảo sát gần đây cho thấy, việc kết hợp này có thể giúp tiết kiệm trung bình <strong class="content-strong">30% chi phí thuê mặt bằng</strong> hằng tháng so với việc thuê hai địa điểm riêng biệt, đặc biệt tại các thành phố lớn như TP.HCM hay Hà Nội.
+                        </p>
+                        <p>
+                            Bên cạnh đó, mô hình này mang lại sự linh hoạt tối đa về thời gian và không gian. Người đi làm có thể dễ dàng quản lý công việc kinh doanh ngay tại nơi ở, tiết kiệm thời gian di chuyển và tận dụng hiệu quả những khoảng thời gian trống. Điều này đặc biệt phù hợp với những ngành nghề tự do hoặc kinh doanh online, nơi khách hàng có thể đến trực tiếp lấy hàng hoặc tư vấn.
+                        </p>
+                    </div>
+
+                    <!-- MỤC II: XU HƯỚNG MỚI -->
+                    <h2 class="main-heading">Xu hướng tìm thuê trọ mới của người đi làm</h2>
+                    <div class="article-content">
+                        <p>
+                            Trong thời đại 4.0, <strong class="content-strong">xu hướng tìm thuê trọ của người đi làm</strong>, không còn đơn thuần là tìm một nơi để ngả lưng. Giờ đây, một phòng trọ có thiết kế đẹp, tối giản, <strong class="content-strong">phù hợp lifestyle hiện đại</strong> đang lên ngôi. Không chỉ đáp ứng nhu cầu thẩm mỹ, mà còn phục vụ xu hướng “sống ảo” – để đăng quay video, chụp hình check-in, thể hiện cá tính trên mạng xã hội.
+                        </p>
+                        <p>
+                            Bên cạnh đó, <strong class="content-strong">thuê trọ online</strong> đang trở thành xu hướng chủ đạo. Người thuê ngày càng chuộng trải nghiệm xem phòng qua video, đặt cọc khoản để tiết kiệm thời gian. Trên Phongtro123.com có hơn <strong class="content-strong">200.000 tin đăng</strong>, với hàng ngàn giao dịch đặt cọc thành công hằng tháng nhờ xem video trước. Điều này giúp người thuê chủ động hơn và tránh “mất công đi xem phòng không ưng”.
+                        </p>
+                        <p>
+                            Cuối cùng, chủ nhà <strong class="content-strong">“có tâm”</strong> là yếu tố giữ chân người thuê. Người đi làm muốn thuê của chủ thân thiện, rõ ràng giá cả, hợp đồng minh bạch. Như chia sẻ từ bạn Huy (28 tuổi, nhân viên marketing): **“Mình chọn phòng không chỉ vì đẹp mà còn vì chủ chủ dễ thương, hỗ trợ tận tình ngay từ lúc mới xem phòng”**.
+                        </p>
+                    </div>
+
+                    <!-- KẾT LUẬN -->
+                    <h2 class="main-heading">Tóm tắt</h2>
+                    <div class="article-content">
+                        <p class="mt-4 text-center article-conclusion">
+                            Trên đây là những loại phòng trọ nổi bật mà người đi làm ưa chuộng trong năm 2025. Mong rằng với những thông tin nổi bật này sẽ giúp chủ nhà nắm bắt xu hướng này để biến phòng trọ của mình thành lựa chọn hàng đầu, đáp ứng đúng nhu cầu và mong muốn của người đi làm hiện đại.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    @* =========================================================================
+        GIAO DIỆN 2: Thuê phòng trọ cần mang những giấy tờ gì? (Đã chuẩn hóa)
+        ========================================================================= *@
+    else if (id == 2)
+    {
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
+
+                    <header class="mb-4">
+                        @RenderBreadcrumb("Bí quyết kinh doanh nhà trọ siêu lợi nhuận chỉ với 100m² đất")
+                        <h1 class="article-title">Bí quyết kinh doanh nhà trọ siêu lợi nhuận chỉ với 100m² đất</h1>
+                    </header>
+
+                    <div class="article-content">
+                        <p class="first-paragraph">
+                            Với quỹ đất hẹp và nhu cầu thuê trọ ngày càng tăng cao tại các thành phố lớn, việc xây dựng nhà trọ trên diện tích nhỏ trở thành một giải pháp kinh doanh hấp dẫn. Đặc biệt, với 100m² đất, bạn hoàn toàn có thể sở hữu một ngôi nhà trọ hiện đại, tiện nghi và mang lại lợi nhuận ổn định. Bài viết này, Phongtro123.com chia sẻ những **bí quyết** giúp bạn xây dựng một nhà trọ siêu lợi nhuận chỉ với 100m² đất.
+                        </p>
+
+                        <figure class="figure mb-4" style="width:100%">
+                            <img src="~/Assets/Images/blog/kinh-doanh-cho-thue-phong-tro-sieu-loi-nhuan-tu-100-m2-dat_1735637962.jpg" class="article-image" alt="Kinh doanh cho thuê phòng trọ siêu lợi nhuận từ 100m² đất">
+                            <figcaption class="article-caption">Kinh doanh cho thuê phòng trọ siêu lợi nhuận từ 100m² đất</figcaption>
+                        </figure>
+                    </div>
+
+                    <h2 class="main-heading">1. Tính toán diện tích xây dựng phòng trọ</h2>
+                    <div class="article-content">
+                        <p>
+                            Thông thường, **diện tích phòng trọ cho thuê** tại các thành phố lớn như TP.HCM dao động từ **12m² đến 25m²**, tùy theo nhu cầu sử dụng, chi phí đầu tư và quy định xây dựng.
+                        </p>
+
+                        <h3 class="sub-heading">Đối tượng khách hàng:</h3>
+                        <ul>
+                            <li>
+                                <strong class="content-strong">Sinh viên, người đi làm trẻ:</strong> Thường ưu tiên phòng trọ có diện tích vừa phải, từ **12-18m²**, thiết kế đơn giản, gọn gàng, tập trung vào các tiện ích chung như khu vực sinh hoạt chung, bếp nấu ăn tập thể.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Gia đình trẻ, người đi làm có thu nhập ổn định:</strong> Có nhu cầu về không gian rộng rãi hơn, từ **18-25m²**, với đầy đủ tiện nghi như phòng bếp riêng, phòng tắm khép kín, thậm chí có thể có ban công nhỏ.
+                            </li>
+                        </ul>
+
+                        <h3 class="sub-heading">Chi phí đầu tư:</h3>
+                        <ul>
+                            <li>
+                                <strong class="content-strong">Vật liệu xây dựng:</strong> Lựa chọn vật liệu xây dựng phù hợp sẽ giúp tiết kiệm chi phí mà vẫn đảm bảo chất lượng.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Thiết kế:</strong> Thiết kế thông minh, tận dụng tối đa không gian sẽ giúp giảm thiểu chi phí xây dựng.
+                            </li>
+                        </ul>
+
+                        <h3 class="sub-heading">Quy định xây dựng:</h3>
+                        <ul>
+                            <li>
+                                <strong class="content-strong">Mật độ xây dựng:</strong> Mỗi địa phương có quy định khác nhau về mật độ xây dựng, ảnh hưởng trực tiếp đến số lượng phòng trọ có thể xây dựng trên một lô đất.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Chiều cao công trình:</strong> Việc xây dựng các tầng lầu sẽ giúp tăng số lượng phòng trọ, tuy nhiên cần đảm bảo an toàn và tuân thủ quy định về chiều cao công trình.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h2 class="main-heading">2. Các mô hình thiết kế phòng trọ phổ biến</h2>
+                    <div class="article-content">
+                        <p>
+                            Thị trường cho thuê phòng trọ ngày càng đa dạng với nhiều mô hình khác nhau. Trong đó, hai mô hình **nhà cấp 4** và **nhà tầng** vẫn được nhiều chủ đầu tư nhà trọ lựa chọn.
+                        </p>
+
+                        <h3 class="sub-heading">Phòng trọ mô hình nhà cấp 4</h3>
+                        <p>
+                            Đây là mô hình truyền thống, được nhiều chủ nhà lựa chọn do **chi phí xây dựng thấp** và dễ dàng tìm kiếm mặt bằng. Phòng trọ cấp 4 thường có diện tích khiêm tốn từ **12 – 18m²**, phù hợp với nhu cầu của sinh viên hoặc người đi làm có thu nhập thấp. Loại hình phòng trọ này thường được chia thành các dãy, mỗi dãy có nhiều phòng.
+                        </p>
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/thiet-ke-phong-tro-co-gac-duc-be-tong_1735638172.jpg" class="article-image" alt="Thiết kế phòng trọ có gác đúc bê tông">
+                            <figcaption class="article-caption">Thiết kế phòng trọ có gác đúc bê tông</figcaption>
+                        </figure>
+
+                        <p><strong class="content-strong">Một số loại hình phổ biến:</strong></p>
+                        <ul>
+                            <li>Phòng trọ có gác lửng.</li>
+                            <li>Phòng trọ có gác đúc bê tông hoặc lát gạch.</li>
+                            <li>Phòng trọ có gác cemboard phủ simili.</li>
+                            <li>Phòng trọ có gác bằng gỗ.</li>
+                        </ul>
+
+                        <h3 class="sub-heading">Phòng trọ mô hình nhà tầng</h3>
+                        <p>
+                            Đây là mô hình hiện đại hơn, thường được xây dựng ở các khu vực trung tâm hoặc các khu đô thị mới. Phòng trọ nhà tầng có diện tích đa dạng, từ **20m² trở lên**, có thể bố trí nhiều phòng ngủ, phòng khách, bếp và nhà vệ sinh. Loại hình phòng trọ này thường được xây dựng theo kiểu **căn hộ mini**, có thang máy, bãi giữ xe hoặc có thêm tiện ích khác như gym, khu giặt ủi.
+                        </p>
+
+                        <p><strong class="content-strong">Một số loại hình phòng trọ nhà tầng phổ biến:</strong></p>
+                        <ul>
+                            <li>Phòng trọ có thêm gác.</li>
+                            <li>Phòng trọ bố trí nhiều giường (giống ký túc xá hoặc sleep box).</li>
+                            <li>Phòng căn hộ mini.</li>
+                            <li>Phòng có sẵn nội thất.</li>
+                            <li>Phòng có nhà vệ sinh khép kín.</li>
+                        </ul>
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/thiet-ke-phong-tro-theo-mo-hinh-nha-tang-hien-dai_1735638214.jpg" class="article-image" alt="Mô hình nhà tầng hiện đại và phòng căn hộ mini">
+                            <figcaption class="article-caption">Thiết kế phòng trọ theo mô hình nhà tầng hiện đại</figcaption>
+                        </figure>
+                    </div>
+
+                    <h2 class="main-heading">3. Xây dựng được bao nhiêu phòng trọ với 100m² đất?</h2>
+                    <div class="article-content">
+                        <p>
+                            Việc **xây dựng được bao nhiêu phòng trọ trên 100m² diện tích đất** phụ thuộc vào nhiều yếu tố như quy định pháp lý, thiết kế kiến trúc và mục tiêu kinh doanh của chủ đầu tư. Theo quy định xây dựng tại Việt Nam, **mật độ xây dựng** nhà ở thường dao động từ **60 - 80%**, tùy thuộc vào khu vực và loại hình đất. Điều này có nghĩa rằng, trên diện tích 100m², diện tích xây dựng thực tế sẽ từ **60 - 80m²**.
+                        </p>
+                        <p>
+                            Với diện tích xây dựng, chủ đầu tư có thể bố trí số lượng phòng trọ dựa trên thiết kế tối ưu. Thông thường, diện tích mỗi phòng trọ dao động từ **15 – 25m²**. Nếu áp dụng thiết kế cơ bản với diện tích phòng khoảng **20m²**, một tầng có thể xây được từ **3 đến 4 phòng**. Trong trường hợp xây dựng nhiều tầng (2 hoặc 3 tầng), số lượng phòng trọ có thể tăng lên từ **6 đến 12 phòng**.
+                        </p>
+                        <p>
+                            Tuy nhiên, chủ nhà cần chú trọng đến các yếu tố như **lối đi chung, không gian sinh hoạt chung, hệ thống cấp thoát nước, và quy định về an toàn phòng cháy chữa cháy**. Ngoài ra, việc tuân thủ các quy định về chiều cao phòng và khoảng lùi cũng đóng vai trò quan trọng trong việc xác định số lượng phòng trọ khả thi trên diện tích 100m².
+                        </p>
+                    </div>
+
+                    <h2 class="main-heading">4. Chi phí xây dựng dãy nhà trọ trên diện tích 100m²</h2>
+                    <div class="article-content">
+                        <p>
+                            Chi phí xây dựng dãy nhà trọ trên diện tích 100m² phụ thuộc vào nhiều yếu tố như quy mô xây dựng, thiết kế, chất lượng vật liệu, và vị trí khu vực. Thông thường, để ước tính tổng chi phí, bạn cần cân nhắc các khoản chi phí chính sau:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong class="content-strong">Chi phí thiết kế và bản vẽ:</strong> Nếu bạn chọn thiết kế cơ bản, mức phí dao động từ **150.000 - 300.000 đồng/m²**. Với các thiết kế hiện đại, tối ưu không gian hoặc yêu cầu cầu thẩm mỹ cao, chi phí có thể cao hơn.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Chi phí hoàn thiện:</strong> Đây là chi phí cho các hạng mục như lát gạch, sơn tường, lắp đặt hệ thống điện nước, nội thất cơ bản... Mức giá này dao động từ **2 đến 3 triệu đồng/m²**, tức khoảng **200 - 300 triệu đồng** cho diện tích trên.
+                            </li>
+                        </ul>
+
+                        <h3 class="sub-heading">Ngoài ra còn có thêm các chi phí khác như:</h3>
+                        <ul>
+                            <li>Gác gỗ công nghiệp: **790.000 - 990.000 đồng/m²**.</li>
+                            <li>Gác gỗ tự nhiên khoáng: **1.190.000 đồng/m²**.</li>
+                            <li>Gác tấm gỗ nhựa khoáng: **1.390.000 đồng/m²**.</li>
+                            <li>Gác tấm Cemboard giả từ **990.000 đến 1.190.000 đồng/m²**.</li>
+                            <li>Gạch xây, cát, xi măng, thép, sơn nước, ống nhựa, dây điện,... được tính theo giá thị trường.</li>
+                            <li>Phí thi công chưa bao gồm vật tư khoảng **1.000.000 đồng/m²**.</li>
+                            <li>Phí thi công bao gồm vật tư khoảng **2.500.000 đến 3.100.000 đồng/m²**.</li>
+                        </ul>
+
+                        <p class="mt-4">
+                            Tổng hợp lại, **chi phí xây dựng một dãy nhà trọ trên diện tích 100m²** có thể dao động từ **550 triệu đến hơn 800 triệu đồng**, tùy thuộc vào yêu cầu và điều kiện cụ thể. Để tối ưu ngân sách, bạn nên tìm kiếm đội ngũ xây dựng uy tín và lên kế hoạch chi tiết trước khi triển khai.
+                        </p>
+                    </div>
+
+                    <h2 class="main-heading">5. Quảng bá hình ảnh phòng trọ hiệu quả tại Phongtro123.com</h2>
+                    <div class="article-content">
+                        <p>
+                            Dù sở hữu một mô hình nhà trọ tối ưu về chi phí và tiện ích, nếu không có chiến lược quảng bá hiệu quả, việc lấp đầy phòng trọ sẽ trở nên khó khăn. Đây là lúc **Phongtro123.com** (Phòng Trọ 123) trở thành người bạn đồng hành đáng tin cậy cho các chủ nhà. Với hơn 10 năm kinh nghiệm hoạt động trong lĩnh vực vực bất động sản, Phongtro123 tự hào là nền tảng **đăng tin cho thuê nhà trọ** hàng đầu tại Việt Nam, giúp kết nối chủ nhà với hàng triệu khách thuê tiềm năng.
+                        </p>
+                        <p>
+                            Sở hữu hơn **200.000 tin đăng cho thuê nhà trọ thành công**, Phongtro123.com không chỉ đơn thuần là nơi quảng cáo mà còn cung cấp các **công cụ hỗ trợ** tối ưu như định vị vị trí, hình ảnh sắc nét, và khả năng tiếp cận đối tượng mục tiêu chính xác. Đặc biệt, với giao diện thân thiện và dịch vụ chăm sóc khách hàng tận tâm, Phòng Trọ 123 này đã trở thành lựa chọn hàng đầu cho cả người thuê và người cho thuê.
+                        </p>
+                        <p>
+                            Vì vậy, để biến ý tưởng kinh doanh nhà trọ **“siêu lợi nhuận”** thành hiện thực, hãy bắt đầu bằng việc lựa chọn một **kênh quảng bá chuyên nghiệp** như Phongtro123.com. Đây là giải pháp hiệu quả giúp các chủ nhà dễ dàng tiếp cận khách hàng, nâng cao tỷ lệ lấp đầy phòng trọ, và tối đa hóa lợi nhuận trên diện tích đất khiêm tốn. Hãy truy cập **Phòng Trọ 123** ngay hôm nay để đưa nhà trọ của bạn đến gần hơn với những khách thuê phù hợp nhất!
+                        </p>
+                    </div>
+
+                    <h2 class="main-heading">Lời kết</h2>
+                    <div class="article-content">
+                        <p class="mt-4 text-center article-conclusion">
+                            Trên đây là **bí quyết kinh doanh nhà trọ siêu lợi nhuận chỉ với 100m² đất** mà Phongtro123.com đã tổng hợp. Mong rằng với những thông tin hữu ích này sẽ giúp những ai đang "nhăm nhe" ý tưởng kinh doanh cho thuê phòng trọ đưa ra những quyết định chính xác nhất.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>  
+    }
+
+    @* ====== GIAO DIỆN 3: id = 3  (Mô hình người đi làm ưa chuộng) ====== *@
+    else if (id == 3)
+    {
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
+
+                    <header class="mb-4">
+                        @RenderBreadcrumb("Top 5 câu hỏi khi xem phòng trọ sinh viên nên hỏi chủ nhà")
+                        <h1 class="article-title">Top 5 câu hỏi khi xem phòng trọ sinh viên nên hỏi chủ nhà</h1>
+                    </header>
+
+                    <div class="article-content">
+                        <p class="first-paragraph">
+                            Bạn có từng trải qua cảm giác thất vọng khi **thuê phòng trọ** mà không đảm bảo về chất lượng sống? Hay bạn đã bao giờ phải đối mặt với những rắc rối phát sinh từ việc không hỏi rõ thông tin phòng trọ trước khi thuê? Để giúp bạn tránh những tình huống oái oăm như vậy, Phongtro123.com sẽ chia sẻ với bạn **5 câu hỏi CỰC KỲ QUAN TRỌNG** mà bạn nên hỏi chủ nhà khi đi xem phòng trọ.
+                        </p>
+
+                        <figure class="figure mb-4" style="width:100%">
+                            <img src="~/Assets/Images/blog/top-5-cau-hoi-can-hoi-chu-nha-khi-thue-tro_1734342223.jpg" class="article-image" alt="Top 5 câu hỏi nên hỏi chủ nhà khi thuê trọ">
+                            <figcaption class="article-caption">Top 5 câu hỏi nên hỏi chủ nhà khi thuê trọ</figcaption>
+                        </figure>
+
+                        <h3 class="sub-heading">Hiện trạng sinh viên tìm phòng trọ tại các thành phố lớn</h3>
+                        <p>
+                            Hiện nay, việc tìm phòng trọ cho sinh viên tại các thành phố lớn như Hà Nội và TP.HCM đang trở thành một vấn đề nhức nhối đối với không ít bạn trẻ. Theo số liệu từ Phongtro123.com, mỗi tháng, lượng tìm kiếm **phòng trọ cho thuê tại TP.HCM và Hà Nội** đều tăng mạnh, đặc biệt là vào mùa nhập học. Cụ thể, trong tháng 8 và tháng 9, lượng người **tìm phòng trọ TP.HCM** đã tăng hơn **20%**, còn tại Hà Nội cũng ghi nhận mức tăng gần **18%** so với các tháng trước.
+                        </p>
+                        <p>
+                            Vào những thời điểm cao điểm như đầu năm học, việc tìm được một phòng trọ gần trường đại học là điều vô cùng khó khăn. Áp lực cạnh tranh từ số lượng sinh viên mới nhập học lớn đã khiến thị trường phòng trọ trở nên sôi động hơn bao giờ hết. Bên cạnh đó, **chi phí thuê phòng trọ** cũng tăng đáng kể, đặc biệt tại các quận trung tâm và khu vực gần trường đại học. Theo khảo sát, **giá thuê phòng trọ tại TP.HCM** dao động từ **4 - 6 triệu/tháng**, còn tại Hà Nội, mức trung bình khoảng **3 - 5 triệu/tháng**.
+                        </p>
+                        <p>
+                            Ngoài giá cả, **chất lượng phòng trọ** cũng là một vấn đề đáng lo ngại. Nhiều phòng trọ thiếu ánh sáng, không thông thoáng, không đảm bảo vệ sinh và an toàn. Mặt khác, tình trạng chủ nhà tăng giá bất ngờ, hoặc các vấn đề phát sinh liên quan đến hợp đồng thuê nhà cũng khiến không ít sinh viên rơi vào tình huống khó xử.
+                        </p>
+                    </div>
+
+                    <h2 class="main-heading">Top 5 câu hỏi khi xem phòng trọ sinh viên cần hỏi chủ nhà</h2>
+
+                    <h3 class="sub-heading">1. Giá thuê phòng trọ là bao nhiêu và bao gồm chi phí gì thêm?</h3>
+                    <div class="article-content">
+                        <p>
+                            Khi đi xem phòng trọ trực tiếp, việc hỏi chủ nhà về **giá thuê phòng** và các chi phí kèm theo là một bước quan trọng mà người thuê không nên bỏ qua.
+                        </p>
+                        <ul>
+                            <li>
+                                <strong class="content-strong">Hiểu rõ chi phí thực tế:</strong> Giá thuê phòng chỉ là một phần của tổng chi phí bạn phải trả. Có rất nhiều khoản phí khác có thể phát sinh như **tiền điện, nước, internet, phí giữ xe, phí bảo trì...**
+                            </li>
+                            <li>
+                                <strong class="content-strong">So sánh và lựa chọn:</strong> Việc so sánh giá cả và các dịch vụ đi kèm giữa các căn phòng khác nhau là rất cần thiết để bạn tìm được căn phòng phù hợp với nhu cầu và túi tiền của mình.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Tránh hiểu lầm:</strong> Nhiều chủ nhà chỉ đưa ra mức giá thuê cơ bản mà chưa bao gồm các chi phí khác, khiến người thuê hiểu lầm.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Đàm phán giá:</strong> Nếu bạn cảm thấy giá thuê quá cao hoặc các khoản phí đi kèm không hợp lý, bạn hoàn toàn có thể thương lượng với chủ nhà để được giảm giá hoặc điều chỉnh các điều khoản trong hợp đồng.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h3 class="sub-heading">2. Hợp đồng thuê trọ có thời gian tối thiểu và tối đa là bao lâu?</h3>
+                    <div class="article-content">
+                        <p>
+                            Theo **Điều 129 Luật Nhà ở 2014**, bên cho thuê và bên thuê có thể tự thỏa thuận về **thời hạn thuê trọ** mà không bị giới hạn. Tuy nhiên, để tránh các bất tiện sau này, thời gian tối thiểu hợp lý cho **hợp đồng thuê nhà trọ** nên từ **6 tháng trở lên**. Ngược lại, nếu người thuê chỉ có ý định ở trong một thời gian ngắn, việc ký hợp đồng dài hạn có thể gây ra nhiều khó khăn về tài chính và sự linh hoạt. Do đó, xác định rõ thời gian thuê không chỉ giúp bạn lên kế hoạch chi tiêu hợp lý, mà còn tránh tình trạng gánh nặng chi phí trong tương lai.
+                        </p>
+                        <p>
+                            Hơn nữa, một **hợp đồng thuê phòng trọ** rõ ràng về thời gian còn giúp đảm bảo sự ổn định, khiến người thuê an tâm hơn khi quyết định thuê. Bạn sẽ không phải lo lắng về việc chủ nhà tăng giá bất ngờ hay yêu cầu bạn trả phòng khi chưa hết hạn hợp đồng. Ngoài ra, việc thỏa thuận rõ ràng về thời gian thuê giúp tránh các tranh chấp pháp lý, một nguyên nhân phổ biến dẫn đến các mâu thuẫn giữa chủ nhà và người thuê.
+                        </p>
+                    </div>
+
+                    <h3 class="sub-heading">3. Có cần phải đặt cọc tiền thuê nhà trọ và phải đặt cọc bao nhiêu?</h3>
+                    <div class="article-content">
+                        <p>
+                            Sau khi xem phòng và quyết định thuê, bạn nên hỏi trực tiếp chủ nhà về khoản **tiền đặt cọc thuê phòng trọ**. Điều này sẽ giúp bảo vệ quyền lợi của chủ nhà lẫn người thuê.
+                        </p>
+
+                        <p><strong class="content-strong">Đối với chủ nhà:</strong> khoản đặt cọc là một hình thức bảo đảm rằng người thuê sẽ tuân thủ các điều khoản trong hợp đồng, không gây hư hại đến tài sản và sẽ thanh toán tiền thuê đúng hạn. Nó cũng giúp chủ nhà tránh được những rủi ro khi có sự thay đổi đột ngột từ người thuê, chẳng hạn như việc hủy hợp đồng hoặc bỏ đi mà không thông báo.</p>
+
+                        <p><strong class="content-strong">Về phía người thuê:</strong> việc biết trước khoản tiền đặt cọc là rất quan trọng để tránh những bất ngờ tài chính. Số tiền đặt cọc thường dao động từ **1 đến 3 tháng tiền thuê**, tùy thỏa thuận giữa chủ nhà và người thuê.</p>
+
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/dat-coc-tien-thue-nha-tro-bao-nhieu-la-du_1734342048.jpg" class="article-image" alt="Đặt cọc tiền thuê nhà trọ bao nhiêu là đủ?">
+                            <figcaption class="article-caption">Đặt cọc tiền thuê nhà trọ bao nhiêu là đủ?</figcaption>
+                        </figure>
+
+                        <blockquote class="blockquote">
+                            <p class="mb-0"><strong class="content-strong">Lưu ý:</strong> Người thuê trọ nên yêu cầu chủ nhà ghi rõ **số tiền đặt cọc và các điều khoản liên quan đến việc hoàn trả tiền đặt cọc thuê trọ** trong hợp đồng thuê để tránh những tranh chấp không đáng có sau này.</p>
+                        </blockquote>
+                    </div>
+
+                    <h3 class="sub-heading">4. Những tiện nghi trong phòng trọ và tiện ích nổi bật xung quanh?</h3>
+                    <div class="article-content">
+                        <p>
+                            Việc xem xét kỹ lưỡng **tiện nghi có sẵn** và **tiện ích xung quanh** nơi bạn thuê phòng trọ là vô cùng quan trọng. Hãy đặt câu hỏi trực tiếp với chủ nhà để:
+                        </p>
+                        <ul>
+                            <li>Làm rõ các tiện nghi đi kèm như **máy lạnh, máy giặt, tủ lạnh, bếp**... là miễn phí hay tính thêm vào tiền thuê nhà trọ hằng tháng.</li>
+                            <li>Hỏi về tuổi thọ và tình trạng hoạt động của các thiết bị nội thất trong phòng để tránh phải bồi thường chi phí hư hại.</li>
+                            <li>Ngoài các thiết bị điện, bạn cũng nên hỏi về các nội thất đi kèm như **giường, tủ, bàn làm việc**...</li>
+                            <li>Hỏi về các **tuyến xe buýt, trạm xe, hoặc các phương tiện công cộng khác** gần nhà trọ.</li>
+                            <li>Tìm hiểu về các cửa hàng tiện lợi, siêu thị, chợ, nhà hàng, quán ăn, bệnh viện, trường học... xung quanh.</li>
+                            <li>Tìm hiểu về không gian sống xung quanh, **có ồn ào không, có nhiều cây xanh không**...</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="sub-heading">5. Những nội quy cần phải chú ý khi thuê phòng trọ là gì?</h3>
+                    <div class="article-content">
+                        <p>
+                            Khi quyết định thuê trọ, người thuê bắt buộc phải hỏi rõ chủ nhà về **nội quy phòng trọ**. Những câu hỏi về nội quy mà bạn cần quan tâm:
+                        </p>
+                        <div class="rules-box">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Nội Quy Nhà Trọ Cần Hỏi Rõ</h3>
+                            <ul>
+                                <li class="icon-text"><span class="icon">⏰</span> Giờ giấc sinh hoạt chung được quy định như thế nào? Có giờ giới hạn về tiếng ồn không? Có quy định về việc khách ra vào không?</li>
+                                <li class="icon-text"><span class="icon">🧹</span> Có quy định về việc dọn dẹp phòng, khu vực chung như thế nào? Có khu vực giặt giũ riêng biệt không? Chi phí giặt sấy như thế nào? Có quy định về việc vứt rác, phân loại rác không?</li>
+                                <li class="icon-text"><span class="icon">🔒</span> Có quy định về việc khóa cửa, đảm bảo an toàn cho tài sản không?</li>
+                                <li class="icon-text"><span class="icon">🍳</span> Có khu vực bếp nấu chung không? Có quy định về giờ giấc nấu ăn không? Có quy định về việc sử dụng bếp ga, bếp điện không?</li>
+                                <li class="icon-text"><span class="icon">🐶</span> Có quy định về việc nuôi thú cưng không? Có cho phép sử dụng các thiết bị điện lớn như máy giặt, tủ lạnh không? Có quy định về việc treo đồ, dán poster không?</li>
+                                <li class="icon-text"><span class="icon">🗓️</span> Thời gian đóng tiền trọ là đầu tháng hay cuối tháng?</li>
+                                <li class="icon-text"><span class="icon">🛠️</span> Có các loại phí phát sinh nào khác ngoài tiền thuê nhà? (ví dụ: phí sửa chữa, phí làm lại chìa khóa...)</li>
+                            </ul>
+                        </div>
+
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/noi-quy-nha-tro-ban-can-luu-y_1734341791.jpg" class="article-image" alt="Nội quy nhà trọ bạn cần lưu ý">
+                            <figcaption class="article-caption">Nội quy nhà trọ bạn cần lưu ý?</figcaption>
+                        </figure>
+                    </div>
+
+                    <h2 class="main-heading">Tóm tắt</h2>
+                    <div class="article-content">
+                        <p class="mt-4 text-center article-conclusion">
+                            Trên đây là **top 5 câu hỏi** khi xem phòng trọ sinh viên nên hỏi chủ nhà mà Phòng Trọ 123 đã tổng hợp. Mong rằng với những câu hỏi hữu ích này sẽ giúp bạn có được những thông tin cần thiết để đưa ra quyết định **thuê nhà trọ** sáng suốt. Hãy chủ động đặt câu hỏi, trao đổi với chủ nhà và đừng quên lắng nghe cảm nhận của bản thân. Chúc bạn sớm tìm được một nơi ở ưng ý và có những trải nghiệm tuyệt vời nhé!
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">Không tìm thấy bài viết.</div>
+    }
+</div>

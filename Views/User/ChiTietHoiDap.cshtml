@@ -2,7 +2,342 @@
 @{
     ViewBag.Title = "ChiTietHoiDap";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var id = ViewBag.Id is null ? 0 : (int)ViewBag.Id;
 }
 
-<h2>ChiTietHoiDap</h2>
+
+<link href="~/Assets/Css/ChiTietTinTuc.css" rel="stylesheet" />
+
+<div class="container pt-article-page">
+
+    @* =========================================================================
+        KHỐI RAZOR CHUNG CHO BREADCRUMB
+        ========================================================================= *@
+    @helper RenderBreadcrumb(string articleTitle)
+    {
+        <nav class="mb-3 mt-3" aria-label="breadcrumb">
+            <ol class="breadcrumb pt-breadcrumb">
+                <li class="breadcrumb-item">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("Index","User")">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("Blog","User")">Blog</a>
+                </li>
+                <li class="breadcrumb-item" aria-current="page">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("HoiDap","User")">Hỏi Đáp</a>
+                </li>
+                @*<li class="breadcrumb-item active" aria-current="page">
+                        @articleTitle
+                    </li>*@
+            </ol>
+        </nav>
+    }
+
+
+    @* =========================================================================
+        GIAO DIỆN 1: Sáp nhập tỉnh thành
+        ========================================================================= *@
+    @if (id == 1)
+    {
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
+
+                    <header class="mb-4">
+                        @RenderBreadcrumb("Tiền đặt cọc thuê phòng trọ có lấy lại được không?")
+                        <h1 class="article-title">Tiền đặt cọc thuê phòng trọ có lấy lại được không?</h1>
+                    </header>
+
+                    <div class="article-content">
+                        <p class="first-paragraph">
+                            Em là Nguyễn Hà Vy, sinh viên năm nhất trường Đại học Sài Gòn, muốn tìm **thuê phòng trọ tại TP.HCM** để sinh sống và học tập. Tuy nhiên, đến lần đầu thuê trọ nên em còn bỡ ngỡ trước một số câu hỏi liên quan đến tiền cọc thuê trọ: **Tiền cọc thuê phòng trọ là gì? Tiền đặt cọc thuê phòng trọ có lấy lại được không? Trước khi đặt cọc tiền thuê phòng trọ cần lưu ý điều gì? và trả phòng trọ trước hạn có lấy lại được tiền cọc không?** Mong rằng đội ngũ tư vấn của Phongtro123.com sẽ giải đáp giúp em những vấn đề này ạ!
+                        </p>
+
+                        <figure class="figure mb-4" style="width:100%">
+                            <img src="~/Assets/Images/blog/tien-coc-thue-tro-co-lay-lai-duoc-khong_1720661417.jpg" class="article-image" alt="Tiền cọc thuê trọ có lấy lại được không?">
+                            <figcaption class="article-caption">Tiền cọc thuê trọ có lấy lại được không?</figcaption>
+                        </figure>
+
+                        <p class="mt-4">
+                            <strong class="content-strong">Team tư vấn/CSKH Phongtro123 trả lời:</strong>
+                        </p>
+                        <p>
+                            Chào Hà Vy, cảm ơn bạn đã tin tưởng và gửi yêu cầu tư vấn đến website Phongtro123.com và chúng tôi xin giải đáp các vấn đề của bạn như sau:
+                        </p>
+                    </div>
+
+                    <h2 class="main-heading">Tiền cọc thuê phòng trọ là gì?</h2>
+                    <div class="article-content">
+                        <p>
+                            **Tiền cọc thuê phòng trọ** (hay còn gọi là **tiền đặt cọc hay tiền thế chân**) là một khoản tiền mà bạn phải đóng trước cho chủ nhà khi ký kết hợp đồng thuê nhà trọ. Mục đích của việc đặt cọc thuê trọ là để đảm bảo cho cả hai bên thực hiện đúng quyền lợi và nghĩa vụ.
+                        </p>
+
+                        <h3 class="sub-heading">Về mặt pháp lý:</h3>
+                        <ul>
+                            <li>
+                                Tiền cọc được quy định tại **Điều 328 của Bộ luật Dân sự năm 2015**. Theo đó, tiền cọc là một dạng tài sản đảm bảo cho giao kết hoặc thực hiện hợp đồng.
+                            </li>
+                            <li>
+                                Số tiền cọc không được vượt quá **3 tháng tiền thuê phòng trọ** (trừ trường hợp có thỏa thuận khác giữa hai bên).
+                            </li>
+                            <li>
+                                Khi hợp đồng thuê nhà kết thúc, chủ nhà có nghĩa vụ **hoàn trả tiền cọc** cho bạn, trừ đi khoản tiền bồi thường thiệt hại (nếu có).
+                            </li>
+                        </ul>
+
+                        <h3 class="sub-heading">Về mặt thực tế:</h3>
+                        <ul>
+                            <li>
+                                Tiền cọc trọ thường được sử dụng để **bồi thường** cho những thiệt hại mà bạn gây ra cho phòng trọ trong thời gian thuê nhà (ví dụ: làm hỏng đồ đạc, hư hỏng tường, nhà cửa,...).
+                            </li>
+                            <li>
+                                Ngoài ra, tiền cọc cũng có thể được sử dụng để **thanh toán** những khoản tiền thuê phòng còn lại mà bạn chưa thanh toán (nếu có).
+                            </li>
+                        </ul>
+
+                        <h3 class="sub-heading">Có nhiều hình thức đặt cọc khác nhau tùy thuộc vào thỏa thuận giữa chủ nhà và người thuê:</h3>
+                        <ul>
+                            <li>Đặt cọc bằng **tiền mặt** là phổ biến nhất.</li>
+                            <li>**Chuyển khoản** trực tuyến khả an toàn và dễ dàng theo dõi.</li>
+                            <li>Đặt cọc bằng **tài sản** có giá trị sẽ ít phổ biến hơn.</li>
+                        </ul>
+                    </div>
+
+                    <h2 class="main-heading">Tiền đặt cọc thuê phòng trọ có lấy lại được không?</h2>
+                    <div class="article-content">
+                        <p>
+                            Đối với câu hỏi này, Phongtro123 xin trả lời: "**Tiền đặt cọc thuê phòng trọ có thể lấy lại được không tùy vào một số yếu tố**".
+                        </p>
+                        <p>
+                            Theo quy định tại **Điều 325 Luật Dân sự 2015**, **tiền đặt cọc thuê phòng trọ** sẽ được hoàn trả lại hoặc trừ vào tiền thuê trọ ngay sau khi hợp đồng thuê trọ hết hạn (nếu điều kiện là bạn không vi phạm các điều khoản trong hợp đồng). Để nhận lại tiền cọc một cách suôn sẻ, bạn Hà Vy có thể tham khảo thêm một số thông tin mà Phongtro123 đã tổng hợp dưới đây:
+                        </p>
+
+                        <h3 class="sub-heading">1. Thời gian yêu cầu hoàn trả tiền cọc</h3>
+                        <p>
+                            Theo quy định thông thường, bạn có quyền nhận lại tiền cọc trọ trong các trường hợp sau:
+                        </p>
+                        <ul>
+                            <li>Kết thúc hợp đồng **thuê phòng trọ đúng hạn** và không vi phạm điều khoản nào.</li>
+                            <li>Chấm dứt hợp đồng trước thời hạn với **sự đồng ý của chủ trọ**.</li>
+                            <li>Chủ trọ **vi phạm các điều khoản** trong hợp đồng, buộc người thuê phải chấm dứt hợp đồng.</li>
+                        </ul>
+
+                        <h3 class="sub-heading">2. Quy trình lấy lại tiền cọc</h3>
+                        <p>
+                            Để lấy lại tiền cọc một cách thuận lợi, bạn Hà Vy có thể tham khảo quy trình sau:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong class="content-strong">Thỏa thuận rõ ràng về điều khoản đặt cọc:</strong>
+                                <ul>
+                                    <li>Thỏa thuận và ghi rõ số tiền cọc trong hợp đồng. Số tiền cọc thường bằng **1-2 tháng tiền nhà**.</li>
+                                    <li>Xác định rõ **thời gian hoàn trả tiền cọc** sau khi kết thúc hợp đồng hoặc khi thanh lý hợp đồng trước thời hạn.</li>
+                                    <li>Ghi rõ các trường hợp chủ trọ có thể **khấu trừ tiền cọc** (ví dụ: hư hỏng tài sản, vi phạm hợp đồng).</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong class="content-strong">Lưu giữ bằng chứng về tình trạng phòng trọ:</strong>
+                                <ul>
+                                    <li>Ghi lại **hiện trạng phòng trọ**, bao gồm các hư hỏng có sẵn trước khi ký hợp đồng và nhận phòng (**quay video hoặc chụp ảnh**).</li>
+                                    <li>Gửi email cho chủ nhà kèm theo video hoặc hình ảnh để lưu giữ làm bằng chứng.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h2 class="main-heading">Trả phòng trọ trước hạn có lấy lại được tiền cọc không?</h2>
+                    <div class="article-content">
+                        <p>
+                            Trong trường hợp này, bạn Hà Vy có lấy lại được tiền cọc khi trả phòng trọ trước hạn hay không phụ thuộc vào nhiều yếu tố:
+                        </p>
+                        <ul>
+                            <li>
+                                **Hợp đồng có ghi rõ về trường hợp trả phòng trước hạn** và điều khoản về tiền cọc hay không? Ví dụ, hợp đồng có thể quy định bạn phải **bồi thường một khoản phí nhất định** nếu trả phòng trước hạn, hoặc chủ trọ có quyền **giữ lại một phần tiền cọc** để bù đắp thiệt hại.
+                            </li>
+                            <li>
+                                Hợp đồng có cho phép **thương lượng** về việc trả phòng trọ trước hạn hay không?
+                            </li>
+                            <li>
+                                Bạn trả phòng trước hạn vì **lý do chính đáng** do chủ trọ gây ra hay không? Nếu bạn có lý do chính đáng, bạn có thể **yêu cầu chủ trọ hoàn trả tiền cọc đầy đủ**. Tuy nhiên, bạn cần có bằng chứng để chứng minh lý do của mình.
+                            </li>
+                            <li>
+                                Bạn trả phòng trước hạn do **lý do cá nhân** không thuộc trách nhiệm của chủ trọ? Trong trường hợp này, khả năng bạn được hoàn trả tiền cọc sẽ thấp hơn.
+                            </li>
+                            <li>
+                                Hợp đồng quy định **thời gian thông báo** trước khi trả phòng trọ là bao nhiêu ngày? Ví dụ, hợp đồng có thể quy định bạn phải thông báo **30 ngày** trước khi trả phòng. Nếu bạn không thông báo đủ thời gian, chủ trọ có quyền giữ lại một phần hoặc toàn bộ tiền cọc thuê trọ của bạn.
+                            </li>
+                        </ul>
+
+                        <h3 class="sub-heading">Trong trường hợp chủ trọ không hoàn trả tiền cọc:</h3>
+                        <p>
+                            Trong trường hợp chủ trọ gặp khó khăn khi lấy lại tiền cọc, bạn Hà Vy có thể thực hiện các bước sau:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong class="content-strong">Trao đổi trực tiếp:</strong> Cố gắng thảo luận và giải quyết vấn đề một cách hòa bình với chủ nhà.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Gửi văn bản yêu cầu:</strong> Nếu trao đổi trực tiếp không hiệu quả, gửi văn bản chính thức yêu cầu hoàn trả tiền cọc.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Tìm kiếm sự hỗ trợ:</strong> Liên hệ với cơ quan quản lý nhà nước về nhà ở hoặc tổ chức bảo vệ quyền lợi người tiêu dùng để được tư vấn.
+                            </li>
+                            <li>
+                                <strong class="content-strong">Khởi kiện:</strong> Nếu các phương án trên không hiệu quả, bạn có thể cân nhắc việc khởi kiện ra tòa án.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h2 class="main-heading">Khi đặt cọc tiền thuê phòng trọ cần lưu ý gì?</h2>
+                    <div class="article-content">
+                        <p>
+                            Để đảm bảo an toàn và tránh những rủi ro khi thuê phòng trọ, đặc biệt là liên quan đến tiền cọc, bạn Hà Vy cần lưu ý những điểm sau:
+                        </p>
+
+                        <h3 class="sub-heading">1. Kiểm tra kỹ phòng trọ và xác minh thông tin chủ trọ:</h3>
+                        <ul>
+                            <li>Xem xét kỹ lưỡng **tình trạng phòng trọ**, trang thiết bị nội thất, hệ thống điện nước, an ninh khu vực xung quanh.</li>
+                            <li>Xác minh **danh tính**, **thông tin liên lạc**, và **lịch sử** cho thuê phòng của chủ trọ. Cẩn thận với những chủ trọ đưa ra lời hứa hẹn mơ hồ hoặc có dấu hiệu lừa đảo.</li>
+                        </ul>
+
+                        <h3 class="sub-heading">2. Thỏa thuận rõ ràng về điều khoản đặt cọc:</h3>
+                        <ul>
+                            <li>Thỏa thuận và ghi rõ **số tiền cọc** trong hợp đồng. Số tiền cọc thường bằng **1-2 tháng tiền nhà**.</li>
+                            <li>Xác định rõ **thời gian hoàn trả tiền cọc** sau khi kết thúc hợp đồng hoặc khi thanh lý hợp đồng trước thời hạn.</li>
+                            <li>Ghi rõ các trường hợp chủ trọ có thể **khấu trừ tiền cọc** (ví dụ: hư hỏng tài sản, vi phạm hợp đồng).</li>
+                        </ul>
+
+                        <h3 class="sub-heading">3. Lưu giữ bằng chứng về tình trạng phòng trọ:</h3>
+                        <ul>
+                            <li>Ghi lại **hiện trạng phòng trọ**, bao gồm các hư hỏng có sẵn trước khi ký hợp đồng và nhận phòng (**quay video hoặc chụp ảnh**).</li>
+                            <li>Gửi email cho chủ nhà kèm theo video hoặc hình ảnh để lưu giữ làm bằng chứng.</li>
+                        </ul>
+                    </div>
+
+                    <h2 class="main-heading">Lời kết</h2>
+                    <div class="article-content">
+                        <p class="mt-4 text-center article-conclusion">
+                            Trên đây là tất cả những giải đáp về các vấn đề liên quan đến tiền đặt cọc thuê phòng trọ mà **Phongtro123** đã tổng hợp. Mong rằng với những thông tin hữu ích này sẽ giúp bạn Nguyễn Hà Vy tìm được phòng trọ ưng ý nhé!
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    @* =========================================================================
+        GIAO DIỆN 2: Thuê phòng trọ cần mang những giấy tờ gì? (Đã chuẩn hóa)
+        ========================================================================= *@
+    else if (id == 2)
+    {
+<div class="container article-container mx-auto">
+    <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+        <div class="col-12">
+
+            <header class="mb-4">
+                @RenderBreadcrumb("Đóng tiền thuê phòng trọ đầu tháng hay cuối tháng?")
+                <h1 class="article-title">Đóng tiền thuê phòng trọ đầu tháng hay cuối tháng?</h1>
+            </header>
+
+            <div class="article-content">
+                <p class="first-paragraph">
+                    Hỏi: Xin chào Phongtro123, tôi là Phạm Văn Nam 27 tuổi, hiện đang thuê **phòng trọ TP.HCM** tại khu vực Gò Vấp. Tôi khá băn khoăn về thời điểm đóng tiền thuê phòng trọ ở khu vực này là đầu tháng hay cuối tháng? Rất mong Phongtro123 sẽ cho tôi những lời khuyên chính xác.
+                </p>
+
+                <figure class="figure mb-4" style="width:100%">
+                    <img src="~/Assets/Images/blog/dong-tien-tro-dau-thang-hay-cuoi-thang_1720575516.jpg" class="article-image" alt="Đóng tiền trọ đầu tháng hay cuối tháng?">
+                    <figcaption class="article-caption">Đóng tiền trọ đầu tháng hay cuối tháng?</figcaption>
+                </figure>
+
+                <p class="mt-4">
+                    <strong class="content-strong">Phongtro123 trả lời:</strong>
+                </p>
+                <p>
+                    Chào bạn, cảm ơn bạn đã gửi yêu cầu tư vấn đến trang web Phongtro123.com của chúng tôi. Vấn đề bạn muốn hỏi là:
+                </p>
+            </div>
+
+            <h2 class="main-heading">Đóng tiền thuê phòng trọ đầu tháng hay cuối tháng?</h2>
+            <div class="article-content">
+                <p>
+                    Theo quy định chung của pháp luật Việt Nam, không có quy định bắt buộc về thời điểm đóng tiền thuê phòng trọ. Tuy nhiên, **Điều 121 Luật nhà ở 2014** có quy định:
+                </p>
+                <blockquote class="blockquote">
+                    <h3 class="sub-heading">Điều 121.</h3>
+                    <ol>
+                        <li>
+                            Thời hạn và phương thức thanh toán tiền thuê nếu là trường hợp mua bán, cho thuê, cho thuê mua, chuyển nhượng hợp đồng mua bán nhà ở;
+                        </li>
+                        <li>
+                            Thời gian giao nhận nhà ở; thời gian bảo hành nhà ở nếu là mua, thuê mua nhà ở được đầu tư xây dựng mới; **thời hạn cho thuê, cho thuê mua, thế chấp, cho mượn, cho ở nhờ, ủy quyền quản lý nhà ở; thời hạn góp vốn**;
+                        </li>
+                    </ol>
+                </blockquote>
+
+                <p>
+                    Do đó, hai bên có thể **tự do thỏa thuận** về thời điểm đóng tiền trọ trong hợp đồng thuê phòng trọ dựa trên nhu cầu và điều kiện cụ thể của mỗi người. Thỏa thuận này cần được ghi rõ ràng, cụ thể và có giá trị pháp lý để tránh những tranh cãi phát sinh sau này. Về thời điểm đóng tiền trọ, bạn cần lưu ý các yếu tố:
+                </p>
+
+                <ul>
+                    <li>
+                        <strong class="content-strong">Thời điểm thanh toán:</strong> Đầu tháng, cuối tháng, hay ngày cụ thể trong tháng.
+                    </li>
+                    <li>
+                        <strong class="content-strong">Hình thức thanh toán:</strong> Tiền mặt, chuyển khoản ngân hàng, hay phương thức khác.
+                    </li>
+                    <li>
+                        <strong class="content-strong">Số tiền thanh toán:</strong> Bao gồm tiền thuê nhà chính và các khoản phí khác (nếu có).
+                    </li>
+                </ul>
+
+                <p>
+                    Theo điều tra thực tế của Phongtro123, thời điểm đóng tiền **thuê phòng trọ** phổ biến nhất tại TP.HCM là **vào đầu tháng**. Việc đóng tiền thuê phòng trọ vào đầu tháng giúp người thuê dễ dàng ghi nhớ và sắp xếp các khoản chi tiêu trong tháng. Hơn nữa, hầu hết các chủ nhà đều muốn nhận tiền thuê phòng trọ vào đầu tháng để có thể trang trải các chi phí liên quan đến việc cho thuê nhà như sửa chữa hoặc bảo dưỡng định kỳ.
+                </p>
+                <p>
+                    Tuy nhiên, cũng có trường hợp người thuê và chủ nhà thỏa thuận đóng tiền thuê phòng trọ vào **cuối tháng**. Cách thức này ít phổ biến hơn so với đóng tiền đầu tháng, nhưng cũng được áp dụng trong một số trường hợp. Việc đóng tiền cuối tháng thường phù hợp với những người có thu nhập không cố định hoặc nhận lương vào cuối tháng. Tùy nhiên, cần lưu ý rằng chủ nhà có thể yêu cầu người thuê trọ đóng tiền cọc để đảm bảo cam kết thanh toán đúng hạn.
+                </p>
+                <p>
+                    Ngoài ra, thời điểm đóng tiền thuê phòng trọ còn có thể thay đổi tùy theo **thỏa thuận giữa chủ nhà và người thuê trọ**. Ví dụ, hai bên có thể thống nhất đóng tiền vào **ngày 5 hoặc ngày 15 hàng tháng**. Điều quan trọng là cả hai bên đều đồng ý với thời điểm được lựa chọn và ghi rõ khoản này trong hợp đồng thuê nhà.
+                </p>
+            </div>
+
+            <h2 class="main-heading">Một vài lưu ý khi đóng tiền thuê phòng trọ</h2>
+            <div class="article-content">
+                <p>
+                    Việc đầu tiên cần làm là xác định ngày đóng tiền cụ thể trong tháng. Nên chọn ngày dễ nhớ, phù hợp với lịch nhận lương/thu nhập của bạn và lịch thu chi của chủ nhà trọ.
+                </p>
+                <p><strong class="content-strong">Ví dụ:</strong> Ngày mùng 5, ngày 10, ngày 15, hoặc ngày cuối cùng của tháng.</p>
+
+                <ul>
+                    <li>
+                        Bên cạnh đó, bạn và chủ trọ cần thống nhất **hình thức thanh toán tiền thuê nhà**: **tiền mặt, chuyển khoản ngân hàng, hay ví điện tử**. Nên ghi rõ hình thức thanh toán trong hợp đồng để tránh mâu thuẫn sau này.
+                    </li>
+                    <li>
+                        Sau mỗi lần thanh toán, bạn nên **ghi chép lại số tiền** đã thanh toán, ngày thanh toán và hình thức thanh toán. Bạn cũng nên **yêu cầu chủ trọ cung cấp hóa đơn thanh toán** để lưu giữ và làm bằng chứng đối chiếu nếu xảy ra tranh chấp.
+                    </li>
+                    <li>
+                        Hơn nữa, cần đưa ra những **thỏa thuận về phí phạt** hoặc **hình thức xử lý** nếu bạn thanh toán trễ hạn. Mặt khác, có thể linh hoạt điều chỉnh thời gian thanh toán trong một số trường hợp bất khả kháng như thiên tai, dịch bệnh,... tuy nhiên cần có sự thỏa thuận trước giữa hai bên.
+                    </li>
+                    <li>
+                        Quan trọng hơn hết, sau khi đã soạn xong hợp đồng, bạn cần **phải đọc kỹ lại từng điều khoản** trước khi ký kết. Nếu có bất kỳ thắc mắc nào, hãy trao đổi cởi mở với chủ nhà trọ để tìm ra giải pháp chung.
+                    </li>
+                </ul>
+            </div>
+
+            <h2 class="main-heading">Lời kết</h2>
+            <div class="article-content">
+                <p class="mt-4 text-center article-conclusion">
+                    Trên đây là giải đáp của Phongtro123.com cho câu hỏi "**Đóng tiền thuê phòng trọ đầu tháng hay cuối tháng?**". Mong rằng những thông tin này sẽ giúp ích cho anh Phạm Văn Nam trong việc giải đáp thắc mắc về thời điểm đóng tiền thuê phòng trọ nhé!
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+    }
+    else
+    {
+        <div class="alert alert-warning">Không tìm thấy bài viết.</div>
+    }
+</div>
 

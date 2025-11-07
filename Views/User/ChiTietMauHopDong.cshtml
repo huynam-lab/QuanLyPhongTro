@@ -2,7 +2,497 @@
 @{
     ViewBag.Title = "ChiTietMauHopDong";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var id = ViewBag.Id is null ? 0 : (int)ViewBag.Id;
 }
 
-<h2>ChiTietMauHopDong</h2>
+
+<link href="~/Assets/Css/ChiTietTinTuc.css" rel="stylesheet" />
+
+<div class="container pt-article-page">
+
+    @* =========================================================================
+        KHỐI RAZOR CHUNG CHO BREADCRUMB
+        ========================================================================= *@
+    @helper RenderBreadcrumb(string articleTitle)
+    {
+        <nav class="mb-3 mt-3" aria-label="breadcrumb">
+            <ol class="breadcrumb pt-breadcrumb">
+                <li class="breadcrumb-item">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("Index","User")">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("Blog","User")">Blog</a>
+                </li>
+                <li class="breadcrumb-item" aria-current="page">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("MauHopDong","User")">Mẫu Hợp Đồng</a>
+                </li>
+                @*<li class="breadcrumb-item active" aria-current="page">
+                        @articleTitle
+                    </li>*@
+            </ol>
+        </nav>
+    }
+
+
+    @* =========================================================================
+        GIAO DIỆN 1: Sáp nhập tỉnh thành
+        ========================================================================= *@
+    @if (id == 1)
+    {
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
+
+                    <!-- HEADER & BREADCRUMB -->
+                    <header class="mb-4">
+                        @* Gọi helper RenderBreadcrumb đã được định nghĩa ở trên *@
+                        @RenderBreadcrumb("Mẫu hợp đồng cho thuê mặt bằng kinh doanh")
+                        <h1 class="article-title">Mẫu hợp đồng cho thuê mặt bằng kinh doanh</h1>
+                    </header>
+
+                    <!-- NỘI DUNG MỞ ĐẦU -->
+                    <div class="article-content">
+                        <p class="first-paragraph">
+                            Hợp đồng cho thuê mặt bằng kinh doanh là một văn bản pháp lý quan trọng, giúp bảo vệ quyền lợi và nghĩa vụ của cả bên cho thuê và bên thuê. Dưới đây là những nội dung chi tiết cần có và mẫu hợp đồng mới nhất mà Phongtro123 đã tổng hợp.
+                        </p>
+                    </div>
+
+                    <!-- MỤC 1: NHỮNG NỘI DUNG CẦN CÓ TRONG HỢP ĐỒNG -->
+                    <h2 class="main-heading">Những nội dung cần có trong hợp đồng thuê mặt bằng kinh doanh</h2>
+                    <div class="article-content">
+                        <h3 class="sub-heading">1) Thông tin hai bên tham gia ký hợp đồng</h3>
+                        <p>
+                            Phần thông tin của bên thuê và bên cho thuê mặt bằng, gồm các thông tin cá nhân như họ tên, ngày sinh, số CMND (hoặc CCCD) và địa chỉ thường trú. Dựa vào phần thông tin sẽ biết được có phải là chính chủ cho thuê hay không, nếu là trung gian thì sẽ có thêm thông tin của cá nhân/tập thể đó.
+                        </p>
+
+                        <h3 class="sub-heading">2) Đối tượng trong hợp đồng cho thuê</h3>
+                        <p>
+                            Về bất động sản thì các đối tượng hợp đồng sẽ là đất đai, nhà cửa, căn hộ,... tài sản có thể sinh ra lợi nhuận kinh doanh. Cụ thể ở đây thì mặt bằng kinh doanh (hoặc ki-ốt) chính là đối tượng. Phần này sẽ bao gồm các thông tin về vị trí, diện tích và mục đích sử dụng của mặt bằng.
+                        </p>
+
+                        <h3 class="sub-heading">3) Thời hạn thuê mặt bằng</h3>
+                        <p>
+                            Thời gian bắt đầu thuê và kết thúc hợp đồng, thỏa thuận khi hết hợp đồng thuê thì bên thuê có trách nhiệm phải làm gì (dọn dẹp, trao trả…), nếu muốn tiếp tục thuê thì có điều kiện gì.
+                        </p>
+
+                        <h3 class="sub-heading">4) Giá tiền thuê mặt bằng</h3>
+                        <p>
+                            Bao gồm tiền thuê mặt bằng phải trả, phương thức thanh toán (hạn trả), cách thức thanh toán bằng tiền mặt hay chuyển khoản. Nếu thanh toán tiền chậm trễ thì sẽ có mức tính lãi hay không, nếu có thì mức lãi hàng tháng là bao nhiêu (phải tuân thủ theo quy định pháp luật).
+                        </p>
+
+                        <h3 class="sub-heading">5) Trách nhiệm của 2 bên thuê và cho thuê, thỏa thuận đặt cọc, thỏa thuận chung trong hợp đồng</h3>
+                        <p>
+                            Đây là phần quan trọng cần lưu ý kĩ trong hợp đồng, về phần trách nhiệm thì sẽ có riêng phần cho bên A (bên thuê) và bên B (bên cho thuê). Cụ thể các việc được làm và không được làm trong quá trình hợp đồng cho thuê mặt bằng có hiệu lực.
+                        </p>
+                        <ul>
+                            <li>Đặt cọc thì sẽ nêu rõ số tiền (tài sản) đặt cọc, thường thì nếu bên thuê chấm dứt hợp đồng sớm thì sẽ mất cọc.</li>
+                            <li>Các thỏa thuận chung thì nên được soạn thảo dựa trên sự đồng thuận sau khi 2 bên đã thương lượng, thỏa thuận với nhau.</li>
+                            <li>Nên có các điều khoản về việc sử dụng mặt bằng của căn nhà, chấm dứt hợp đồng và việc giải quyết tranh chấp nếu có.</li>
+                            <li>Tốt nhất là đạt được thỏa thuận mà đôi bên cùng có lợi (win-win), và cần phải xem kĩ để tránh các mâu thuẫn xảy ra sau này.</li>
+                        </ul>
+                    </div>
+
+                    <!-- MỤC 2: HẬU QUẢ NẾU KHÔNG SỬ DỤNG HỢP ĐỒNG -->
+                    <h2 class="main-heading">Hậu quả nếu không sử dụng hợp đồng cho thuê</h2>
+                    <div class="article-content">
+                        <p>
+                            Nếu không có hợp đồng thì khi xảy ra tranh chấp sẽ rất khó giải quyết vì không có cơ sở pháp quyết để cơ quan chức năng làm việc.
+                        </p>
+                        <h3 class="sub-heading">Rủi ro đối với Bên thuê:</h3>
+                        <ul>
+                            <li>Bên cho thuê đột nhiên tăng giá tiền thuê, hoặc bên thuê không đảm bảo được quyền sử dụng mặt bằng.</li>
+                            <li>Phát sinh các vấn đề về sử dụng mặt tiền căn nhà, bên cho thuê có thể đột ngột đòi lại mặt bằng, …</li>
+                        </ul>
+
+                        <h3 class="sub-heading">Rủi ro đối với Bên cho thuê:</h3>
+                        <ul>
+                            <li>Bên thuê tự ý sửa sang mặt bằng kinh doanh mà không cần sự đồng ý của bên cho thuê.</li>
+                            <li>Bên thuê làm hỏng nhà, hư hao tài sản, hoặc chấm dứt việc thuê mặt bằng không có báo trước, …</li>
+                        </ul>
+                    </div>
+
+                    <!-- MỤC 3: MẪU HỢP ĐỒNG THUÊ MẶT BẰNG KINH DOANH -->
+                    <h2 class="main-heading">Mẫu hợp đồng cho thuê mặt bằng kinh doanh 2023 (tham khảo)</h2>
+
+                    <!-- ẢNH HỢP ĐỒNG -->
+                    <figure class="figure mb-4" style="width:100%">
+                        <!-- Ảnh hợp đồng 1 từ file image_91f71b.png -->
+                        <img src="~/Assets/Images/blog/ky-ket-hop-dong-thue-mat-bang_1701142189.jpg" class="article-image" alt="Mẫu hợp đồng cho thuê mặt bằng trang 1">
+                        <figcaption class="article-caption">Trang 1/4: Phần mở đầu và thông tin các bên.</figcaption>
+                    </figure>
+
+                    <div class="article-content">
+                        <div class="contract-section p-4 my-4 border rounded" style="border-left: 5px solid #007bff !important; background-color: #f8f9fa;">
+                            <pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Times New Roman', serif; font-size: 14px;">
+                            <strong style="text-align: center; display: block;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong>
+                            <strong style="text-align: center; display: block;">Độc lập – Tự do – Hạnh phúc</strong>
+                            <br />
+                            <strong style="text-align: center; display: block; font-size: 18px;">HỢP ĐỒNG THUÊ MẶT BẰNG</strong>
+                            <strong style="text-align: center; display: block;">(Số ……/……)</strong>
+                            <br />
+                            - Căn cứ Bộ luật Dân sự năm 2015.
+                            - Căn cứ nhu cầu thuê mặt bằng của ……………………, cũng như khả năng cho thuê mặt bằng.
+                            <br />
+                            Hôm nay, ngày………tháng………năm ……., tại Phòng công chứng số …, trước mặt Công chứng viên, chúng tôi ký tên dưới đây, những người tự nhận thấy có đủ năng lực hành vi và tự chịu trách nhiệm trước pháp luật về mọi hành vi của mình, gồm:
+
+                            <br /><strong style="font-size: 16px;">Bên A: ( Bên cho thuê)</strong>
+                            Ông/Bà: …………………………………...
+                            Số CMND: …………….., cấp ngày …. tháng …. năm……..tại: ……………….
+                            Địa chỉ trường trú: ………………………………………………………………………...
+                            Hoặc Công ty: ……………………………………………………………………………..
+                            Địa chỉ: ……………………………………………………………………………………...
+                            GPKD số: ………………… do sở KH&ĐT…......cấp lần đầu ngày …………………...
+                            Mã số thuế: …………………
+                            ĐT: ……………………. Fax: …………………………………...
+                            Đại diện: Ông ………………………….. Chức vụ: …………………….
+
+                            <br /><strong style="font-size: 16px;">Bên B: (Bên thuê)</strong>
+                            Ông/Bà:…………………………………….
+                            Số CMND: …………….., cấp ngày …. tháng …. năm ………. tại:……………..
+                            Địa chỉ trường trú: …………………………………………………………………………..
+                            Hoặc Công ty:………………………………………………………………………………..
+                            Địa chỉ: ……………………………………………………………………………………….
+                            GPKD số: ………………… do sở KH&ĐT……...…. cấp lần đầu ngày ……………….
+                            Mã số thuế: ……………………………….
+                            ĐT: ……………………. Fax: …………………………………………..
+                            Đại diện: Ông …………………….. Chức vụ: ………………………...
+
+                            <br />Cùng thỏa thuận giao kết hợp đồng thuê mặt bằng với các nội dung sau:
+
+                            <br /><strong style="font-size: 16px;">Điều 1: Nội dung hợp đồng</strong>
+                            Bên A đồng ý cho bên B thuê mặt bằng gồm:
+                            - Toàn bộ phần sân tại địa chỉ ……………………………, với diện tích là ………….
+                            - Căn nhà tại địa chỉ ……………………, với diện tích là ……………………………..
+                            - Mục đích thuê: Kinh doanh ……………………………..
+
+                            <br /><strong style="font-size: 16px;">Điều 2: Đơn giá và phương thức thanh toán</strong>
+                            2.1 Đơn giá:
+                            - Giá thuê mặt bằng là ................ trong vòng 06 tháng đầu từ ngày ....................... đến ngày ..........................
+                            - Giá thuê mặt bằng là ...................... trong 01 năm tiếp theo từ ngày .................... đến ngày ...............................
+                            - Giá thuê mặt bằng là ............................ trong thời hạn còn lại của hợp đồng từ ngày ..................... đến ngày .......
+                            - Giá thuê mặt bằng từ ............... đến .................... sẽ được bên cho thuê điều chỉnh căn cứ theo sự trượt giá của đồng tiền, nhưng không được vượt quá 10% so với giá cũ liền kề trước đó. Trong trường hợp đồng tiền không có sự trượt giá tại thời điểm điều chỉnh so với thời điểm ký kết hợp đồng này thì bên cho thuê không điều chỉnh giá thuê mặt bằng.
+                            2.2 Phương thức thanh toán
+                            - Tiền thuê nhà sẽ được thanh toán từ ngày ................. đến ngày ....................của mỗi tháng. Nếu bên B thanh toán trễ sẽ tính theo lãi suất tiền gửi tiết kiệm kỳ hạn ............. tháng của ngân hàng ................ nhân với số ngày trễ hạn.
+                            2.3 Tất cả các khoản thuế có liên quan đến mặt bằng cho thuê thù bên B đóng
+                            - Điện thắp sáng: Bên B sẽ tiến hành lắp đặt đồng hồ điện ba pha mới tại căn nhà số ............, không sử dụng đồng hood cũ của căn nhà số ................
+                            - Tiền nước: Sẽ căn cứ vào chỉ số nước của bên B sử dụng theo giấy báo tiền nước hàng tháng. Và sẽ được tính từ ngày nhận mặt bằng là ngày: ....................
+                            - Nước giếng : Bên B sẽ tự tiến hành khoan giếng mới để phục vụ cho hoạt động kinh doanh của mình, bên B không sử dụng giếng máy của bên A.
+
+                            <br /><strong style="font-size: 16px;">Điều 3: Phạm vi hoạt động</strong>
+                            - Bên B chỉ được sử dụng phần diện tích mặt bằng thuê vào việc kinh doanh mà ben B đã đăng ký.
+                            - Bên B được phép trang trí, sửa chữa phần nội thất bên trong, ngoại thất bên ngoài mặt bằng đề phù hợp với ngành nghề kinh doanh của B.
+                            - Bên B được trang trí và treo bảng hiệu ở mặt tiền để phục vụ cho việc quảng bá và giới thiệu công việc kinh doanh của bên B.
+                            - Do tính chất công việc, bên B được phép hoạt động 24/24 kể cả ngày Lễ, Tết và Chủ Nhật.
+                            - Bên B có thể tiến hành khảo sat, thiết kế mặt bằng ngay trong tháng.........., thời hạn giao mặt bằng trễ nhất là ........ thời điểm bắt đầu tính phí thuê mặt bằng là ngày .............
+                            - Do nhu cầu công việc, bên B tiến hành sửa chữa và dỡ bỏ các hạng mục dưới đây:
+                            + Hoàn toàn phần cửa kéo và hàng rào phiá trước.
+                            + Hai bồn hoa dọc theo hai bên hàng rào.
+                            + Toàn bộ kết cấu sân bê tông.
+                            Để sửa chữa và dỡ bỏ các hạng mục này bên B đồng ý thanh toán cho bên A số tiền là .......... đồng. Sô tiền này được thanh toán ngay khi chấm dứt hợp đồng này.
+                            
+                            <br /><strong style="font-size: 16px;">ĐIều 4: Trách nhiệm của mỗi bên</strong>
+                            4.1 Trách nhiệm của bên A
+                            - Tạo điều kiện dễ dàng và thuận lợi cho bên B đươc làm việc và kinh doanh tại mặt bằng thuê.
+                            - Bảo đảm mặt bằng cho thuê thuộc quyền sở hữu hợp pháp của bên A, không có sự tranh chấp quyền lợi tư cá nhân hay tổ chức nào khác.
+                            - Hỗ trợ về mặt pháp lý cho bên B trong việc đăng ký hoạt động kinh doanh có liên quan đến địa chỉ thuê.
+                            4.2 Trách nhiệm của bên B
+                            - Thanh toán đầy đủ và đúng hạn cho bên A như đã ghi ở điều 2.
+                            - Đăng ký tạm trú tạm vắng cho nhân viên ở tại địa chỉ thuê.
+                            - Thực hiện đầy đủ tất cả các nghĩa vụ ở tại địa chỉ thuê.
+                            - Thực hiện đầy đủ tất cả cá nghĩa vụ về thuế và tài chính với cơ quan có thẩm quyền liên quan đến hoạt động kinh doanh và việc thực hiện hợp đồng này.
+                            - Chịu trách nhiệm đăng ký kinh doanh và hoạt động kinh doanh theo đúng pháp luật và quy định của nhà nước.
+                            - Không kinh doanh các ngành nghề vi phạm pháp luật. Sử dụng diện tích thuê đúng mục đích đã cam kết. Trong quá trình sử dụng đảm bảo an ninh và an toàn phòng cháy chứa cháy. Đảm bảo tuân thủ các quy định của pháp luật về vẹ sinh môi trường theo quy định.
+                            - Tự quản lý và tự chịu trách nhiệm về tài sản của mình.
+                            - Trong quá trình sử dụng, nếu bên B muốn sửa chữa, xây dựng hạng mục mới có ảnh hưởng đến kết cấu, kiến trúc của tài sản thuê thì phải bàn bạc với bên A và chỉ được thực hiện khi có sự đồng ý của bên A.
+
+                            <br /><strong style="font-size: 16px;">Điều 5: Thời hạn hợp đồng</strong>
+                            - Thời hạn hợp đồng là .................. năm kể từ ngày .............. đến.............
+                            - Hết thời hạn thuê nêu trên, nếu hai bên có nhu cầu và muốn tiếp tục thực hiện hợp đồng thì sẽ cùng nhau thỏa thuận ký kết hợp đồng mới.
+                            - Khi hết hạn hợp đồng mà hai bên không tiếp tục ký kết hợp đồng mới thì bên B phải trả lại mặt bằng cho bên A ngay khi chấm dứt hợp đồng thuê. Bên B sẽ có thời hạn là 30 ngày để dọn dẹp, vận chuyển tài sản, trang thiết bị của mình và phải trả lại mặt bằng thuê sau khi đã cải tạo, sửa chữa lại cho bên A.
+
+                            <br /><strong style="font-size: 16px;">Điều 6: Đặt cọc</strong>
+                            - Để dảm bảo cho việc thực hiện hợp đòng này bên B đặt cọc cho bên A số tiền là ............. khi tiến hành ký kết hợp đồng này.
+                            - Toàn bộ số tiề đặt cọc sẽ được trả lại cho bên B sau khi hết hạn hợp đồng và trừ đi các khoản chi phí (nếu có). Nếu trong quá trình thực hiện hợp đồng, Bên B chấm dứt hợp đồng trước thời hạn sẽ mất sô tiền cọc. Trong trường hợp bên A chấm dứt hợp đồng trước thời hạn sẽ trả lại tiền cọc cho bên B và phải trả thêm cho bên B số tiền đúng bằng ............
+
+                            <br /><strong style="font-size: 16px;">Điều 7: Đơn phương chấm dứt hợp đồng</strong>
+                            - Bên A có quyền đơn phương chấm dứt hợp đồng và yêu cầu bồi thường thietj hại, nếu bên B có một trong các hành vi sau đây:
+                            + Không trả tiền thuê nahf liên tiếp 2 (hai) tháng mà không được sự đống ý bằng văn bản của bên A.
+                            + Sử dụng tài sản thuê không đúng mục đích đã cam kết theo hợp đồng, hoặc thực hiện các hành vi vi phạm các quy định của pháp luật liên quan đến vệ sinh, môi trường, an toàn phòng cháy chữa cháy và an toàn trật tự xã hội diện tích thuê nói trên.
+                            + Làm nhà hư hỏng nghiêm trọng.
+                            - Khi đơn phương chấm dứt hợp đồng này Bên A phải báo cho bên B biết trước 30 9ba mươi) ngày. Trong thời hạn báo trước này, Bên B phải dọn dẹp, vận chuyển tài sản, trang thiết bị của mình và phải trả lại mặt bằng thuê sau khi đã cải tạo, sửa chữa lại cho bên A.
+
+                            <br /><strong style="font-size: 16px;">Điều 8: Các diều khoản khác</strong>
+                            - Hai bên cam kết thực hiện đúng các điều khoản dã ghi trong hợp đồng.
+                            - Trong suốt thời gian hợp đồng có hiệu lực, nếu phát sinh điều gì không có trong hợp đồng thì hai bên sẽ cùng nhau thương lượng và bàn cách giải quyết trên tinh thần tôn trọng và hợp tác lẫn nhau. Nếu không giải quyết được, sự việc sẽ được yêu cầu tòa án giải quyết, phán quyết của tòa án là quyết định cuối cùng.
+                            - Trong trường hợp thay đổi hợp đồng này phải được sự đồng ý của hai bên và phải được lập thành phụ lục. Trong trường hợp không có sự thay đổi, hai bên sẽ tiếp tục thực hiện hợp đồng đến khi chấm dứt hợp đồng.
+                            - Hợp đồng này có hiệu lực kể từ ngày ký, được thành lập thành 03 (ba) bản, mỗi bản gồm 04 (bốn) trang, mỗi bên giữ 01 (môt) bản, Phòng công chứng ....... lưu một bản, và các bản có giá trị pháp lý như nhau.
+                            
+                            <br />
+                            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                            <div style="text-align: center;">
+                            <strong style="display: block;">ĐẠI DIỆN BÊN A</strong>
+                            <span style="display: block; font-size: 12px;">(Ký tên và đóng dấu)</span>
+                                </div>
+                            <div style="text-align: center;">
+                            <strong style="display: block;">ĐẠI DIỆN BÊN B</strong>
+                            <span style="display: block; font-size: 12px;">(Ký tên và đóng dấu)</span>
+                                </div>
+                            </div>
+                        </pre>
+                        </div>
+                    </div>
+
+                    <!-- MỤC 4: NHỮNG LƯU Ý KHI SOẠN HỢP ĐỒNG -->
+                    <h2 class="main-heading">Những lưu ý khi soạn hợp đồng cho thuê mặt bằng</h2>
+                    <div class="article-content">
+                        <p>
+                            Hợp đồng cho thuê mặt bằng là một loại hợp đồng dân sự, được ký kết giữa bên cho thuê mặt bằng (chủ nhà) và bên thuê mặt bằng (người thuê) để thỏa thuận về việc cho thuê và sử dụng mặt bằng.
+                        </p>
+                        <p>
+                            Để đảm bảo quyền lợi của cả hai bên, khi soạn hợp đồng cho thuê mặt bằng cần lưu ý những điều sau:
+                        </p>
+                        <ul>
+                            <li><strong class="content-strong">Thông tin của các bên tham gia hợp đồng:</strong> ghi rõ họ tên, địa chỉ, số chứng minh nhân dân/căn cước công dân, số điện thoại, email.</li>
+                            <li><strong class="content-strong">Thông tin về mặt bằng thuê</strong> bao gồm địa chỉ, diện tích và mục đích sử dụng.</li>
+                            <li><strong class="content-strong">Thời hạn thuê mặt bằng:</strong> ghi rõ ngày bắt đầu và ngày kết thúc thời hạn thuê.</li>
+                            <li><strong class="content-strong">Giá thuê mặt bằng:</strong> ghi rõ bằng tiền Việt Nam đồng, kèm theo đơn vị tiền tệ.</li>
+                            <li><strong class="content-strong">Phí dịch vụ:</strong> ghi rõ các khoản phí dịch vụ mà bên thuê phải trả cho bên cho thuê, bao gồm: phí điện, phí nước, phí bảo vệ, phí vệ sinh,...</li>
+                            <li><strong class="content-strong">Tiền cọc:</strong> ghi rõ số tiền cọc mà bên thuê phải đặt cọc cho bên cho thuê, kèm theo thời hạn hoàn trả tiền cọc.</li>
+                            <li><strong class="content-strong">Trách nhiệm của bên cho thuê và bên thuê.</strong></li>
+                            <li><strong class="content-strong">Phạt vi phạm hợp đồng:</strong> Trường hợp bên thuê vi phạm hợp đồng, bên cho thuê có quyền yêu cầu bên thuê bồi thường thiệt hại.</li>
+                        </ul>
+                        <p>
+                            Ngoài ra, để đảm bảo tính pháp lý của hợp đồng, các bên tham gia hợp đồng nên **công chứng, chứng thực hợp đồng tại cơ quan có thẩm quyền.**
+                        </p>
+                    </div>
+
+                    <!-- KẾT LUẬN -->
+                    <h2 class="main-heading">Lời kết</h2>
+                    <div class="article-content">
+                        <p class="mt-4 text-center article-conclusion">
+                            Trên đây là mẫu hợp đồng cho thuê mặt bằng 2023 hoàn toàn hợp pháp mà Phongtro123.com đã tổng hợp, các bạn có thể tham khảo và sử dụng. Hy vọng rằng bài viết sẽ giúp ích được cho các bạn trong quá trình thuê mặt bằng để phát triển công việc kinh doanh của mình.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    @* =========================================================================
+        GIAO DIỆN 2: Thuê phòng trọ cần mang những giấy tờ gì? (Đã chuẩn hóa)
+        ========================================================================= *@
+    else if (id == 2)
+    {
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
+
+                    <header class="mb-4">
+                        @* Gọi helper RenderBreadcrumb đã được định nghĩa ở trên *@
+                        @RenderBreadcrumb("Mẫu hợp đồng cho thuê phòng trọ, nhà trọ chuẩn nhất 2024")
+                        <h1 class="article-title">Mẫu hợp đồng cho thuê phòng trọ, nhà trọ chuẩn nhất 2024</h1>
+                    </header>
+
+                    <div class="article-content">
+                        <p class="first-paragraph">
+                            Tìm thuê phòng trọ, nhà trọ luôn là nhu cầu thiết yếu của đông đảo sinh viên hoặc người lao động đang tìm nơi sinh sống và làm việc tại các thành phố lớn. Trong đó, khi thuê trọ, cả chủ nhà lẫn người thuê soạn thảo và ký kết hợp đồng cho thuê nhà trọ, phòng trọ để đảm bảo quyền lợi và tránh những rủi ro không cần thiết. Vậy hợp đồng cho thuê nhà trọ là gì? Mẫu hợp đồng cho thuê phòng trọ nào là chính xác nhất hiện nay? Hãy cùng Phongtro123 phân tích về những mẫu hợp đồng cho thuê phòng trọ, nhà trọ chuẩn nhất năm 2024 nhé!
+                        </p>
+                    </div>
+
+                    <h2 class="main-heading">Khái niệm hợp đồng cho thuê phòng trọ, nhà trọ</h2>
+                    <div class="article-content">
+                        <p>
+                            <strong class="content-strong">Hợp đồng cho thuê phòng trọ, nhà trọ</strong> là một văn bản thỏa thuận được soạn thảo bởi bên cho thuê (chủ nhà) và bên thuê (người thuê trọ), trong đó quy định các điều khoản, quyền lợi và nghĩa vụ mà bên thuê trọ cũng như chủ nhà trọ phải thực hiện. Theo đó, việc đọc hiểu nội dung và tầm quan trọng của hợp đồng cho thuê nhà trọ sẽ giúp hai bên tránh được những tranh chấp, rủi ro không đáng có trong suốt quá trình thuê phòng. Ví dụ, khi chủ nhà trọ hoặc người thuê trọ đơn phương chấm dứt hợp đồng mà không có lý do chính đáng; người thuê trọ sử dụng phòng trọ không đúng mục đích (thay vì thuê trọ ở lại dùng để kinh doanh buôn bán); hoặc vi phạm các quy định trong hợp đồng (không đóng tiền thuê đúng hạn),...
+                        </p>
+
+                        <h3 class="sub-heading">1. Hình thức giao kết hợp đồng thường gặp</h3>
+                        <p>
+                            Thông thường, hợp đồng cho thuê phòng trọ, nhà trọ có thể được giao kết bằng lời nói hoặc văn bản pháp lý. Tuy nhiên, hình thức giao kết bằng văn bản được khuyến khích sử dụng bởi vì nó rõ ràng, minh bạch, có giá trị pháp lý giúp bảo vệ quyền lợi tốt hơn.
+                        </p>
+                        <p>
+                            Trường hợp người thuê nhà trọ, phòng trọ trả ngắn hạn (theo giờ hoặc ngày), thì chỉ cần xác lập bằng lời nói, và tiền thuê được trả thông qua bảng giá đã niêm yết trước đó. Mặt khác, đối với các dãy nhà trọ cho thuê dài hạn cho sinh viên hoặc người lao động thường có hợp đồng thuê là không thể thiếu. Bởi vì theo quy định của pháp luật hiện hành, các chủ nhà trọ phải quản lý và bắt buộc tiến hành đăng ký tạm trú đối với những đối tượng thuê phòng trọ hoặc nhà trọ dài hạn. Mục đích của việc đăng ký tạm trú thuê trọ là để đảm bảo tính pháp lý, và khi xảy ra các sự kiện ngoài ý muốn, thì bên thứ ba (cơ quan công an trực thuộc khu vực) sẽ dễ dàng thu thập thông tin và tiến hành điều tra hơn.
+                        </p>
+
+                        <h3 class="sub-heading">2. Nội dung chính trong hợp đồng cho thuê nhà trọ</h3>
+                        <p>
+                            <strong class="content-strong">Điều 121 Luật Nhà ở năm 2014</strong> quy định một bản hợp đồng cho thuê phòng trọ, nhà trọ hoàn chỉnh và có hiệu lực phải bao gồm những nội dung sau đây:
+                        </p>
+                        <ul>
+                            <li>Thông tin chi tiết cả bên cho thuê lẫn bên thuê như "Họ và tên, CCCD,..."</li>
+                            <li>Địa chỉ cụ thể của dãy trọ hoặc phòng trọ bao gồm số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố.</li>
+                            <li>Thời gian bắt đầu, kết thúc hợp đồng thuê trọ.</li>
+                            <li>Giá thuê và cách thanh toán tiền thuê trọ hàng tháng.</li>
+                            <li>Quyền và nghĩa vụ của hai bên thuê, bên cho thuê.</li>
+                        </ul>
+                    </div>
+
+                    <h2 class="main-heading">Mẫu hợp đồng cho thuê phòng trọ, nhà trọ chuẩn nhất 2024</h2>
+                    <div class="article-content">
+                        <p>
+                            Phong Trọ 123 xin chia sẻ mẫu Hợp đồng cho thuê phòng trọ, nhà trọ chuẩn nhất 2024. Mẫu hợp đồng này được cập nhật mới nhất theo đúng quy định của pháp luật, đảm bảo quyền lợi cho cả hai bên thuê và cho thuê, giảm thiểu tranh chấp, khiếu nại. Các bạn có thể tham khảo và chỉnh sửa nội dung hợp đồng thuê nhà trọ sao cho phù hợp với từng trường hợp cụ thể.
+                        </p>
+
+                        <div class="contract-section p-4 my-4 border rounded" style="border-left: 5px solid #28a745 !important; background-color: #f1fff5;">
+                            <pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Times New Roman', serif; font-size: 14px;">
+<strong style="text-align: center; display: block;">CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong>
+<strong style="text-align: center; display: block;">Độc Lập-Tự Do-Hạnh Phúc</strong>
+<strong style="text-align: center; display: block;">---oOo---</strong>
+<strong style="text-align: center; display: block; font-size: 18px; margin-top: 15px;">HỢP ĐỒNG CHO THUÊ PHÒNG TRỌ</strong>
+
+<br /><strong style="font-size: 16px;">BÊN A : BÊN CHO THUÊ PHÒNG TRỌ</strong>
+Họ và Tên:..........................................................................................................
+Năm sinh:...........................................................................................................
+CCCD số:...........................Ngày cấp:...........................Nơi cấp:................................
+Thường Trú:.......................................................................................................
+Số điện thoại:......................................................................................................
+
+<br /><strong style="font-size: 16px;">BÊN B : BÊN THUÊ PHÒNG TRỌ</strong>
+Họ và Tên:.........................................................................................................
+Năm sinh:..........................................................................................................
+CCCD số:...........................Ngày cấp:...........................Nơi cấp:...............................
+Thường Trú:......................................................................................................
+Số điện thoại:.....................................................................................................
+
+<br />Hai bên cùng thỏa thuận và đồng ý với nội dung sau :
+
+<br /><strong style="font-size: 16px;">Điều 1:</strong>
+Bên A đồng ý cho bên B thuê một phòng trọ thuộc địa chỉ:……………………….
+Thời hạn thuê phòng trọ là …. tháng kể từ ngày …….
+
+<br /><strong style="font-size: 16px;">Điều 2 :</strong>
+Giá tiền thuê phòng trọ là ……………..đồng/tháng (Bằng chữ :…………………………...)
+Tiền thuê phòng trọ bên B thanh toán cho bên A từ ngày .....Tây hàng tháng.
+Bên B đặt tiền thế chân trước ……………… đồng (Bằng chữ : ……………………) cho bên A. Tiền thế chân sẽ được trả lại đầy đủ cho bên thuê (Bên B) khi hết hợp đồng thuê phòng trọ và thanh toán đầy đủ tiền điện, nước , phí dịch vụ và các khoản khác liên quan.
+Bên B ngưng hợp đồng trước thời hạn thì phải chịu mất tiền thế chân.
+Bên A ngưng hợp đồng (lấy lại phòng trọ) trước thời hạn thì bồi thường gấp đôi số tiền bên B đã thế chân.
+
+<br /><strong style="font-size: 16px;">Điều 3 : Trách nhiệm bên A.</strong>
+Giao phòng trọ, trang thiết bị trong phòng trọ cho bên B đúng ngày ký hợp đồng.
+Hướng dẫn bên B chấp hành đúng các quy định của địa phương, hoàn tất mọi thủ tục giấy tờ đăng ký tạm trú cho bên B.
+
+<br /><strong style="font-size: 16px;">Điều 4 : Trách nhiệm bên B.</strong>
+Trả tiền thuê phòng trọ hàng tháng theo hợp đồng.
+Sử dụng đúng mục đích thuê nhà, khi cần sữa chữa, cải tạo theo yêu cầu sử dụng riêng phải được sự đồng ý của bên A.
+Đồ đạt trang thiết bị trong phòng trọ phải có trách nhiệm bảo quản cẩn thận không làm hư hỏng mất mát.
+
+<br /><strong style="font-size: 16px;">Điều 5: Điều khoản chung.</strong>
+Bên A và bên B thực hiện đúng các điều khoản ghi trong hợp đồng.
+Trường hợp có tranh chấp hoặc một bên vi phạm hợp đồng thì hai bên cùng nhau bàn bạc giải quyết, nếu không giải quyết được thì yêu cầu cơ quan có thẩm quyền giải quyết.
+Hợp đồng được lập thành 02 bản có giá trị ngang nhau, mỗi bên giữ 01 bản
+<br />
+<div style="text-align: right; margin-top: 10px;">
+    Tp. Hồ Chí Minh, Ngày …. Tháng…. năm 20.........
+</div>
+<br />
+<div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                            <div style="text-align: center;">
+                            <strong style="display: block;">BÊN A</strong>
+    </div>
+                            <div style="text-align: center;">
+                            <strong style="display: block;">BÊN B</strong>
+    </div>
+</div>
+                            </pre>
+                        </div>
+                    </div>
+
+                    <h2 class="main-heading">Quy trình ký hợp đồng cho thuê nhà trọ</h2>
+                    <div class="article-content">
+                        <p>
+                            Để lập hợp đồng cho thuê phòng trọ, hai bên cần thực hiện các bước sau đây:
+                        </p>
+                        <h3 class="sub-heading">Bên cho thuê (Chủ nhà):</h3>
+                        <ul>
+                            <li>Chuẩn bị hợp đồng trước khi gặp và thỏa thuận với người thuê.</li>
+                            <li>Trình bày chi tiết các điều khoản và quy định trong hợp đồng để hai bên đồng ý.</li>
+                            <li>Ký tên vào hợp đồng sau khi đã thỏa thuận.</li>
+                        </ul>
+
+                        <h3 class="sub-heading">Bên thuê (Người thuê):</h3>
+                        <ul>
+                            <li>Xem xét và đánh giá mọi điều khoản và quy định trong hợp đồng.</li>
+                            <li>Nếu đồng ý, ký tên vào hợp đồng và giữ lại bản sao cho mình.</li>
+                        </ul>
+
+                        <p>
+                            Để tăng cường tính pháp lý và giảm thiểu tranh chấp khi không có bên thứ ba làm chứng, hai bên có thể thực hiện các biện pháp sau:
+                        </p>
+                        <ul>
+                            <li>Ký hợp đồng tại **Phòng công chứng** hoặc **UBND khu vực** nơi có phòng trọ cho thuê.</li>
+                            <li>Mời một hoặc hai người ngoài cùng ký vào hợp đồng với vai trò **làm chứng**. Những người làm chứng cần đảm bảo đủ điều kiện về năng lực hành vi dân sự, không có mối quan hệ lợi ích với bên nào trong hợp đồng.</li>
+                        </ul>
+                        <blockquote class="blockquote note-box">
+                            <p class="mb-0">
+                                **Lưu ý:** Hợp đồng thuê nhà trọ chỉ có hiệu lực pháp lý nếu hai bên ký kết trong trạng thái **tinh thần minh mẫn**, không bị lừa dối, ép buộc.
+                            </p>
+                        </blockquote>
+                    </div>
+
+                    <h2 class="main-heading">Mẫu phụ lục hợp đồng cho thuê phòng trọ</h2>
+                    <div class="article-content">
+                        <p>
+                            Để đảm bảo tính minh bạch và tránh những rủi ro sau này, quý khách có thể thêm một số phụ lục vào hợp đồng cho thuê phòng trọ hay nhà trọ. Quý khách có thể tham khảo mẫu phụ lục hợp đồng thuê nhà trọ mà Phongtro123 đã tổng hợp dưới đây:
+                        </p>
+
+                        <div class="contract-section p-4 my-4 border rounded" style="border-left: 5px solid #ffc107 !important; background-color: #fffbe6;">
+                            <pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Times New Roman', serif; font-size: 14px;">
+<strong style="text-align: center; display: block;">CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong>
+<strong style="text-align: center; display: block;">Độc Lập-Tự Do-Hạnh Phúc</strong>
+<strong style="text-align: center; display: block;">---oOo---</strong>
+<strong style="text-align: right; display: block; margin-top: 15px;">......, ngày...tháng... năm....</strong>
+<strong style="text-align: center; display: block; font-size: 18px;">PHỤ LỤC HỢP ĐỒNG THUÊ NHÀ TRỌ</strong>
+<strong style="text-align: center; display: block;">Số.................</strong>
+
+<br />- Căn cứ hợp đồng thuê nhà trọ số: ..../HĐTN lập ngày ... tháng ... năm ....
+- Căn cứ vào nhu cầu thực tế và sự thỏa thuận của các bên.
+Tại địa chỉ số: ..........., chúng tôi gồm có:
+
+<br />1. Đại diện bên cho thuê phòng trọ (Bên A):
+Họ và Tên:..............................Sinh ngày:..................
+Nơi đăng ký HK:...........................................................................................................
+CMND/CCCD số:......................cấp ngày..../..../......tại:.......
+Số điện thoại:................................................................................................................
+
+<br />2. Đại diện bên thuê phòng trọ (Bên B):
+Họ và Tên:..............................Sinh ngày:..................
+Nơi đăng ký HK:...........................................................................................................
+CMND/CCCD số:......................cấp ngày..../..../......tại:.......
+Số điện thoại:................................................................................................................
+
+<br />Sau khi thống nhất, chúng tôi đồng ý sửa đổi một số nội dung cụ thể như sau:
+1.........................................................
+2.........................................................
+3.........................................................
+
+<br />Phụ lục hợp đồng được lập thành 02 bản có giá trị pháp lý như nhau, mỗi bên giữ một bản.
+<br />
+<div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                            <div style="text-align: center;">
+                            <strong style="display: block;">ĐẠI DIỆN BÊN A</strong>
+    </div>
+                            <div style="text-align: center;">
+                            <strong style="display: block;">ĐẠI DIỆN BÊN B</strong>
+    </div>
+</div>
+                            </pre>
+                        </div>
+                    </div>
+
+                    <h2 class="main-heading">Lời kết</h2>
+                    <div class="article-content">
+                        <p class="mt-4 text-center article-conclusion">
+                            Trên đây là mẫu hợp đồng cho thuê phòng trọ, nhà trọ chuẩn nhất 2024 mà Phongtro123.com đã tổng hợp. Hy vọng bài viết này sẽ cung cấp đầy đủ thông tin cần thiết giúp quý khách nhanh chóng tìm thuê được phòng trọ, nhà trọ ưng ý và tránh những tranh chấp không cần thiết.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">Không tìm thấy bài viết.</div>
+    }
+</div>
+
 
