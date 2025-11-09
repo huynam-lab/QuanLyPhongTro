@@ -1,0 +1,114 @@
+﻿@model QuanLyPhongTro.Models.ViewModels.PhongTroDetailVM
+@{
+    string FmtGia(decimal? v)
+    {
+        if (!v.HasValue || v <= 0) return "Thoả thuận";
+        var trieu = v.Value / 1_000_000m;
+        return trieu >= 1 ? trieu.ToString("0.#") + " triệu/tháng" : string.Format("{0:#,0} đ/tháng", v);
+    }
+    string FmtDT(double? m2) => m2.HasValue ? m2.Value.ToString("0.#") + " m²" : "-- m²";
+    string Img(string u)
+    {
+        if (string.IsNullOrWhiteSpace(u))
+            return Url.Content("~/Assets/Images/no-image.png");
+
+        if (u.StartsWith("http") || u.StartsWith("~/"))
+            return Url.Content(u);
+
+        return Url.Content("~/Kho/Img/" + u.TrimStart('/'));
+    }
+}
+
+<div class="container py-3" style="max-width:1140px">
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <!-- Gallery -->
+            <div class="mb-3">
+                <img src="@Img(Model.AnhDaiDien)"
+                     class="img-fluid rounded mb-3"
+                     style="max-height:420px;object-fit:cover"
+                     onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';" />
+
+                <!-- Gallery -->
+                @if (Model.Album != null && Model.Album.Any())
+                {
+                    <div class="row g-2 mb-4">
+                        @foreach (var u in Model.Album.Where(s => !string.IsNullOrWhiteSpace(s)))
+                        {
+                            <div class="col-4">
+                                <img src="@Img(u)"
+                                     class="img-fluid rounded"
+                                     onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';" />
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Video (nếu có) -->
+            @if (Model.Videos?.Any() == true)
+            {
+                <div class="mb-3">
+                    @foreach (var v in Model.Videos)
+                    {
+                        <div class="ratio ratio-16x9 mb-2">
+                            <iframe src="@v" allowfullscreen></iframe>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Tiêu đề + meta -->
+            <h4 class="fw-bold" style="color:@Model.LoaiTinMau">@Model.Ten</h4>
+            <div class="text-muted mb-2">
+                <span class="me-3 text-success fw-bold">@FmtGia(Model.Gia)</span>
+                <span class="me-3"><i class="bi bi-aspect-ratio"></i> @FmtDT(Model.DienTich)</span>
+                <span class="me-3"><i class="bi bi-geo-alt"></i> @Model.KhuVuc</span>
+                <span><i class="bi bi-clock"></i> @Model.NgayDang?.ToString("HH:mm dd/MM/yyyy")</span>
+            </div>
+
+            <!-- Mô tả -->
+            @if (!string.IsNullOrWhiteSpace(Model?.MoTa))
+            {
+                @Html.Raw(System.Web.HttpUtility.HtmlEncode(Model.MoTa)
+                                             .Replace("\n", "<br/>"))
+            }
+
+            <!-- Tiện ích -->
+            <div class="bg-white border rounded p-3 mb-3">
+                <div class="fw-bold mb-2">Nổi bật</div>
+                <div class="row row-cols-2 row-cols-md-3 g-2 small">
+                    @if (Model.DayDuNoiThat == true)
+                    {<div>✅ Đầy đủ nội thất</div>}
+                    @if (Model.CoGac == true)
+                    {<div>✅ Có gác</div>}
+                    @if (Model.CoMayLanh == true)
+                    {<div>✅ Có máy lạnh</div>}
+                    @if (Model.CoMayGiat == true)
+                    {<div>✅ Có máy giặt</div>}
+                    @if (Model.GioGiacTuDo == true)
+                    {<div>✅ Giờ giấc tự do</div>}
+                </div>
+            </div>
+
+            <!-- Tin liên quan -->
+
+        </div>
+
+        <!-- Sidebar liên hệ -->
+        <div class="col-lg-4">
+            <div class="bg-white border rounded p-3">
+                <div class="fw-bold mb-1">@Model.ChuNha</div>
+                <div class="text-muted small mb-2">Chủ nhà</div>
+                @if (!string.IsNullOrWhiteSpace(Model.SoDienThoai))
+                {
+                    <a class="btn btn-success w-100 mb-2" href="tel:@Model.SoDienThoai">
+                        <i class="bi bi-telephone me-1"></i> @Model.SoDienThoai
+                    </a>
+                    <a class="btn btn-primary w-100" target="_blank" rel="noopener"
+                       href="https://zalo.me/@Model.SoDienThoai">Nhắn Zalo</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

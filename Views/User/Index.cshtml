@@ -1,6 +1,458 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-}
-<h2 style="height:1000px ; background-color:aqua">Index</h2>
+﻿@model IEnumerable<QuanLyPhongTro.Models.ViewModels.PhongTroVM>
 
+@{
+    ViewBag.Title = "Kênh thông tin Phòng Trọ số 1 Việt Nam";
+    Func<string, string> Img = (u) => string.IsNullOrWhiteSpace(u)
+        ? Url.Content("~/Assets/Images/no-image.png")
+        : Url.Content(u);
+    var page = (int)(ViewBag.Page ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var total = (int)(ViewBag.Total ?? 0);
+    var totalPages = (int)Math.Ceiling(total / (double)pageSize);
+
+   @functions{
+    string FormatGia(decimal? vnd)
+    {
+        if (!vnd.HasValue || vnd <= 0) return "Thoả thuận";
+        decimal trieu = vnd.Value / 1_000_000m;
+        if (trieu >= 1) return trieu.ToString("0.#") + " triệu/tháng";
+        return string.Format("{0:#,0} đ/tháng", vnd);
+    }
+}
+}
+
+<style>
+    .chip {
+        border: 1px solid #e6e6e6;
+        border-radius: 10px;
+        padding: .45rem .8rem;
+        background: #fff;
+        font-weight: 600
+    }
+
+        .chip:hover {
+            background: #f5f7fb
+        }
+
+    .post-card {
+        border: 1px solid #eee;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff
+    }
+
+        .post-card + .post-card {
+            margin-top: 18px
+        }
+
+    .post-thumb {
+        width: 100%;
+        height: 220px;
+        object-fit: cover
+    }
+
+    .post-title {
+        font-weight: 800;
+        color: #e03;
+        text-transform: uppercase
+    }
+
+    .post-meta {
+        font-size: .95rem
+    }
+
+    .post-price {
+        color: #0aaf55;
+        font-weight: 800
+    }
+
+    .sidebar-box {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 16px
+    }
+
+        .sidebar-box + .sidebar-box {
+            margin-top: 16px
+        }
+
+    .meta-dot::before {
+        margin: 0 .35rem;
+        color: #999
+    }
+    /* ===== SUPPORT BOX (scoped) ===== */
+    .pt-support {
+        padding: 36px 0;
+        background: #fff;
+    }
+
+        .pt-support .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            content: "·";
+            padding: 28px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 10px 28px rgba(15,23,42,.06);
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 28px;
+            align-items: center;
+        }
+
+.pt-support .art {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+    .pt-support .art img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+.pt-support .head {
+    text-align: center;
+}
+
+.pt-support .icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.pt-support h3 {
+    font-size: 32px;
+    font-weight: 900;
+    margin: 0 0 6px;
+    color: #0f172a;
+}
+
+.pt-support .lead {
+    color: #475569;
+    margin-bottom: 18px;
+}
+
+.pt-support .btns {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pt-support .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 800;
+    border: 0;
+    box-shadow: 0 4px 0 rgba(0,0,0,.07);
+}
+
+    .pt-support .btn .ic {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+    }
+
+    .pt-support .btn.phone {
+        background: #e6552f;
+        color: #fff;
+    }
+
+    .pt-support .btn.zalo {
+        background: #1677ff;
+        color: #fff;
+    }
+
+.pt-support .sub {
+    text-align: center;
+    color: #6b7280;
+    margin: 18px 0 10px;
+}
+body.page-banggia .pt-left-sidebar,
+body.page-banggia .pt-right-sidebar,
+body.page-banggia .col-lg-1.d-none.d-lg-block.pt-left-sidebar,
+body.page-banggia .col-lg-1.d-none.d-lg-block.pt-right-sidebar {
+    display: none !important;
+}
+body.page-banggia .col-lg-10,
+body.page-banggia .pt-main-col {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}
+
+/* Đảm bảo wrapper/bảng ở giữa, có max-width đẹp */
+body.page-banggia .pt-price-table .wrap,
+body.page-banggia .pt-container {
+    max-width: 1200px; /* hoặc 1360px tùy bạn */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+</style>
+
+<div class="container-fluid py-3" style="max-width:1140px">
+    <div class="row">
+        <!-- MAIN -->
+        <div class="col-lg-8">
+            <h4 class="mb-1">Kênh thông tin Phòng Trọ số 1 Việt Nam</h4>
+            <div class="text-muted mb-3">Có @total tin đăng cho thuê</div>
+
+            <div class="mb-3 d-flex flex-wrap gap-2">
+                <a class="chip text-decoration-none" href="@Url.Action("Index","User", new { kv = 1 })">Phòng trọ Hồ Chí Minh</a>
+                <a class="chip text-decoration-none" href="@Url.Action("Index","User", new { kv = 2 })">Phòng trọ Hà Nội</a>
+                <a class="chip text-decoration-none" href="@Url.Action("Index","User", new { kv = 3 })">Phòng trọ Đà Nẵng</a>
+                <a class="chip text-decoration-none" href="@Url.Action("Index","User")">Tất cả</a>
+            </div>
+
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item"><a class="nav-link active" href="#">Đề xuất</a></li>
+                <li class="nav-item"><a class="nav-link" href="@Url.Action("Index","User", new { page = 1 })">Mới đăng</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Có video</a></li>
+            </ul>
+
+            @foreach (var p in Model)
+            {
+                var img = Img(p.AnhDaiDien);
+                <article class="post-card shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-5">
+                            <a href="@Url.Action("ChiTiet","User", new { id = p.Id })">
+                                <img class="post-thumb"
+                                     src="@img"
+                                     alt="@p.Ten"
+                                     onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';" />
+                            </a>
+                        </div>
+                        <div class="col-md-7 p-3">
+                            <a class="text-decoration-none" href="@Url.Action("ChiTiet","User", new { id = p.Id })">
+                                <div class="post-title mb-2">@p.Ten</div>
+                            </a>
+
+                            <div class="d-flex align-items-center post-meta mb-2">
+                                <div class="post-price me-3">@FormatGia(p.Gia)</div>
+                                <div class="text-muted"><i class="bi bi-aspect-ratio me-1"></i> @(p.DienTich?.ToString("0.#") ?? "--") m²</div>
+                                <div class="meta-dot"></div>
+                                <div class="text-muted"><i class="bi bi-geo-alt me-1"></i> @p.KhuVuc</div>
+                            </div>
+
+                            <div class="text-muted small mb-2">@p.DiaChi</div>
+
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="text-muted small">
+                                    <i class="bi bi-clock me-1"></i>@(p.NgayDang?.ToString("dd/MM/yyyy") ?? "")
+                                </div>
+                                <a class="btn btn-success btn-sm" href="@Url.Action("ChiTiet","User", new { id = p.Id })">
+                                    Liên hệ / Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            }
+
+            @if (totalPages > 1)
+            {
+                <nav class="mt-3">
+                    <ul class="pagination">
+                        <li class="page-item @(page==1?"disabled":"")">
+                            <a class="page-link" href="@Url.Action("Index","User", new { page = page - 1, pageSize })">« Trang trước</a>
+                        </li>
+
+                        @for (int i = Math.Max(1, page - 2); i <= Math.Min(totalPages, page + 2); i++)
+                        {
+                            <li class="page-item @(i==page?"active":"")">
+                                <a class="page-link" href="@Url.Action("Index","User", new { page = i, pageSize })">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(page==totalPages?"disabled":"")">
+                            <a class="page-link" href="@Url.Action("Index","User", new { page = page + 1, pageSize })">Trang sau »</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="col-lg-4">
+            <div class="sidebar-box">
+                <h6 class="fw-bold mb-3">Xem theo khoảng giá</h6>
+                <div class="row">
+                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=0, max=1_000_000 })">Dưới 1 triệu</a></div>
+                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=1_000_000, max=2_000_000 })">1 - 2 triệu</a></div>
+                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=2_000_000, max=3_000_000 })">2 - 3 triệu</a></div>
+                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=3_000_000, max=5_000_000 })">3 - 5 triệu</a></div>
+                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=5_000_000, max=7_000_000 })">5 - 7 triệu</a></div>
+                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=7_000_000, max=10_000_000 })">7 - 10 triệu</a></div>
+                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=10_000_000, max=15_000_000 })">10 - 15 triệu</a></div>
+                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=15_000_000 })">Trên 15 triệu</a></div>
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <h6 class="fw-bold mb-3">Tin mới đăng</h6>
+                @foreach (var p in Model.Take(6))
+                {
+                    var img = Img(p.AnhDaiDien);
+                    <a class="d-flex gap-2 text-decoration-none mb-2" href="@Url.Action("ChiTiet","User", new { id = p.Id })">
+                        <img src="@img"
+                             style="width:76px;height:52px;object-fit:cover;border-radius:6px"
+                             onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';" />
+                        <div class="small">
+                            <div class="fw-semibold text-dark text-truncate" style="max-width:220px">@p.Ten</div>
+                            <div class="text-success fw-bold">@FormatGia(p.Gia)</div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ===== GIỚI THIỆU / CONTENT LONGFORM ===== -->
+<section class="mt-4">
+    <div class="bg-white rounded-3 border p-4 p-md-5">
+        <h5 class="text-center fw-bold mb-4">CHO THUÊ PHÒNG TRỌ, NHÀ TRỌ</h5>
+
+        <p>
+            Khi có nhu cầu <a href="#" class="text-decoration-none">thuê phòng trọ</a>, chắc hẳn bạn sẽ băn khoăn với hàng loạt câu hỏi như:
+            “Không biết bắt đầu từ đâu? Sợ bị mất cọc oan vì những phòng trọ <em>ảo</em>? Tìm mãi nhưng không ra phòng ưng ý?...”
+        </p>
+
+        <p>
+            Đừng quá lo lắng, vì <strong>Phongtro123.com</strong> chính là giải pháp tối ưu dành cho những vấn đề đó.
+            Nơi bạn có thể <strong>tìm phòng trọ</strong> mà không cần lặn lội khắp nơi, chỉ cần vài cú nhấp chuột là tìm thấy ngay một nơi ở tiềm năng.
+        </p>
+
+        <h6 class="fw-bold mt-4">Giới thiệu về Phongtro123.com</h6>
+        <p>
+            Phongtro123.com là kênh thông tin Phòng trọ số 1 Việt Nam, một nền tảng chuyên biệt về cho thuê phòng trọ, nhà trọ lớn nhất hiện nay.
+            Được ra đời năm 2015 với tôn chỉ mang đến trải nghiệm tìm thuê, đăng tin cho thuê tối ưu cho người dùng.
+            Với hơn <strong>130.000+</strong> chủ nhà và môi giới, <strong>200.000+</strong> tin đăng, <strong>1.000+</strong> tin mới mỗi ngày và
+            hơn <strong>3.000.000+</strong> lượt truy cập mỗi tháng.
+        </p>
+
+        <h6 class="fw-bold mt-4">Ưu điểm của website Phongtro123.com</h6>
+        <ol class="ps-3">
+            <li class="mb-2"><strong>Tập trung chuyên môn</strong> cho mảng phòng trọ – nhà trọ, đảm bảo dữ liệu chất lượng, tin đăng rõ ràng.</li>
+            <li class="mb-2"><strong>Bộ lọc thông minh</strong> theo khu vực, giá, diện tích, tiện ích… giúp rút ngắn thời gian tìm kiếm.</li>
+            <li class="mb-2"><strong>Bảo vệ người dùng</strong> với các cảnh báo, ghi chú an toàn, hạn chế tình trạng lừa đảo đặt cọc.</li>
+            <li class="mb-2"><strong>Đăng tin hiệu quả</strong> cho chủ nhà – môi giới: tiếp cận lượng người tìm phòng lớn mỗi ngày.</li>
+        </ol>
+
+        <h6 class="fw-bold mt-4">Dịch vụ nổi bật trên Phongtro123.com</h6>
+        <ul class="ps-3">
+            <li class="mb-2">Tin thường, tin VIP với vị trí hiển thị nổi bật giúp tăng lượng tiếp cận và số cuộc gọi.</li>
+            <li class="mb-2">Đẩy tin, gia hạn tin, gợi ý tối ưu nội dung – hình ảnh để tăng tỉ lệ chuyển đổi.</li>
+            <li class="mb-2">Hỗ trợ nhanh qua điện thoại/Zalo nếu bạn cần tư vấn đăng tin.</li>
+        </ul>
+
+        <p class="mb-0">
+            Tìm hiểu thêm:
+            <a href="#" class="text-decoration-none">Quy định đăng tin</a>,
+            <a href="#" class="text-decoration-none">Bảng giá dịch vụ</a>,
+            <a href="#" class="text-decoration-none">Câu hỏi thường gặp</a>.
+        </p>
+    </div>
+
+    <!-- ===== WHY CHOOSE (METRICS) ===== -->
+    <div class="bg-white rounded-3 border p-4 p-md-5 mt-3">
+        <h5 class="text-center fw-bold mb-3">Tại sao lại chọn Phongtro123.com?</h5>
+        <p class="text-center text-muted mb-4">
+            Chúng tôi tự hào là trang web đứng top Google về các từ khóa cho thuê phòng trọ, nhà trọ,
+            cho thuê căn hộ… với lưu lượng truy cập lớn, ổn định và chất lượng.
+        </p>
+
+        <div class="row g-3 g-md-4 text-center">
+            <div class="col-6 col-md-3">
+                <div class="border rounded-3 p-3 h-100">
+                    <div class="fw-bold fs-5">130.000+</div>
+                    <div class="text-muted small">Chủ nhà &amp; Môi giới</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="border rounded-3 p-3 h-100">
+                    <div class="fw-bold fs-5">200.000+</div>
+                    <div class="text-muted small">Tin đăng</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="border rounded-3 p-3 h-100">
+                    <div class="fw-bold fs-5">1.000+</div>
+                    <div class="text-muted small">Tin đăng/ngày</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="border rounded-3 p-3 h-100">
+                    <div class="fw-bold fs-5">3.000.000+</div>
+                    <div class="text-muted small">Lượt xem/tháng</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <div class="small text-muted mb-2">Chi phí thấp, hiệu quả tối đa</div>
+            <a href="@Url.Action("DangTin","User")" class="btn btn-warning fw-semibold px-4">
+                <i class="bi bi-pencil-square me-1"></i> Đăng tin ngay
+            </a>
+        </div>
+    </div>
+</section>
+<section class="pt-support">
+    <div class="wrap">
+        <!-- Hình minh họa trái -->
+        <div class="art">
+            <!-- thay ảnh theo ý bạn -->
+            <img src="~/Assets/Images/imgbanggia/dangtin.jpg" alt="Hỗ trợ đăng tin">
+        </div>
+
+        <!-- Nội dung phải -->
+        <div>
+            <div class="head">
+                <div class="icon">🎧</div>
+                <h3>Hỗ trợ chủ nhà đăng tin</h3>
+                <div class="lead">Nếu bạn cần hỗ trợ đăng tin, vui lòng liên hệ số điện thoại bên dưới:</div>
+            </div>
+
+            <div class="btns">
+                <!-- Điện thoại -->
+                <a class="btn phone" href="tel:0909316890">
+                    <span class="ic">
+                        <!-- phone svg -->
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1v3.61a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.56 1 1 0 01-.24 1.02l-2.32 2.21z" /></svg>
+                    </span>
+                    ĐT: 0909316890
+                </a>
+
+                <!-- Zalo trực tiếp số -->
+                <a class="btn zalo" href="https://zalo.me/0909316890" target="_blank" rel="noopener">
+                    <span class="ic">
+                        <!-- chat bubble svg -->
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" /></svg>
+                    </span>
+                    Zalo: 0909316890
+                </a>
+            </div>
+
+            <div class="sub">Hỗ trợ ngoài giờ</div>
+
+            <div class="btns">
+                <!-- Zalo OA -->
+                <a class="btn zalo" href="https://zalo.me/Phongtro123" target="_blank" rel="noopener">
+                    <span class="ic">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" /></svg>
+                    </span>
+                    Zalo: Phongtro123
+                </a>
+            </div>
+        </div>
+    </div>
+    
+</section>
