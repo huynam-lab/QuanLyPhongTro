@@ -738,6 +738,8 @@
     <Compile Include="Models\Video.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\PhongTroDetailVM.cs" />
+    <Compile Include="Models\ViewModels\PhongTroVM.cs" />
     <Compile Include="Models\Yeu_Thich.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -792,6 +794,8 @@
     <Content Include="Views\User\ChiTietChiaSeKinhNghiem.cshtml" />
     <Content Include="Views\User\ChiTietHoiDap.cshtml" />
     <Content Include="Views\User\ChiTietMauHopDong.cshtml" />
+    <Content Include="Views\Shared\_PhongTroList.cshtml" />
+    <Content Include="Views\User\ChiTiet.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -849,4 +853,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+  <LangVersion>latest</LangVersion>
+</PropertyGroup>
 </Project>

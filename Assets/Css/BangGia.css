@@ -1,6 +1,9 @@
 ﻿body {
     background: #fff !important;
 }
+html {
+    scroll-behavior: smooth;
+}
 /* ===== PRICING TABLE (scoped) ===== */
     .pt-main {
         background-color: #fff;
