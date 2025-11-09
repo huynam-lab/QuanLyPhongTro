@@ -36,27 +36,41 @@ namespace QuanLyPhongTro.Controllers
                 .AsNoTracking()
                 .Include(p => p.Khu_Vuc)
                 .Include(p => p.Loai_Tin)
-                .Include(p => p.Hinh_Anh);
+                .Include(p => p.Hinh_Anh)
+                .Include(p => p.Tai_Khoan);   // <-- QUAN TRỌNG
 
             var total = q.Count();
 
             // Lấy thô từ DB
             var raw = q.OrderByDescending(p => p.Ngay_Dang)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(p => new
-            {
-                Id = p.ID_Phong_Tro,
-                Ten = p.Ten_Phong,
-                Gia = p.Gia_Ca,
-                DienTich = p.Dien_Tich,
-                DiaChi = p.Dia_Chi,
-                KhuVuc = p.Khu_Vuc.Ten_KV,
-                LoaiTin = p.Loai_Tin.Ten_LoaiTin,
-                UrlAnh = p.Hinh_Anh.Select(h => h.Url_Anh).FirstOrDefault(), // CHỈ LẤY STRING
-                NgayDang = p.Ngay_Dang
-            })
-            .ToList();
+              .Skip((page - 1) * pageSize)
+              .Take(pageSize)
+              .Select(p => new
+              {
+                  Id = p.ID_Phong_Tro,
+                  Ten = p.Ten_Phong,
+                  Gia = p.Gia_Ca,
+                  DienTich = p.Dien_Tich,
+                  DiaChi = p.Dia_Chi,
+                  KhuVuc = p.Khu_Vuc.Ten_KV,
+
+                  // ---- CHỈ DÙNG CÁC CỘT CÓ THẬT ----
+                  LoaiTinTen = p.Loai_Tin.Ten_LoaiTin,
+                  LoaiTinCapDo = p.Loai_Tin.CapDo,
+                  LoaiTinMau = p.Loai_Tin.Mau_TieuDe,   // có trong DB
+                                                        // LoaiTinKieuChu = p.Loai_Tin.Kieu_Chu, // <-- XÓA DÒNG NÀY
+
+                  UrlAnhDaiDien = p.Hinh_Anh.Select(h => h.Url_Anh).FirstOrDefault(),
+                  UrlAlbum = p.Hinh_Anh.Select(h => h.Url_Anh).ToList(),
+                  NgayDang = p.Ngay_Dang,
+
+                  // tuỳ bạn có hay không:
+                  ChuNha = p.Tai_Khoan.Name,
+                  AvatarUrl = p.Tai_Khoan.Avata,
+                  SoDienThoai = p.Tai_Khoan.SDT,
+                  MoTaTomTat = p.Mo_Ta
+              })
+              .ToList();
 
             var data = raw.Select(p => new PhongTroVM
             {
@@ -66,15 +80,25 @@ namespace QuanLyPhongTro.Controllers
                 DienTich = p.DienTich,
                 DiaChi = p.DiaChi,
                 KhuVuc = p.KhuVuc,
-                LoaiTin = p.LoaiTin,
-                AnhDaiDien = BuildKhoImgWithWard(p.UrlAnh), // OK vì đang chạy trên RAM
-                NgayDang = p.NgayDang
-            }).ToList();
 
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.Total = total;
-            return View(data);
+                LoaiTinTen = p.LoaiTinTen,
+                LoaiTinCapDo = p.LoaiTinCapDo ?? 0,
+                LoaiTinMau = string.IsNullOrWhiteSpace(p.LoaiTinMau) ? "#e03" : p.LoaiTinMau,
+                // LoaiTinKieuChu = ...  // KHÔNG dùng nữa
+
+                AnhDaiDien = BuildKhoImgWithWard(p.UrlAnhDaiDien),
+                Album = (p.UrlAlbum ?? new List<string>()).Select(BuildKhoImgWithWard).Where(s => !string.IsNullOrWhiteSpace(s)).Take(8).ToList(),
+                NgayDang = p.NgayDang,
+
+                ChuNha = p.ChuNha,
+                AvatarUrl = BuildKhoImgWithWard(p.AvatarUrl),
+                SoDienThoai = p.SoDienThoai,
+                MoTaTomTat = p.MoTaTomTat
+                }).ToList();
+                ViewBag.Page = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.Total = total;
+                return View(data);
         }
 
         // Giữ nguyên subfolder phường nếu DB có: "Phuong_X/abc.jpg"
@@ -83,15 +107,12 @@ namespace QuanLyPhongTro.Controllers
         {
             if (string.IsNullOrWhiteSpace(raw)) return null;
 
-            // http(s) hoặc "~/..." thì trả nguyên
             if (raw.StartsWith("http", StringComparison.OrdinalIgnoreCase)) return raw;
             if (raw.StartsWith("~/")) return raw;
 
-            // chuẩn hóa, giữ nguyên subfolder phường
-            var subpath = raw.Replace('\\', '/').TrimStart('~', '/');   // vd "Phuong_Ba_Dinh/109_1372.jpg"
-            var path = "~/Kho/Img/" + subpath;                         // ==> "~/Kho/Img/Phuong_Ba_Dinh/109_1372.jpg"
+            var sub = raw.Replace('\\', '/').TrimStart('~', '/');
+            var path = "~/Kho/Img/" + sub;
 
-            // (tuỳ chọn) nếu muốn fallback no-image khi file không có:
             try
             {
                 var physical = Server.MapPath(path);
@@ -101,6 +122,14 @@ namespace QuanLyPhongTro.Controllers
             catch { /* ignore */ }
 
             return path;
+        }
+        private string ToYoutubeEmbed(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return null;
+            // https://youtu.be/ID  hoặc https://www.youtube.com/watch?v=ID
+            var m = System.Text.RegularExpressions.Regex.Match(url,
+                @"(?:youtu\.be/|v=)(?<id>[A-Za-z0-9_\-]{6,})");
+            return m.Success ? $"https://www.youtube.com/embed/{m.Groups["id"].Value}" : url;
         }
         private IEnumerable<QuanLyPhongTro.Models.ViewModels.PhongTroVM>
         QueryPhongTroByChuDe(int idCD, int page, int pageSize, out int total)
@@ -171,6 +200,34 @@ namespace QuanLyPhongTro.Controllers
             ViewBag.ActiveTab = "mini";
 
             return View(model.ToList());
+        }
+        public ActionResult ChiTiet(int id)
+        {
+            // lấy 1 phòng theo id + navigation cần thiết
+            var vm = db.Phong_Tro
+         .Where(x => x.ID_Phong_Tro == id)
+         .Select(x => new PhongTroDetailVM
+         {
+             Id = x.ID_Phong_Tro,
+             Ten = x.Ten_Phong,
+             Gia = x.Gia_Ca,
+             DienTich = x.Dien_Tich,
+             DiaChi = x.Dia_Chi,
+             KhuVuc = x.Khu_Vuc.Ten_KV,                 // chỉ lấy Ten_KV
+             LoaiTinTen = x.Loai_Tin.Ten_LoaiTin,       // chỉ lấy 3 cột này
+             LoaiTinCapDo = x.Loai_Tin.CapDo,
+             LoaiTinMau = x.Loai_Tin.Mau_TieuDe,
+
+             // ảnh: lấy đúng Url_Anh
+             Album = x.Hinh_Anh
+                     .OrderBy(h => h.ID_Hinh_Anh)
+                     .Select(h => h.Url_Anh)
+                     .ToList(),
+         })
+         .FirstOrDefault();
+
+            if (vm == null) return HttpNotFound();
+            return View(vm);
         }
         // =============== start blog
         public ActionResult Blog()

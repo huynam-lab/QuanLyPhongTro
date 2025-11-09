@@ -10,13 +10,15 @@
     var total = (int)(ViewBag.Total ?? 0);
     var totalPages = (int)Math.Ceiling(total / (double)pageSize);
 
+   @functions{
     string FormatGia(decimal? vnd)
     {
         if (!vnd.HasValue || vnd <= 0) return "Thoả thuận";
-        var trieu = vnd.Value / 1_000_000M;
+        decimal trieu = vnd.Value / 1_000_000m;
         if (trieu >= 1) return trieu.ToString("0.#") + " triệu/tháng";
         return string.Format("{0:#,0} đ/tháng", vnd);
     }
+}
 }
 
 <style>

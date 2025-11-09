@@ -1,51 +1,136 @@
 ﻿@model IEnumerable<QuanLyPhongTro.Models.ViewModels.PhongTroVM>
 @{
     ViewBag.Title = "Căn hộ mini";
-    var active = (string)ViewBag.ActiveTab ?? "mini";
+    var active = "mini";
 }
 
-<div class="container-fluid py-3" style="max-width:1140px">
-    <div class="mb-3">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link @(active=="chungcu"?"active text-danger fw-bold":"")"
-                   href="@Url.Action("CanHoChungCu","User")">Căn hộ chung cư</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(active=="mini"?"active text-danger fw-bold":"")"
-                   href="@Url.Action("CanHoMini","User")">Căn hộ mini</a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-8">
-            @Html.Partial("~/Views/Shared/_PhongTroList.cshtml", Model)
-        </div>
-
-        <div class="col-lg-4">
-            <div class="sidebar-box">
-                <h6 class="fw-bold mb-2">Bộ lọc nhanh</h6>
-                <a class="d-block mb-2" href="@Url.Action("CanHoMini","User", new { page=1 })">Tất cả căn hộ mini</a>
-                <a class="d-block mb-2" href="@Url.Action("CanHoMini","User", new { page=1, pageSize=20 })">Hiển thị 20 tin</a>
-            </div>
-        </div>
-    </div>
-</div>
-
 <style>
-    .nav-tabs .nav-link.active {
-        border-color: transparent;
-        position: relative;
+  .pt-wrap{max-width:1140px;margin:16px auto;padding:0 12px}
+  .tabline{display:flex;gap:24px;border-bottom:1px solid #eee;margin-bottom:16px}
+  .tabline a{padding:10px 0;text-decoration:none;color:#666;font-weight:600;position:relative}
+  .tabline a.active{color:#e03}
+  .tabline a.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:#e03;border-radius:2px}
+  .pt-card{display:flex;gap:16px;background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:16px;align-items:stretch}
+  .pt-thumb{width:260px;height:180px;object-fit:cover;border-radius:10px;display:block}
+  .pt-card .count{position:absolute;left:10px;bottom:10px;background:#000b;color:#fff;font-size:12px;padding:4px 8px;border-radius:20px}
+  .pt-title{font-weight:800;color:#e03;margin-bottom:6px}
+  .pt-meta{display:flex;gap:12px;align-items:center;color:#666;margin-bottom:6px}
+  .pt-meta .price{color:#0aaf55;font-weight:800}
+  .pt-desc{color:#555;margin-bottom:10px}
+  .owner{display:flex;align-items:center;gap:10px}
+  .owner .avatar{width:34px;height:34px;border-radius:50%;background:#f2f2f2;display:inline-block}
+  @@media (max-width:768px){
+    .pt-card{flex-direction:column}
+    .pt-thumb{width:100%;height:210px}
+  }
+</style>
+
+@functions{
+    // Giá: decimal?
+    string FormatGia(decimal? vnd)
+    {
+        if (!vnd.HasValue || vnd <= 0) return "Thoả thuận";
+        var trieu = vnd.Value / 1_000_000m;
+        return trieu >= 1 ? trieu.ToString("0.#") + " triệu/tháng"
+                          : string.Format("{0:#,0} đ/tháng", vnd);
+    }
+    // Diện tích: decimal? (để khỏi phải Convert double/decimal)
+    string FormatDt(decimal? m2) => m2.HasValue ? m2.Value.ToString("0.#") + " m²" : "-- m²";
+    // Sao theo Cấp độ
+    IHtmlString Stars(int? cap)
+    {
+        int n = Math.Max(0, Math.Min(cap ?? 0, 5));
+        return new HtmlString(new string('★', n) + new string('☆', 5 - n));
+    }
+    string Trunc(string s, int max)
+    {
+        if (string.IsNullOrWhiteSpace(s)) return "";
+        return s.Length <= max ? s : s.Substring(0, max) + "…";
+    }
+    string Img(string u) => string.IsNullOrWhiteSpace(u)
+        ? Url.Content("~/Assets/Images/no-image.png")
+        : Url.Content(u);
+    string Phone(string s)
+    {
+        if (string.IsNullOrWhiteSpace(s)) return "";
+        return s.Length <= 4 ? s : new string('•', Math.Max(0, s.Length - 4)) + s.Substring(s.Length - 4);
+    }
+}
+
+<div class="pt-wrap">
+    <div class="tabline">
+        <a class="@(active=="chungcu"?"active":"")" href="@Url.Action("CanHoChungCu","User")">Căn hộ chung cư</a>
+        <a class="@(active=="mini"?"active":"")" href="@Url.Action("CanHoMini","User")">Căn hộ mini</a>
+    </div>
+
+    @foreach (var p in Model)
+    {
+        var detailUrl = Url.Action("ChiTiet", "User", new { id = p.Id });
+        var count = (p.Album?.Count ?? 0);
+        <article class="pt-card shadow-sm">
+            <a href="@detailUrl" style="position:relative;display:inline-block">
+                <img class="pt-thumb"
+                     src="@Img(p.AnhDaiDien)"
+                     alt="@p.Ten"
+                     onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';">
+                <span class="count"><i class="bi bi-camera me-1"></i>@count</span>
+            </a>
+
+            <div style="flex:1">
+                <a class="text-decoration-none" href="@detailUrl">
+                    <div class="pt-title">@Stars(p.LoaiTinCapDo) @p.Ten</div>
+                </a>
+
+                <div class="pt-meta">
+                    <div class="price">@FormatGia(p.Gia)</div>
+                   
+                    <div>• @p.KhuVuc</div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(p.MoTaTomTat))
+                {
+                    <div class="pt-desc">@Trunc(p.MoTaTomTat, 150)</div>
+                }
+
+                <div class="owner">
+                    <span class="avatar"></span>
+                    <div>
+                        <div class="fw-semibold">@(!string.IsNullOrWhiteSpace(p.ChuNha) ? p.ChuNha : "Người đăng")</div>
+                        <div class="small text-muted">
+                            @p.NgayDang?.ToString("HH:mm dd/MM/yyyy") • @Phone(p.SoDienThoai)
+                        </div>
+                    </div>
+                    <div class="ms-auto">
+                        <a class="btn btn-success btn-sm" href="@detailUrl">Liên hệ / Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </article>
     }
 
-        .nav-tabs .nav-link.active::after {
-            content: "";
-            position: absolute;
-            left: 12px;
-            right: 12px;
-            bottom: -1px;
-            height: 3px;
-            background: #e03;
-        }
-</style>
+    @{
+        int page = ViewBag.Page ?? 1;
+        int pageSize = ViewBag.PageSize ?? 10;
+        int total = ViewBag.Total ?? 0;
+        int totalPages = (int)Math.Ceiling(total / (double)pageSize);
+    }
+    @if (totalPages > 1)
+    {
+        <nav class="mt-3">
+            <ul class="pagination">
+                <li class="page-item @(page==1?"disabled":"")">
+                    <a class="page-link" href="@Url.Action("CanHoMini","User", new { page = page-1, pageSize })">«</a>
+                </li>
+                @for (int i = Math.Max(1, page - 2); i <= Math.Min(totalPages, page + 2); i++)
+                {
+                    <li class="page-item @(i==page?"active":"")">
+                        <a class="page-link" href="@Url.Action("CanHoMini","User", new { page = i, pageSize })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(page==totalPages?"disabled":"")">
+                    <a class="page-link" href="@Url.Action("CanHoMini","User", new { page = page+1, pageSize })">»</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
