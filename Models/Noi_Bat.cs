@@ -16,7 +16,6 @@ namespace QuanLyPhongTro.Models
     {
         public int ID_Noi_Bat { get; set; }
         public int ID_Phong_Tro { get; set; }
-        public int ID_Dac_Diem { get; set; }
         public Nullable<bool> Day_du_noi_that { get; set; }
         public Nullable<bool> Co_gac { get; set; }
         public Nullable<bool> Ke_bep { get; set; }

@@ -21,7 +21,7 @@ namespace QuanLyPhongTro.Models
             this.Yeu_Thich = new HashSet<Yeu_Thich>();
         }
     
-        public int ID_Tk { get; set; }
+        public int ID_TK { get; set; }
         public int ID_Phan_Quyen { get; set; }
         public string User_Name { get; set; }
         public string Pass { get; set; }

@@ -25,7 +25,6 @@ namespace QuanLyPhongTro.Models
         public string Ten_LoaiTin { get; set; }
         public Nullable<int> CapDo { get; set; }
         public string Mau_TieuDe { get; set; }
-        public string Kieu_Chu { get; set; }
         public string KichThuoc { get; set; }
         public Nullable<bool> Tu_Dong_Duyet { get; set; }
         public Nullable<bool> Hien_Thi_Goi_Dien { get; set; }

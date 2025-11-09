@@ -4,75 +4,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
 }
-
-<link href="~/Areas/Admin/Assets/ChuNhacss.css" rel="stylesheet" type="text/css" />
-<style>
-    .btn-update {
-        display: block;
-        width: 100%;
-        background-color: #ff5722;
-        color: #fff;
-        border: none;
-        border-radius: 14px;
-        font-size: 16px;
-        font-weight: 500;
-        padding: 10px 0;
-        transition: all 0.25s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-    }
-
-        .btn-update:hover {
-            background-color: #ff7043;
-            transform: translateY(-1px);
-        }
-
-        .btn-update:active {
-            transform: translateY(0);
-            background-color: #e64a19;
-        }
-
-    .nav-tabs .nav-link {
-        color: #333;
-        font-weight: 500;
-        border: none;
-        border-bottom: 2px solid transparent;
-        transition: all 0.2s ease;
-    }
-
-        .nav-tabs .nav-link.active {
-            color: #ff5722;
-            border-bottom: 3px solid #ff5722;
-            background: none;
-        }
-
-    .tab-content {
-        display: none;
-    }
-
-        .tab-content.active {
-            display: block;
-        }
-
-    /* Nút cập nhật */
-    .btn-update {
-        display: block;
-        width: 100%;
-        background-color: #ff5722;
-        color: #fff;
-        border: none;
-        border-radius: 14px;
-        font-size: 16px;
-        font-weight: 500;
-        padding: 12px 0;
-        transition: all 0.25s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-        margin-top: 10px;
-    }
-
-        .btn-update:hover {
-            background-color: #ff7043;
-        }
-</style>
 <div class="container-fluid py-3">
 
     <div class="post-sticky-wrap">
@@ -94,58 +25,159 @@
 
             <!-- THÔNG TIN CÁ NHÂN -->
             <div id="thongtin" class="tab-content active">
-                <div class="container">
+                <div class="container" style="margin-top:-20px;">
                     <div class="card shadow-sm border-0" style="max-width: 600px; margin: 0 auto;">
                         <div class="card-body">
                             <div class="text-center mb-3">
-                                <img src="~/Kho/Img/Phuong_Ba_Dinh/109_1372.jpg"
-                                     class="rounded-circle border" width="90" height="90" alt="avatar">
-                                <h5 class="mt-2 mb-0 fw-semibold">huynam</h5>
-                                <small class="text-muted">0911494729</small>
-                                <div class="mt-2">
-                                    <button class="btn btn-outline-secondary btn-sm">
-                                        <i class="bi bi-camera"></i> Đổi ảnh đại diện
-                                    </button>
+                                @if (ViewBag.Avata != "")
+                                    {
+                                    <img src="~/Kho/Img/@ViewBag.Avata"
+                                         class="rounded-circle border" width="90" height="90" alt="avatar">
+
+                                    }
+                                else
+                                    {
+                                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" class="rounded-circle border" width="90" height="90" />
+                                    }
+
+                                <h5 class="mt-2 mb-0 fw-semibold">@ViewBag.Name</h5>
+                                <small class="text-muted">@ViewBag.SDT</small>
+                                <div class="mt-2 text-center">
+                                    <form id="formAvt" method="post" action="@Url.Action("CapNhatAnhDaiDien", "Admin")" enctype="multipart/form-data">
+                                        @Html.AntiForgeryToken()
+                                        <input type="file" id="AvtFile" name="AvtFile" accept="image/*" hidden onchange="submitAvatarForm()" />
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('AvtFile').click()">
+                                            <i class="bi bi-camera"></i> Đổi ảnh đại diện
+                                        </button>
+                                    </form>
                                 </div>
+
                             </div>
-                            <form>
+                            @using (Html.BeginForm("CapNhatThongTin", "Admin", FormMethod.Post))
+                                {
+                                @Html.AntiForgeryToken()
+
                                 <div class="mb-3">
                                     <label class="form-label text-muted small mb-1">Số điện thoại</label>
-                                    <input type="text" class="form-control bg-light" value="0911494729">
+                                    <input name="SDT" type="text" class="form-control bg-light" value="@ViewBag.SDT" />
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label text-muted small mb-1">Tên liên hệ</label>
-                                    <input type="text" class="form-control" value="huynam">
+                                    <input name="Name" type="text" class="form-control" value="@ViewBag.Name" />
                                 </div>
+
                                 <div class="mb-3" id="goToChangePass">
                                     <label class="form-label text-muted small mb-1">Mật khẩu</label>
                                     <input type="password" class="form-control" value="********" readonly style="cursor:pointer;">
                                     <small class="text-primary" style="cursor:pointer;">Nhấn để đổi mật khẩu</small>
                                 </div>
+
                                 <div class="text-center mt-4">
                                     <button type="submit" class="btn-update">Cập nhật</button>
                                 </div>
-                            </form>
+                                }
+
                         </div>
                     </div>
                 </div>
             </div>
             <!-- ĐỔI MẬT KHẨU -->
-            <div id="doimatkhau" class="tab-content">
-                <div class="card p-4">
+            <div id="doimatkhau" class="tab-content @( (ViewBag.ActiveTab as string) == "doimatkhau" ? "active" : "" )" style=" border: 1px solid white; background-color: white; padding: 17px; border-radius: 10px; margin-top: 40px;">
+                @using (Html.BeginForm("DoiMatKhau", "Admin", FormMethod.Post, new { id = "formDoiMatKhau" }))
+                    {
+                    @Html.AntiForgeryToken()
                     <h5 class="fw-semibold mb-3">Thay đổi mật khẩu</h5>
-                    <input type="password" class="form-control mb-3" placeholder="Nhập mật khẩu cũ">
-                    <a href="#" class="small text-primary mb-3 d-inline-block">Bạn quên mật khẩu?</a>
-                    <input type="password" class="form-control mb-3" placeholder="Nhập mật khẩu mới">
-                    <input type="password" class="form-control mb-3" placeholder="Xác nhận mật khẩu mới">
-                    <button class="btn-update">Cập nhật</button>
-                </div>
+
+                    <!-- MẬT KHẨU CŨ -->
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Mật khẩu cũ</label>
+                        <div class="input-group">
+                            <input name="OldPassword" type="password" class="form-control" id="OldPassword" placeholder="Nhập mật khẩu cũ" />
+                            <button type="button" class="btn btn-outline-secondary toggle-pass" data-target="#OldPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        @Html.ValidationMessage("OldPassword", "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- MẬT KHẨU MỚI -->
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Mật khẩu mới</label>
+                        <div class="input-group">
+                            <input name="NewPassword" type="password" class="form-control" id="NewPassword" placeholder="Nhập mật khẩu mới" />
+                            <button type="button" class="btn btn-outline-secondary toggle-pass" data-target="#NewPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        @Html.ValidationMessage("NewPassword", "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- XÁC NHẬN -->
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Xác nhận mật khẩu mới</label>
+                        <div class="input-group">
+                            <input name="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword" placeholder="Xác nhận mật khẩu mới" />
+                            <button type="button" class="btn btn-outline-secondary toggle-pass" data-target="#ConfirmPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        @Html.ValidationMessage("ConfirmPassword", "", new { @class = "text-danger small" })
+                    </div>
+
+                    <button type="submit" class="btn-update">Cập nhật</button>
+                    }
             </div>
+
+
         </div>
         <div style="width:25%; display:block;"></div>
     </div>
 </div>
+@if (TempData["Success"] != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: "success",
+                title: "Thành công!",
+                text: "@Html.Raw(TempData["Success"])",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        });
+    </script>
+    }
+@if (TempData["Error"] != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: "error",
+                title: "Lỗi!",
+                text: "@Html.Raw(TempData["Success"])",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        });
+    </script>
+    }
+
+@if (TempData["Success"] != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: "success",
+                title: "Thành công!",
+                text: "@Html.Raw(TempData["Success"])",
+                confirmButtonText: "OK",
+                timer: 2500,
+                timerProgressBar: true
+            });
+        });
+    </script>
+    }
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -195,3 +227,102 @@
     });
 
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // ===== 1. Điều khiển tab theo server =====
+    const serverTab = '@(TempData["ActiveTab"] ?? ViewBag.ActiveTab ?? "")';
+    const tabs = document.querySelectorAll("#accountTabs .nav-link");
+    const contents = document.querySelectorAll(".tab-content");
+
+    function switchTab(hash) {
+        tabs.forEach(t => t.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+
+        const btn = document.querySelector('#accountTabs a[href="' + hash + '"]');
+        const box = document.querySelector(hash);
+
+        if (btn) btn.classList.add("active");
+        if (box) box.classList.add("active");
+    }
+
+    // ưu tiên tab từ server
+    if (serverTab === "doimatkhau") {
+        switchTab("#doimatkhau");
+    } else {
+        switchTab("#thongtin");
+    }
+
+    // click để đổi tab
+    tabs.forEach(t => {
+        t.addEventListener("click", function (e) {
+            e.preventDefault();
+            switchTab(this.getAttribute("href"));
+        });
+    });
+
+    // ===== 2. Toggle hiện/ẩn mật khẩu =====
+    document.querySelectorAll(".toggle-pass").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const input = document.querySelector(this.dataset.target);
+            const icon = this.querySelector("i");
+            if (!input) return;
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            }
+        });
+    });
+});
+</script>
+<script>
+    function submitAvatarForm() {
+        const input = document.getElementById("AvtFile");
+        if (input.files.length > 0) {
+            document.getElementById("formAvt").submit();
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form[action*='CapNhatThongTin']");
+        if (!form) return;
+
+        form.addEventListener("submit", function (e) {
+            const sdtInput = form.querySelector("input[name='SDT']");
+            const nameInput = form.querySelector("input[name='Name']");
+            let valid = true;
+
+            // Reset lỗi cũ
+            form.querySelectorAll(".text-danger").forEach(el => el.remove());
+
+            // Kiểm tra SĐT
+            if (!sdtInput.value.trim()) {
+                const err = document.createElement("small");
+                err.textContent = "Vui lòng nhập số điện thoại";
+                err.classList.add("text-danger", "d-block", "mt-1");
+                sdtInput.insertAdjacentElement("afterend", err);
+                valid = false;
+            }
+
+            // Kiểm tra tên
+            if (!nameInput.value.trim()) {
+                const err = document.createElement("small");
+                err.textContent = "Vui lòng nhập tên liên hệ";
+                err.classList.add("text-danger", "d-block", "mt-1");
+                nameInput.insertAdjacentElement("afterend", err);
+                valid = false;
+            }
+
+            // Nếu có lỗi thì chặn submit
+            if (!valid) e.preventDefault();
+        });
+    });
+</script>
+

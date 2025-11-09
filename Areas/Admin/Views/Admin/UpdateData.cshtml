@@ -1,13 +1,15 @@
-﻿@model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ChuNha
-
+﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "UpdateData";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-
-@using (Html.BeginForm("SavePost", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ChuNha
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="~/Areas/Admin/Assets/ChuNhacss.css" rel="stylesheet" type="text/css" />
+@using (Html.BeginForm("Updates", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
     @Html.AntiForgeryToken()
+    <input type="hidden" name="ID_Phong_Tro" value="@Model.ID_Phong_Tro" />
     <!-- HỘP THÔNG BÁO -->
     <div id="notifyBox" class="notify hidden">
         <div class="notify-header">
@@ -18,6 +20,7 @@
             <ul id="notifyList"></ul>
         </div>
     </div>
+
     <div class="container-fluid py-3">
         <div class="post-sticky-wrap">
             <h3 class="section-title">Đăng tin cho thuê</h3>
@@ -39,21 +42,24 @@
                         <div class="col-md-6">
                             <label class="form-label">Loại chuyên mục <span class="text-danger">*</span></label>
                             <select class="form-select" name="ID_CD">
-                                <option selected disabled>-- Chọn loại chuyên mục --</option>
-                                <option value="4">Phòng Trọ</option>
-                                <option value="5">Nhà ở mini</option>
-                                <option value="6">Căng hộ chung cư</option>
+                                <option disabled>-- Chọn loại chuyên mục --</option>
+                                <option value="4" @(Model.ID_CD == 4 ? "selected" : "")>Phòng Trọ</option>
+                                <option value="5" @(Model.ID_CD == 5 ? "selected" : "")>Nhà ở mini</option>
+                                <option value="6" @(Model.ID_CD == 6 ? "selected" : "")>Căn hộ chung cư</option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Loại chuyên mục <span class="text-danger">*</span></label>
                             <select id="LoaiTinSelect" name="ID_LoaiTin" class="form-select">
-                                <option selected disabled>-- Chọn loại loại tin --</option>
+                                <option disabled>-- Chọn loại loại tin --</option>
                                 @foreach (var item in Model.LoaiTin)
                                     {
-                                    <option value="@item.ID_LoaiTin">@item.Ten_LoaiTin</option>
+                                    <option value="@item.ID_LoaiTin" @(Model.ID_LoaiTin == item.ID_LoaiTin ? "selected" : "")>
+                                        @item.Ten_LoaiTin
+                                    </option>
                                     }
                             </select>
+
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Thời Gian</label>
@@ -64,12 +70,12 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Lựa chọn ngày</label>
-                            <input type="number" id="NgayInput" name="Ngay" class="form-control" placeholder="Nhập số ngày" />
+                            <input type="number" id="NgayInput" name="Ngay" class="form-control" value="@(Model.Ngay ?? 0)" />
                             <small id="NgayWarning" style="color:red; display:none;">Số ngày phải là bội của 3</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Bảng giá</label>
-                            <input type="number" name="BangGia" id="banggia" class="form-control" placeholder="" />
+                            <input type="number" name="BangGia" id="banggia" class="form-control" value="@(Model.BangGia ?? 0)" />
                         </div>
                     </div>
                 </div>
@@ -81,16 +87,19 @@
                         <div class="col-md-6">
                             <label class="form-label">Phường/Xã</label>
                             <select class="form-select" name="ID_KV">
-                                <option selected disabled>-- Chọn phường/xã --</option>
+                                <option disabled>-- Chọn phường/xã --</option>
                                 @foreach (var item in Model.KhuVuc)
                                     {
-                                    <option value="@item.ID_KV">@item.Ten_KV</option>
+                                    <option value="@item.ID_KV" @(Model.ID_KV == item.ID_KV ? "selected" : "")>
+                                        @item.Ten_KV
+                                    </option>
                                     }
                             </select>
+
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Địa chỉ</label>
-                            <input id="DiaChi" name="DiaChi" type="text" class="form-control bg-light" placeholder="Ghi đúng địa chỉ của bạn" />
+                            <input id="DiaChi" name="DiaChi" type="text" class="form-control bg-light" value="@Model.DiaChi" />
                         </div>
                     </div>
                 </div>
@@ -101,13 +110,13 @@
 
                     <div class="mb-3">
                         <label class="form-label">Tiêu đề <span class="text-danger">*</span></label>
-                        <input type="text" name="TieuDe" class="form-control" placeholder="Nhập tiêu đề bài đăng" />
+                        <input type="text" name="TieuDe" class="form-control" value="@Model.TieuDe" />
                         <div class="text-muted mt-1">(Tối thiểu 30 ký tự, tối đa 100 ký tự)</div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Nội dung mô tả <span class="text-danger">*</span></label>
-                        <textarea name="MoTa" class="form-control" rows="6" placeholder="Nhập nội dung mô tả chi tiết..." style="height:400px !important;"></textarea>
+                        <textarea name="MoTa" class="form-control" rows="6" style="height:400px !important;">@Model.MoTa</textarea>
                         <div class="text-muted mt-1">(Tối thiểu 50 ký tự, tối đa 5000 ký tự)</div>
                     </div>
 
@@ -115,7 +124,8 @@
                         <div class="col-md-6">
                             <label class="form-label">Giá cho thuê<span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" name="GiaThue" class="form-control" placeholder="Ví dụ: 3000000" />
+                                <input type="number" name="GiaThue" class="form-control" value="@(Model.GiaThue ?? 0)" />
+
                                 <select class="form-select" style="max-width: 160px;">
                                     <option>đồng/tháng</option>
 
@@ -127,7 +137,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Diện tích <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" name="DienTich" class="form-control" placeholder="Nhập diện tích" />
+                                <input type="number" name="DienTich" class="form-control" value="@(Model.DienTich ?? 0)" />
                                 <span class="input-group-text">m²</span>
                             </div>
                         </div>
@@ -138,21 +148,23 @@
                     <h5 class="mb-3">Đặc điểm nổi bật</h5>
                     <div class="row checkbox-grid">
                         <div class="col-md-4">
-                            <div><input type="checkbox" name="DayDuNoiThat" value="true" /> Đầy đủ nội thất</div>
-                            <div><input type="checkbox" name="CoMayLanh" value="true" /> Có máy lạnh</div>
-                            <div><input type="checkbox" name="CoThangMay" value="true" /> Có thang máy</div>
-                            <div><input type="checkbox" name="CoBaoVe" value="true" /> Có bảo vệ 24/24</div>
+                            <div>
+                                <input type="checkbox" name="DayDuNoiThat" value="true" @(Model.DayDuNoiThat ? "checked" : "") /> Đầy đủ nội thất
+                            </div>
+                            <div><input type="checkbox" name="CoMayLanh" value="true" @(Model.CoMayLanh ? "checked" : "") /> Có máy lạnh</div>
+                            <div><input type="checkbox" name="CoThangMay" value="true" @(Model.CoThangMay ? "checked" : "") /> Có thang máy</div>
+                            <div><input type="checkbox" name="CoBaoVe" value="true" @(Model.CoBaoVe ? "checked" : "") /> Có bảo vệ 24/24</div>
                         </div>
                         <div class="col-md-4">
-                            <div><input type="checkbox" name="CoGac" value="true" /> Có gác</div>
-                            <div><input type="checkbox" name="CoMayGiat" value="true" /> Có máy giặt</div>
-                            <div><input type="checkbox" name="KhongChungChu" value="true" /> Không chung chủ</div>
+                            <div><input type="checkbox" name="CoGac" value="true" @(Model.CoGac ? "checked" : "") /> Có gác</div>
+                            <div><input type="checkbox" name="CoMayGiat" value="true" @(Model.CoMayGiat ? "checked" : "") /> Có máy giặt</div>
+                            <div><input type="checkbox" name="KhongChungChu" value="true" @(Model.KhongChungChu ? "checked" : "") /> Không chung chủ</div>
 
                         </div>
                         <div class="col-md-4">
-                            <div><input type="checkbox" name="CoKeBep" value="true" /> Có kệ bếp</div>
-                            <div><input type="checkbox" name="CoTuLanh" value="true" /> Có tủ lạnh</div>
-                            <div><input type="checkbox" name="GioGiacTuDo" value="true" /> Giờ giấc tự do</div>
+                            <div><input type="checkbox" name="CoKeBep" value="true" @(Model.CoKeBep ? "checked" : "") /> Có kệ bếp</div>
+                            <div><input type="checkbox" name="CoTuLanh" value="true" @(Model.CoTuLanh ? "checked" : "") /> Có tủ lạnh</div>
+                            <div><input type="checkbox" name="GioGiacTuDo" value="true" @(Model.GioGiacTuDo ? "checked" : "") /> Giờ giấc tự do</div>
                         </div>
                     </div>
                 </div>
@@ -177,7 +189,26 @@
                         </ul>
 
                         <!-- Khung hiển thị ảnh preview -->
-                        <div class="preview-area mt-3 d-flex flex-wrap gap-2" id="imagePreview"></div>
+                        <div class="preview-area mt-3 d-flex flex-wrap gap-2" id="imagePreview">
+                            @if (Model.HinhAnhs != null && Model.HinhAnhs.Any())
+                                {
+                                foreach (var img in Model.HinhAnhs)
+                                    {
+                                    <div style="position:relative; display:inline-block;">
+                                        <img src="~/Kho/Img/@img"
+                                             style="width:120px;height:120px;object-fit:cover;border-radius:10px;border:1px solid #ddd;" />
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                                style="position:absolute;top:3px;right:3px;"
+                                                onclick="removeOldImage('@img', this)">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+
+
+                                        <input type="hidden" name="OldImages" value="@img" />
+                                    </div>
+                                    }
+                                }
+                        </div>
                     </div>
                 </section>
 
@@ -199,7 +230,29 @@
                         </div>
 
                         <!-- Preview video -->
-                        <div class="preview-area mt-3" id="videoPreview"></div>
+                        <div class="preview-area mt-3 d-flex flex-wrap gap-2" id="videoPreview">
+                            @if (Model.Videos != null && Model.Videos.Any())
+                                {
+                                foreach (var v in Model.Videos)
+                                    {
+                                    <div style="position:relative; display:inline-block; margin-right:10px;">
+                                        <video src="~/Kho/Video/@v"
+                                               controls
+                                               style="width:200px; height:130px; border-radius:10px; border:1px solid #ddd;">
+                                        </video>
+                                        <button type="button"
+                                                class="btn btn-sm btn-danger"
+                                                style="position:absolute;top:3px;right:3px;"
+                                                onclick="removeOldVideo('@v', this)">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                        <!-- để server biết video nào còn giữ -->
+                                        <input type="hidden" name="OldVideos" value="@v" />
+                                    </div>
+                                    }
+                                }
+                        </div>
+
                     </div>
                 </section>
                 <!-- ===== THÔNG TIN LIÊN HỆ ===== -->
@@ -365,6 +418,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+
+
+
     /* =====================================================
        🧭 3. NAV CUỘN MƯỢT
     ===================================================== */
@@ -411,6 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (current) setActive('#' + current.id);
     }
+
     window.addEventListener('scroll', updateActiveOnScroll);
     updateActiveOnScroll();
 
@@ -456,10 +513,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const thoiGian  = document.getElementById("ThoiGianSelect")?.value || "";
             const ngay      = document.getElementById("NgayInput")?.value || "";
             const bangGia   = document.getElementById("banggia")?.value || "";
-            const anh       = document.querySelector("input[name='imageInput']")?.files.length || 0;
-
+            const anhMoi = document.querySelector("input[name='imageInput']")?.files.length || 0;
+            const anhCu = document.querySelectorAll("input[name='OldImages']").length;
             let missing = [];
-
             // cũ
             if (!chuyenMuc) missing.push("Loại chuyên mục");
             if (!khuVuc) missing.push("Khu vực");
@@ -468,8 +524,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!giaThue) missing.push("Giá thuê");
             if (!dienTich) missing.push("Diện tích");
             if (!diaChi) missing.push("Địa chỉ");
-            if (anh === 0) missing.push("Ảnh");
-
+            if (anhMoi === 0 && anhCu === 0) {
+                missing.push("Ảnh");
+            }
             // mới
             if (!loaiTin)  missing.push("Loại tin");
             if (!thoiGian) missing.push("Thời gian");
@@ -630,17 +687,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const closeBtn = document.getElementById("notifyClose");
-        const box = document.getElementById("notifyBox");
-        if (closeBtn && box) {
-            closeBtn.addEventListener("click", function () {
-                box.classList.add("hidden");
-            });
-        }
-    });
-</script>
-<script>
     function removeOldImage(imgName, btn) {
         if (!confirm("Bạn có chắc muốn xóa ảnh này không?")) return;
 
@@ -661,6 +707,22 @@ document.addEventListener("DOMContentLoaded", function () {
         if (hidden) hidden.remove();
     }
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const closeBtn = document.getElementById("notifyClose");
+        const box = document.getElementById("notifyBox");
+        if (closeBtn && box) {
+            closeBtn.addEventListener("click", function () {
+                box.classList.add("hidden");
+            });
+        }
+    });
+</script>
+
+
+
+
 
 
 

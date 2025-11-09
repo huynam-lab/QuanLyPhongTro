@@ -196,3 +196,134 @@ h5 {
     border-radius: 6px;
     border: 1px solid #ddd;
 }
+.is-invalid {
+    border-color: #dc3545 !important;
+    background-color: #fff6f6 !important;
+}
+
+.error-text {
+    font-size: 13px;
+    display: block;
+    margin-top: 2px;
+}
+.notify {
+    position: fixed;
+    top: 90px;
+    right: 30px;
+    width: 320px;
+    background: #fff;
+    border: 1px solid #f0c36d;
+    border-left: 5px solid #f59e0b;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    z-index: 9999;
+    font-family: inherit;
+    transition: all .25s ease;
+}
+
+.notify.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+}
+
+.notify-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px 0 14px;
+}
+
+.notify-title {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.notify-close {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.notify-body {
+    padding: 10px 14px 14px 14px;
+}
+
+    .notify-body ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .notify-body li {
+        font-size: 13px;
+        margin-bottom: 4px;
+        color: #374151;
+    }
+.btn-update {
+    display: block;
+    width: 100%;
+    background-color: #ff5722;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 0;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+    .btn-update:hover {
+        background-color: #ff7043;
+        transform: translateY(-1px);
+    }
+
+    .btn-update:active {
+        transform: translateY(0);
+        background-color: #e64a19;
+    }
+
+.nav-tabs .nav-link {
+    color: #333;
+    font-weight: 500;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+    .nav-tabs .nav-link.active {
+        color: #ff5722;
+        border-bottom: 3px solid #ff5722;
+        background: none;
+    }
+
+.tab-content {
+    display: none;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+/* Nút cập nhật */
+.btn-update {
+    display: block;
+    width: 100%;
+    background-color: #ff5722;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 0;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    margin-top: 10px;
+}
+
+    .btn-update:hover {
+        background-color: #ff7043;
+    }

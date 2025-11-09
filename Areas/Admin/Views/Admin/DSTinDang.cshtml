@@ -4,7 +4,8 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
 }
-
+@model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ChuNha
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="~/Areas/Admin/Assets/ChuNhacss.css" rel="stylesheet" type="text/css" />
 <div class="container-fluid py-3">
 
@@ -29,7 +30,7 @@
             </div>
 
             <!-- TRẠNG THÁI KHI KHÔNG CÓ TIN -->
-            <div class="text-center py-5" id="emptyState">
+            <div class="text-center py-5 @(Model?.PhongTros != null && Model.PhongTros.Any() ? "d-none" : "")" id="emptyState">
                 <img src="https://cdn-icons-png.flaticon.com/512/7486/7486751.png"
                      width="180" class="mb-3 opacity-75" />
                 <p class="fs-5 text-muted mb-1">Tìm thấy 0 tin đăng</p>
@@ -37,7 +38,7 @@
             </div>
 
             <!-- TRẠNG THÁI KHI CÓ TIN -->
-            <div id="listState" class="d-none">
+            <div id="listState" class="@(Model?.PhongTros != null && Model.PhongTros.Any() ? "" : "d-none")">
                 <table class="table table-hover align-middle shadow-sm">
                     <thead class="table-light">
                         <tr>
@@ -49,49 +50,74 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>#1001</td>
-                            <td>Phòng trọ quận 7, đầy đủ nội thất, gần ĐH Tôn Đức Thắng</td>
-                            <td>02/11/2025</td>
-                            <td><span class="badge bg-success">Hiển thị</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                                <button class="btn btn-sm btn-outline-primary me-1 d-none"><i class="bi bi-pencil"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#1002</td>
-                            <td>Nhà nguyên căn Bình Thạnh – thoáng mát, an ninh</td>
-                            <td>01/11/2025</td>
-                            <td><span class="badge bg-warning text-dark">Chờ duyệt</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                                <button class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil"></i></button>
-                            </td>
-                        </tr>
+                        @if (Model?.PhongTros != null)
+                            {
+                            foreach (var item in Model.PhongTros)
+                                {
+                                <tr>
+                                    <td>#@item.ID_Phong_Tro</td>
+                                    <td>@item.Ten_Phong</td>
+                                    <td>@(item.Ngay_Dang.HasValue ? item.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "—")</td>
+                                    <td>
+                                        @if (item.Trang_Thai == true)
+                                            {
+                                            <span class="badge bg-success">Hiển thị</span>
+                                            }
+                                        else
+                                            {
+                                            <span class="badge bg-warning text-dark">Đang duyệt</span>
+                                            }
+                                    </td>
+                                    <td class="d-flex gap-2">
+                                        @if (item.Trang_Thai == true)
+                                            {
+                                            <button class="btn btn-sm btn-outline-danger d-none">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                            }
+                                        else
+                                            {
+                                                using (Html.BeginForm("DeletePhongTro", "Admin", FormMethod.Post, new { @area = "Admin", onsubmit = "return confirm('Xóa tin này luôn?');" }))
+                                                {
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.ID_Phong_Tro" />
+                                                <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                }
+                                                using (Html.BeginForm("UpdateData", "Admin", FormMethod.Post, new { @area = "Admin"}))
+                                                {
+                                                @Html.AntiForgeryToken()
+                                                <a href="@Url.Action("UpdateData", "Admin", new { area = "Admin", id = item.ID_Phong_Tro })"
+                                                   class="btn btn-sm btn-outline-primary me-1">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                }
+                                            
+                                            }
+                                    </td>
+                                </tr>
+                                }
+                            }
                     </tbody>
                 </table>
             </div>
+
         </div>
-
-      
-
-
     </div>
-
 </div>
-@section scripts {
+@if (TempData["SuccessMessage"] != null)
+    {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Sau này bạn thay điều kiện này = dữ liệu thực từ server (Model.Any())
-            const hasPosts = true; // nếu = false sẽ hiện phần "Tìm thấy 0 tin đăng"
-            const emptyState = document.getElementById("emptyState");
-            const listState = document.getElementById("listState");
-
-            if (hasPosts) {
-                emptyState.classList.add("d-none");
-                listState.classList.remove("d-none");
-            }
+            Swal.fire({
+                title: "Thành công 🎉",
+                text: "@Html.Raw(TempData["SuccessMessage"])",
+                icon: "success",
+                confirmButtonText: "OK",
+                timer: 3000, // Tự đóng sau 3 giây
+                timerProgressBar: true
+            });
         });
     </script>
-}
+    }

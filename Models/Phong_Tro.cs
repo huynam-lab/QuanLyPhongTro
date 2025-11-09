@@ -36,6 +36,7 @@ namespace QuanLyPhongTro.Models
         public Nullable<System.DateTime> Ngay_Dang { get; set; }
         public Nullable<System.DateTime> Ngay_Het_Han { get; set; }
         public Nullable<bool> Trang_Thai { get; set; }
+        public Nullable<decimal> Gia_Duyet { get; set; }
     
         public virtual Chu_De Chu_De { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
