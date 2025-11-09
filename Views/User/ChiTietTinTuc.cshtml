@@ -7,8 +7,34 @@
 <link href="~/Assets/Css/ChiTietTinTuc.css" rel="stylesheet" />
 
 <div class="container pt-article-page">
-    
-    @* ====== GIAO DIỆN 1: id = 1  (Sáp nhập tỉnh thành…) ====== *@
+
+    @* =========================================================================
+        KHỐI RAZOR CHUNG CHO BREADCRUMB
+        ========================================================================= *@
+    @helper RenderBreadcrumb(string articleTitle)
+    {
+        <nav class="mb-3 mt-3" aria-label="breadcrumb">
+            <ol class="breadcrumb pt-breadcrumb">
+                <li class="breadcrumb-item">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("Index","User")">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("Blog","User")">Blog</a>
+                </li>
+                <li class="breadcrumb-item" aria-current="page">
+                    <a class="text-decoration-none text-primary" href="@Url.Action("TinTuc","User")">Tin Tức Thị Trường</a>
+                </li>
+                @*<li class="breadcrumb-item active" aria-current="page">
+                        @articleTitle
+                    </li>*@
+            </ol>
+        </nav>
+    }
+
+
+    @* =========================================================================
+        GIAO DIỆN 1: Sáp nhập tỉnh thành
+        ========================================================================= *@
     @if (id == 1)
     {
         <div class="container article-container mx-auto">
@@ -17,35 +43,22 @@
 
                     <!-- HEADER & BREADCRUMB -->
                     <header class="mb-4">
-                        @* ====== BREADCRUMB CHUNG ====== *@
-                        <nav class="mb-3" aria-label="breadcrumb">
-                            <ol class="breadcrumb pt-breadcrumb">
-                                <li class="breadcrumb-item">
-                                    <a class="text-decoration-none text-primary" href="@Url.Action("Index","User")">Trang chủ</a>
-                                </li>
-                                <li class="breadcrumb-item">
-                                    <a class="text-decoration-none text-primary" href="@Url.Action("Blog","User")">Blog</a>
-                                </li>
-                                <li class="breadcrumb-item" aria-current="page">
-                                    <a class="text-decoration-none text-primary" href="@Url.Action("TinTuc","User")">Tin Tức Thị Trường</a>
-                                </li>
-                            </ol>
-                        </nav>
+                        @RenderBreadcrumb("Sáp nhập tỉnh thành có ảnh hưởng gì đến thị trường cho thuê phòng trọ?")
                         <h1 class="article-title">Sáp nhập tỉnh thành có ảnh hưởng gì đến thị trường cho thuê phòng trọ?</h1>
                     </header>
 
-                    <!-- NỘI DUNG MỞ ĐẦU (Ảnh 2) -->
+                    <!-- NỘI DUNG MỞ ĐẦU -->
                     <div class="article-content">
                         <p class="first-paragraph">Việc sáp nhập các tỉnh, thành không chỉ làm thay đổi bản đồ hành chính, mà còn thôi lớn mở ra nhiều lĩnh vực kinh tế – trong đó có thị trường cho thuê phòng trọ. Khi ranh giới hành chính được vẽ lại, tâm lý người thuê nhà thay đổi, dòng vốn đổ về các khu vực mới tiềm năng, và giờ có phòng trọ có thể biến động không ngờ. Hãy cùng Phongtro123 dự đoán những tác động mà việc sáp nhập tỉnh thành có thể mang lại cho lĩnh vực cho thuê trọ đang ngày càng sôi động.</p>
 
-                        <!-- ẢNH BANNER CHÍNH (Ảnh 2) -->
+                        <!-- ẢNH BANNER CHÍNH -->
                         <figure class="figure mb-4" style="width:100%">
-                            <img src="~/Assets/Images/blog/du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh_1751449092.png"  class="article-image" alt="Dự báo thị trường thuê phòng trọ sau thông tin sáp nhập tỉnh thành">
+                            <img src="~/Assets/Images/blog/du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh_1751449092.png" class="article-image" alt="Dự báo thị trường thuê phòng trọ sau thông tin sáp nhập tỉnh thành">
                             <figcaption class="article-caption">Dự báo thị trường thuê phòng trọ sau thông tin sáp nhập tỉnh thành</figcaption>
                         </figure>
                     </div>
 
-                    <!-- MỤC I: TÁC ĐỘNG (Ảnh 2) -->
+                    <!-- MỤC I: TÁC ĐỘNG -->
                     <h2 class="main-heading">Tác động của thị trường cho thuê phòng trọ khi sáp nhập</h2>
 
                     <h3 class="sub-heading">1. Tác động tích cực và cơ hội</h3>
@@ -55,14 +68,14 @@
                         <p>Cuối cùng, <strong class="content-strong">giá trị bất động sản</strong> tại những khu vực trước đây ít được chú ý có khả năng tăng mạnh nhờ sự phát triển đồng đều hơn về hạ tầng và quy hoạch. Đối với nhà đầu tư, đây là thời điểm "vàng" để đón đầu xu hướng, nâng cấp chất lượng phòng trọ và mở rộng quy mô kinh doanh.</p>
                     </div>
 
-                    <!-- MỤC II: THÁCH THỨC VÀ RỦI RO (Ảnh 3) -->
+                    <!-- MỤC II: THÁCH THỨC VÀ RỦI RO -->
                     <h3 class="sub-heading">2. Thách thức và rủi ro</h3>
                     <div class="article-content">
                         <p>Một trong những thách thức lớn nhất là <strong class="content-strong">biến động về nguồn cung và cầu về phòng trọ</strong>. Khi các tỉnh thành sáp nhập, đặc biệt là khi các khu vực nông thôn được đưa vào các thành phố lớn hơn, quỹ đất có thể được quy hoạch lại cho các mục đích phát triển công nghiệp hoặc thương mại. Điều này có thể dẫn đến việc <strong class="content-strong">giảm nguồn cung phòng trọ giá rẻ</strong> ở những khu vực từng là điểm nóng của sinh viên và người lao động nhập cư. Ví dụ, một số huyện ngoại thành Hà Nội được sáp nhập sâu hơn vào trung tâm, các dự án nhà ở xã hội hoặc chung cư thương mại có thể thay thế những khu trọ nhỏ lẻ, đẩy giá thuê lên cao và gây khó khăn cho người thu nhập thấp.</p>
                         <p>Bên cạnh đó, khi ranh giới hành chính mở đi, các chủ nhà trọ ở khu vực mới sáp nhập sẽ phải <strong class="content-strong">cạnh tranh trực tiếp với những khu vực đã phát triển hơn</strong>. Điều này buộc chủ trọ phải cải thiện chất lượng phòng ốc hoặc giảm giá thuê để thu hút khách, dẫn đến suy giảm lợi nhuận. Ví dụ, một khu trọ ở Hưng Yên, nếu được sáp nhập vào một khu vực phát triển của Hà Nội, sẽ phải cạnh tranh với các phòng trọ tiện nghi hơn trong nội thành, nơi có nhiều tiện ích công cộng và giao thông thuận tiện hơn.</p>
                     </div>
 
-                    <!-- MỤC III: LỜI KHUYÊN (Ảnh 3, 1) -->
+                    <!-- MỤC III: LỜI KHUYÊN -->
                     <h2 class="main-heading">Lời khuyên cho người chủ nhà và người thuê trọ</h2>
 
                     <h3 class="sub-heading">1. Đối với người thuê trọ</h3>
@@ -95,90 +108,228 @@
             </div>
         </div>
     }
-
-    @* ====== GIAO DIỆN 2: id = 2  (Giá phòng trọ TPHCM…) ====== *@
+    @* =========================================================================
+        GIAO DIỆN 2: Thuê phòng trọ cần mang những giấy tờ gì? (Đã chuẩn hóa)
+        ========================================================================= *@
     else if (id == 2)
     {
-        <article class="pt-article">
-            <header class="pt-article-header">
-                <h1 class="pt-article-title">Giá phòng trọ TPHCM tháng 8/2025: Tăng hay giảm?</h1>
-                <p class="pt-article-lead">
-                    Tổng hợp dữ liệu từ các quận trọng điểm, xu hướng giá thuê và khuyến nghị cho chủ trọ – người thuê trong tháng này.
-                </p>
-            </header>
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
 
-            <figure class="pt-article-figure">
-                <img src="~/Assets/Images/blog/sample-gia-phong.jpg" alt="Giá phòng trọ TPHCM" class="img-fluid rounded-3 shadow-sm" />
-            </figure>
+                    <!-- HEADER & BREADCRUMB -->
+                    <header class="mb-4">
+                        @RenderBreadcrumb("Thuê phòng trọ cần mang những giấy tờ gì?")
+                        <h1 class="article-title">Thuê phòng trọ cần mang những giấy tờ gì?</h1>
+                    </header>
 
-            <section class="pt-article-section">
-                <h2 class="pt-article-h2">1) Toàn cảnh</h2>
-                <p>Khu vực trung tâm giữ giá, các quận ven tăng nhẹ nhờ hạ tầng hoàn thiện.</p>
-            </section>
+                    <div class="article-content">
+                        <p class="first-paragraph">Cần những loại giấy tờ nào để có thể yên tâm khi đi thuê phòng trọ? Ngoài những giấy tờ tùy thân như CMND/CCCD thì còn cái gì khác không? Và bài này cũng sẽ hướng dẫn bạn cách xem hợp đồng thuê để tránh rủi ro không đáng có.</p>
 
-            <section class="pt-article-section">
-                <h2 class="pt-article-h2">2) Bảng tham chiếu nhanh</h2>
-                <div class="table-responsive">
-                    <table class="table align-middle pt-article-table">
-                        <thead>
-                            <tr>
-                                <th>Khu vực</th>
-                                <th>Studio</th>
-                                <th>1PN</th>
-                                <th>2PN</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Q.1,3</td><td>6–8tr</td><td>8–11tr</td><td>12–16tr</td></tr>
-                            <tr><td>Q.10,11</td><td>4.5–6tr</td><td>6–8tr</td><td>9–12tr</td></tr>
-                            <tr><td>TP. Thủ Đức</td><td>4–5.5tr</td><td>5.5–7tr</td><td>8–11tr</td></tr>
-                        </tbody>
-                    </table>
+                        <p>Hiện nay, khi đi thuê phòng trọ, thì bạn <strong class="text-danger">chỉ cần mang theo Chứng minh nhân dân/Căn cước công dân (bản sao)</strong> là đã có thể thuê phòng trọ rồi – chủ yếu là để chủ trọ kiểm tra lai lịch của bạn.</p>
+
+                        <!-- ẢNH MINH HỌA CMND/CCCD (Ảnh 1) -->
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/cmnd-hoac-cccd-la-du-de-di-thue-phong_1740123093.png" class="article-image" alt="Giấy chứng minh nhân dân/căn cước công dân">
+                            <figcaption class="article-caption">CMND hoặc CCCD là đủ để đi thuê phòng</figcaption>
+                        </figure>
+
+                        <p>Tuy nhiên, không chỉ chủ nhà kiểm tra lai lịch của bạn. Để đảm bảo không gặp rủi ro, bạn cũng nên kiểm tra ngược lại chủ nhà trọ các loại giấy tờ sau đây:</p>
+                        <ul>
+                            <li><strong class="content-strong">Giấy chứng nhận quyền sử dụng đất</strong> (Sổ đỏ, Giấy ủy quyền cho thuê) - tránh thuê trọ từ người mạo danh.</li>
+                            <li><strong class="content-strong">Bản sao giấy tờ tùy thân (CMND/CCCD)</strong> - so sánh thông tin trên giấy tờ nhà với thông tin trên CCCD/CMND.</li>
+                            <li><strong class="content-strong">Hợp đồng cho thuê</strong> - thông tin 2 bên, địa chỉ trọ, số tiền thuê, cọc,... giúp đảm bảo quyền lợi của cả 2 bên.</li>
+                        </ul>
+
+                        <!-- TIÊU ĐỀ PHỤ: VÌ SAO CẦN HỢP ĐỒNG CHO THUÊ TRỌ? -->
+                        <h2 class="sub-heading">Vì sao cần hợp đồng cho thuê trọ?</h2>
+                        <p>Không phải là một tờ giấy 2 bên ghi cho vui. Mà nó sẽ là thứ giúp bảo vệ quyền lợi cho cả 2 bên.</p>
+                        <p>Giống như trong tài trọng đã banh vậy á, khi một bên phạm lỗi thì trọng tài ra tay ngay. Tương tự thuê phòng trọ, nếu có 1 bên vi phạm thì tờ hợp đồng sẽ "<strong class="content-strong">ra tay</strong>" để bảo vệ quyền lợi của bên còn lại còn lại vi phạm.</p>
+
+                        <!-- ẢNH HỢP ĐỒNG (Ảnh 2) -->
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/vi-sao-lai-can-hop-dong-thue-phong-tro_1740123249.png" class="article-image" alt="Ký kết hợp đồng thuê phòng trọ">
+                            <figcaption class="article-caption">Vì sao lại cần hợp đồng thuê phòng trọ?</figcaption>
+                        </figure>
+
+                        <p><strong>Ví dụ:</strong> Hợp đồng ghi là trong 1 năm không được tăng giá thuê, nhưng mới 3 tháng thì chủ nhà đòi tăng giá vì một lý do gì đó... thì bạn có thể trình báo lên cơ quan công an, thậm chí là đưa ra tòa.</p>
+                        <p>Và nhớ là căn theo hợp đồng, không có là người ta đuổi về á. Những nơi có thẩm quyền cao như vậy sẽ dựa vào hợp đồng để giải quyết vấn đề của cả 2 - đây là cách mà hợp đồng "<strong class="content-strong">ra tay</strong>" để bảo vệ quyền lợi cho bạn.</p>
+                        <p>Vậy, có một câu hỏi là: "<strong class="content-strong">Có nhất thiết phải ký hợp đồng không? Nó có thực sự cần thiết?</strong>"</p>
+
+                        <!-- TIÊU ĐỀ CHÍNH: CẦN KIỂM TRA GÌ TRONG HỢP ĐỒNG? -->
+                        <h2 class="main-heading">Cần kiểm tra những gì trong hợp đồng?</h2>
+
+                        <!-- MỤC 1: THÔNG TIN CÁC BÊN (Ảnh 2) -->
+                        <h3 class="sub-heading">1. Thông tin các bên trong hợp đồng</h3>
+                        <ul>
+                            <li>Kiểm tra, so sánh thông tin trên CMND/CCCD.</li>
+                            <li>Nếu người ký không phải chủ nhà, cần xác nhận họ có <strong class="content-strong">hợp đồng ủy quyền</strong> hợp pháp.</li>
+                        </ul>
+                        <p><strong>Ví dụ:</strong> Người ký hợp đồng cho bạn là "Cô Ba", nhưng sổ đỏ đứng tên "ông Năm", thì cô Ba phải có giấy ủy quyền được ký tên bởi ông Năm, thì cô Ba ký hợp đồng cho thuê với bạn mới là hợp pháp.</p>
+
+                        <!-- MỤC 2: THÔNG TIN VỀ PHÒNG TRỌ (Ảnh 2) -->
+                        <h3 class="sub-heading">2. Thông tin về phòng trọ</h3>
+                        <p>Xem thông tin về căn phòng đó có đúng không: Địa chỉ, diện tích, tầng, các đồ có sẵn...</p>
+
+                        <!-- ẢNH PHÒNG TRỌ CÓ GÁC (Ảnh 2) -->
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/kiem-tra-thong-tin-cua-phong-tro_1740123323.png" class="article-image" alt="Nội thất phòng trọ có gác">
+                            <figcaption class="article-caption">Kiểm tra thông tin chi tiết về căn phòng</figcaption>
+                        </figure>
+
+                        <!-- MỤC 3: TIỀN THUÊ VÀ TIỀN CỌC (Ảnh 3) -->
+                        <h2 class="main-heading">3. Tiền thuê và tiền cọc</h2>
+                        <ul>
+                            <li>Tiền thuê phòng hằng tháng là bao nhiêu? Đóng tiền vào ngày mấy?</li>
+                            <li>Tiền cọc bao nhiêu? Khi nào được hoàn cọc?</li>
+                        </ul>
+                        <p>Và nhớ xem thử có điều kiện gì bị trừ tiền cọc không, coi chừng cảnh "hợp đồng chưa hết mà tiền cọc đã bị trừ sạch."</p>
+
+                        <!-- MỤC 4: CÁC CHI PHÍ KHÁC (Ảnh 3) -->
+                        <h2 class="main-heading">4. Các chi phí khác</h2>
+                        <ul>
+                            <li>Giá điện nước: Tiền điện thường khoảng 3000 - 4000 nghìn/kWh, tiền nước thì 50 - 100k/người/tháng.</li>
+                            <li>Phí dịch vụ: Internet, gửi xe, rác...</li>
+                        </ul>
+
+                        <!-- MỤC 5: THỜI GIAN THUÊ VÀ KẾT THÚC HỢP ĐỒNG (Ảnh 3) -->
+                        <h2 class="main-heading">5. Thời gian thuê và kết thúc hợp đồng</h2>
+                        <ul>
+                            <li>Hợp đồng 6 tháng hay 1 năm? Có tự động gia hạn không?</li>
+                            <li>Kết thúc hợp đồng sớm thì có bị phạt gì không?</li>
+                        </ul>
+
+                        <!-- MỤC 6: QUY ĐỊNH VỀ SỬ DỤNG PHÒNG (Ảnh 3) -->
+                        <h2 class="main-heading">6. Quy định về sử dụng phòng</h2>
+                        <ul>
+                            <li>Có được nuôi chó không?</li>
+                            <li>Bạn bè, người thân có được ở lại qua đêm không?</li>
+                            <li>Đền đồ hư thì ai chịu trách nhiệm sửa chữa?</li>
+                            <li>- ...</li>
+                        </ul>
+
+                        <!-- HỘP NỘI QUY PHÒNG TRỌ (Ảnh 4 - Đã chuyển thành HTML responsive) -->
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/kiem-tra-thong-tin-cua-phong-tro_1740123323.png" class="article-image" alt="Nội thất phòng trọ có gác">
+                            <figcaption class="article-caption">Nội quy phòng trọ</figcaption>
+                        </figure>
+
+                        <!-- TỔNG KẾT (Ảnh 4) -->
+                        <h2 class="main-heading">Tổng kết</h2>
+                        <p class="content-strong">Đi thuê phòng trọ cần mang những giấy tờ gì? Chỉ cần bản sao của CMND/CCCD là có thể thuê phòng trọ rồi... Á còn phải mang tiền và một cái đầu lạnh nữa.</p>
+                        <p>Như vậy, <strong class="content-strong text-primary">Phongtro123.com</strong> vừa giải đáp thắc mắc của bạn về giấy tờ khi thuê phòng trọ và một "xíu" về <strong class="content-strong text-primary">hợp đồng cho thuê phòng trọ</strong>. Hy vọng nó sẽ hữu ích với bạn vào một lúc nào đó.</p>
+
+                    </div>
                 </div>
-            </section>
-
-            <section class="pt-article-section">
-                <div class="pt-article-callout is-info">
-                    <i class="fa-solid fa-circle-info me-2"></i>
-                    <span>Giá chỉ mang tính tham khảo tại thời điểm viết. Vui lòng kiểm tra lại trước khi cọc.</span>
-                </div>
-            </section>
-        </article>
+            </div>
+        </div>
     }
 
     @* ====== GIAO DIỆN 3: id = 3  (Mô hình người đi làm ưa chuộng) ====== *@
     else if (id == 3)
     {
-        <article class="pt-article">
-            <header class="pt-article-header">
-                <h1 class="pt-article-title">Năm 2025: Người đi làm sẽ ưa chuộng loại phòng trọ nào?</h1>
-                <p class="pt-article-lead">
-                    Xu hướng phòng trọ tập trung vào sự riêng tư, an toàn và các tiện ích cơ bản – nhưng vừa túi tiền.
-                </p>
-            </header>
+        <div class="container article-container mx-auto">
+            <div class="row justify-content-center" style="background-color:#fff ; padding:10px;border-radius:10px">
+                <div class="col-12">
 
-            <section class="pt-article-grid-2">
-                <div class="pt-article-box">
-                    <img src="https://placehold.co/600x380/0B6B6F/ffffff?text=Ph%C3%B2ng+kh%C3%A9p+k%C3%ADn" alt="Khép kín" />
-                    <h5 class="mt-3 mb-1">Phòng khép kín 20–25m²</h5>
-                    <p class="mb-0">WC riêng, máy lạnh, cửa sổ/ban công. Phù hợp 1–2 người đi làm.</p>
-                </div>
-                <div class="pt-article-box">
-                    <img src="https://placehold.co/600x380/8E24AA/ffffff?text=Nh%C3%A0+tr%E1%BB%8D+c%C3%B3+thang+máy" alt="Thang máy" />
-                    <h5 class="mt-3 mb-1">Nhà trọ có thang máy, thẻ từ</h5>
-                    <p class="mb-0">An ninh và tiện lợi – đặc biệt với các toà từ 5 tầng trở lên.</p>
-                </div>
-            </section>
+                    <header class="mb-4">
+                        @RenderBreadcrumb("Vì sao tiền điện nước trong phòng trọ thường cao hơn?")
+                        <h1 class="article-title">Vì sao tiền điện nước trong phòng trọ thường cao hơn?</h1>
+                    </header>
 
-            <section class="pt-article-section">
-                <h2 class="pt-article-h2">Checklist tối thiểu</h2>
-                <ul class="pt-article-list">
-                    <li>Điện – nước minh bạch; hợp đồng rõ.</li>
-                    <li>Chỗ để xe, camera; giờ giấc hợp lý.</li>
-                    <li>Vệ sinh khu vực chung; xử lý rác đúng quy định.</li>
-                </ul>
-            </section>
-        </article>
+                    <div class="article-content">
+                        <p class="first-paragraph">
+                            Bạn có bao giờ thắc mắc là **Tại sao tiền điện, tiền nước tại phòng trọ lại cao hơn so với giá của nhà nước không?** Bài này sẽ giải đáp cho bạn.
+                            Ai đã từng thuê trọ chắc không ít lần nhận mặt nhận hóa đơn điện nước. Tiền điện, tiền nước mỗi tháng không dùng quá nhiều, mà giá lại khá là chua. Nhưng tại sao lại cao hơn so với giá nhà nước công bố? Có phải chủ nhà đang ăn gian không? Hay còn lý do nào khác? Cùng Phongtro123.com bóc tách từng vấn đề nhé!
+                        </p>
+
+                        <figure class="figure mb-4" style="width:100%">
+                            <img src="~/Assets/Images/blog/vi-sao-tien-dien-nuoc-o-phong-tro-thuong-cao-hon_1739955806.png" class="article-image" alt="Hóa đơn điện nước phòng trọ cao">
+                            <figcaption class="article-caption">Vì sao tiền điện nước ở phòng trọ thường cao hơn?</figcaption>
+                        </figure>
+                    </div>
+
+                    <h2 class="main-heading">Lý do khiến tiền điện nước ở phòng trọ cao</h2>
+
+                    <h3 class="sub-heading">1. Chủ nhà tính giá cao hơn giá nhà nước</h3>
+                    <div class="article-content">
+                        <ul>
+                            <li>Giá nhà nước: khoảng <strong class="content-strong">2000 đồng/kWh</strong>.</li>
+                            <li>Giá phòng trọ: <strong class="content-strong">3000 - 4000 đồng/kWh</strong> (thậm chí có chỗ 5000 đồng).</li>
+                        </ul>
+                        <p>
+                            **Tại sao lại như vậy?** Nhiều chủ nhà giải thích rằng: "Họ phải bù vào các thiết bị điện, thiết bị nước, và bù đắp những rủi ro thất thoát."
+                            Một lý do cũng đáng để thông cảm. Nhưng tiền điện nên tầm **3000 - 3500 đồng/kWh** là hợp lý rồi, chứ **4000 - 5000 đồng** thì bạn nên cân nhắc lại vì như vậy là **QUÁ ĐẮT**.
+                        </p>
+                    </div>
+
+                    <h3 class="sub-heading">2. Thiết bị cũ, hao tốn điện nước</h3>
+                    <div class="article-content">
+                        <p>
+                            Các thiết bị như máy bơm nước, quạt, đèn,... nếu đã cũ thì dễ bị ngốn điện hơn. Hệ thống ống nước cũ cũng có thể gây **rò rỉ, thất thoát** nước.
+                        </p>
+                        <p>
+                            Yêu cầu chủ nhà bảo trì hoặc tự thay mới các thiết bị trong phòng.
+                        </p>
+                    </div>
+
+                    <h3 class="sub-heading">3. Điện nước tính theo dạng "gộp"</h3>
+                    <div class="article-content">
+                        <p>
+                            Nhiều dãy trọ cho thuê dùng <strong class="content-strong">một đồng hồ tổng</strong>, và chủ nhà lấy số tiền điện tổng đó chia đều ra cho các phòng. Dẫn đến vấn đề là phòng dùng ít điện cũng phải trả ngang với phòng dùng nhiều.
+                        </p>
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/tien-dien-nuoc-tinh-theo-dang-gop_1739955842.png" class="article-image" alt="Đồng hồ điện tổng cho nhà trọ">
+                            <figcaption class="article-caption">Chủ trọ chỉ dùng duy nhất một đồng hồ tổng</figcaption>
+                        </figure>
+                    </div>
+
+                    <h2 class="main-heading">Cách kiểm tra và thương lượng chi phí điện nước</h2>
+
+                    <h3 class="sub-heading">1. Kiểm tra đồng hồ điện nước riêng </h3>
+                    <div class="article-content">
+                        <p>
+                            Yêu cầu phải có **đồng hồ điện nước riêng** cho từng phòng. Và nhớ theo dõi **chỉ số điện nước mỗi tháng** để kiểm soát chi tiêu.
+                        </p>
+                    </div>
+
+                    <h3 class="sub-heading">2. So sánh giá với các khu vực khác</h3>
+                    <div class="article-content">
+                        <p>
+                            Nếu có quen biết (có thể là bạn bè hoặc người quen) thì hỏi thăm giá ở những khu vực lân cận.
+                            Hoặc nếu không thì có thể tham khảo giá trên các website như **Phongtro123.com**, chọn khu vực bạn đang tìm hiểu, xem giá cho thuê và phí điện nước của các phòng trọ ở khu vực đó như thế nào.
+                        </p>
+                        <p>
+                            Có được giá thuê chung tại khu vực rồi thì bạn khá dễ để **thương lượng lại giá thuê phòng** cả chi phí điện nước.
+                        </p>
+                        <p>
+                            **VD:** Bạn có thể hỏi trực tiếp họ là: **"Sao những phòng trọ quanh đây chỉ tính có 3500 đồng/kWh mà ở đây lại tính tới 4500 đồng/kWh vậy ạ?"**
+                        </p>
+                        <p>
+                            Xem họ giải thích có hợp lý chưa, nếu chưa và bạn chỉ ra điểm chưa hợp lý đó, thì họ sẽ thấy gợn và có thể sẽ nhượng bộ.
+                        </p>
+                        <figure class="figure my-4">
+                            <img src="~/Assets/Images/blog/tim-hieu-gia-thue-o-khu-vuc-xung-quanh_1739955914.png" class="article-image" alt="Hỏi giá thuê trọ xung quanh">
+                            <figcaption class="article-caption">Tìm hiểu giá thuê ở khu vực xung quanh</figcaption>
+                        </figure>
+                    </div>
+
+                    <h2 class="main-heading">Tổng kết</h2>
+                    <div class="article-content">
+                        <p>
+                            Tiền điện nước trong phòng trọ cao hơn là điều khá phổ biến. Nhưng không phải lúc nào cũng do chủ nhà ăn gian. **Việc hiểu rõ nguyên nhân và cách kiểm soát** sẽ giúp bạn sống yên vui hơn, ít hiểu lầm hơn.
+                        </p>
+                        <p>
+                            Hãy là một người thuê trọ thông thái, biết cách làm hài lòng đối phương nhưng vẫn **bảo vệ được quyền lợi của mình** nhé!
+                        </p>
+                        <p class="mt-4">
+                            Xem thêm: <a class="text-decoration-none text-primary content-strong" href="#">Hướng dẫn cách xem và tính tiền điện nước phòng trọ chuẩn</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     }
     else
     {

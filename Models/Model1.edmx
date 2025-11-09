@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DaTa_Phong_TroModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="DaTa_Phong_TroModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bang_Gia_Tin">
           <Key>
             <PropertyRef Name="ID_Gia" />
@@ -95,15 +95,6 @@
           <Property Name="Ngay_Het_Han" Type="datetime" />
           <Property Name="Gia_Duyet" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Trang_Thai" Type="bit" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="Phong_Tro_Backup">
-          <Key>
-            <PropertyRef Name="ID_Phong_Tro" />
-          </Key>
-          <Property Name="ID_Phong_Tro" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Mo_Ta" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -283,37 +274,6 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
-        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
-        </Function>
-        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="DaTa_Phong_TroModelStoreContainer">
           <EntitySet Name="Bang_Gia_Tin" EntityType="Self.Bang_Gia_Tin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Chu_De" EntityType="Self.Chu_De" Schema="dbo" store:Type="Tables" />
@@ -327,12 +287,6 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
           <EntitySet Name="Tai_Khoan" EntityType="Self.Tai_Khoan" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Video" EntityType="Self.Video" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Yeu_Thich" EntityType="Self.Yeu_Thich" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Phong_Tro_Backup" EntityType="Self.Phong_Tro_Backup" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Phong_Tro_Backup].[ID_Phong_Tro] AS [ID_Phong_Tro], 
-    [Phong_Tro_Backup].[Mo_Ta] AS [Mo_Ta]
-    FROM [dbo].[Phong_Tro_Backup] AS [Phong_Tro_Backup]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_Bang_Gia_Tin_Loai_Tin" Association="Self.FK_Bang_Gia_Tin_Loai_Tin">
             <End Role="Loai_Tin" EntitySet="Loai_Tin" />
             <End Role="Bang_Gia_Tin" EntitySet="Bang_Gia_Tin" />
@@ -378,7 +332,8 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
             <End Role="Yeu_Thich" EntitySet="Yeu_Thich" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DaTa_Phong_TroModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -478,6 +433,7 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
           <Property Name="Gia_Ca" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Ngay_Dang" Type="DateTime" Precision="3" />
           <Property Name="Ngay_Het_Han" Type="DateTime" Precision="3" />
+          <Property Name="Gia_Duyet" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Trang_Thai" Type="Boolean" />
           <NavigationProperty Name="Chu_De" Relationship="Self.FK_PhongTro_ChuDe" FromRole="Phong_Tro" ToRole="Chu_De" />
           <NavigationProperty Name="Hinh_Anh" Relationship="Self.FK_HinhAnh_PhongTro" FromRole="Phong_Tro" ToRole="Hinh_Anh" />
@@ -487,7 +443,6 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
           <NavigationProperty Name="Tai_Khoan" Relationship="Self.FK_Phong_Tro_Tai_Khoan" FromRole="Phong_Tro" ToRole="Tai_Khoan" />
           <NavigationProperty Name="Videos" Relationship="Self.FK_Video_PhongTro" FromRole="Phong_Tro" ToRole="Video" />
           <NavigationProperty Name="Yeu_Thich" Relationship="Self.FK_Yeu_Thich_Phong_Tro" FromRole="Phong_Tro" ToRole="Yeu_Thich" />
-          <Property Name="Gia_Duyet" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -536,13 +491,6 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
           <Property Name="ID_TK" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Phong_Tro" Relationship="Self.FK_Yeu_Thich_Phong_Tro" FromRole="Yeu_Thich" ToRole="Phong_Tro" />
           <NavigationProperty Name="Tai_Khoan" Relationship="Self.FK_Yeu_Thich_Tai_Khoan" FromRole="Yeu_Thich" ToRole="Tai_Khoan" />
-        </EntityType>
-        <EntityType Name="Phong_Tro_Backup">
-          <Key>
-            <PropertyRef Name="ID_Phong_Tro" />
-          </Key>
-          <Property Name="ID_Phong_Tro" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Mo_Ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_Bang_Gia_Tin_Loai_Tin">
           <End Role="Loai_Tin" Type="Self.Loai_Tin" Multiplicity="0..1" />
@@ -680,7 +628,7 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="DaTa_Phong_TroEntities4" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="DaTa_Phong_TroEntities5" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Bang_Gia_Tin" EntityType="Self.Bang_Gia_Tin" />
           <EntitySet Name="Chu_De" EntityType="Self.Chu_De" />
           <EntitySet Name="Hinh_Anh" EntityType="Self.Hinh_Anh" />
@@ -693,7 +641,6 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
           <EntitySet Name="Tai_Khoan" EntityType="Self.Tai_Khoan" />
           <EntitySet Name="Videos" EntityType="Self.Video" />
           <EntitySet Name="Yeu_Thich" EntityType="Self.Yeu_Thich" />
-          <EntitySet Name="Phong_Tro_Backup" EntityType="Self.Phong_Tro_Backup" />
           <AssociationSet Name="FK_Bang_Gia_Tin_Loai_Tin" Association="Self.FK_Bang_Gia_Tin_Loai_Tin">
             <End Role="Loai_Tin" EntitySet="Loai_Tin" />
             <End Role="Bang_Gia_Tin" EntitySet="Bang_Gia_Tin" />
@@ -738,54 +685,13 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
             <End Role="Tai_Khoan" EntitySet="Tai_Khoan" />
             <End Role="Yeu_Thich" EntitySet="Yeu_Thich" />
           </AssociationSet>
-          <FunctionImport Name="sp_alterdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_creatediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_dropdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(DaTa_Phong_TroModel.sp_helpdiagramdefinition_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(DaTa_Phong_TroModel.sp_helpdiagrams_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_renamediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="new_diagramname" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="sp_upgraddiagrams" />
         </EntityContainer>
-        <ComplexType Name="sp_helpdiagramdefinition_Result">
-          <Property Type="Int32" Name="version" Nullable="true" />
-          <Property Type="Binary" Name="definition" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="sp_helpdiagrams_Result">
-          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
-          <Property Type="Int32" Name="OwnerID" Nullable="false" />
-        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="DaTa_Phong_TroModelStoreContainer" CdmEntityContainer="DaTa_Phong_TroEntities4">
+        <EntityContainerMapping StorageEntityContainer="DaTa_Phong_TroModelStoreContainer" CdmEntityContainer="DaTa_Phong_TroEntities5">
           <EntitySetMapping Name="Bang_Gia_Tin">
             <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Bang_Gia_Tin">
               <MappingFragment StoreEntitySet="Bang_Gia_Tin">
@@ -868,7 +774,6 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
           <EntitySetMapping Name="Phong_Tro">
             <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Phong_Tro">
               <MappingFragment StoreEntitySet="Phong_Tro">
-                <ScalarProperty Name="Gia_Duyet" ColumnName="Gia_Duyet" />
                 <ScalarProperty Name="ID_Phong_Tro" ColumnName="ID_Phong_Tro" />
                 <ScalarProperty Name="ID_KV" ColumnName="ID_KV" />
                 <ScalarProperty Name="ID_CD" ColumnName="ID_CD" />
@@ -881,6 +786,7 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
                 <ScalarProperty Name="Gia_Ca" ColumnName="Gia_Ca" />
                 <ScalarProperty Name="Ngay_Dang" ColumnName="Ngay_Dang" />
                 <ScalarProperty Name="Ngay_Het_Han" ColumnName="Ngay_Het_Han" />
+                <ScalarProperty Name="Gia_Duyet" ColumnName="Gia_Duyet" />
                 <ScalarProperty Name="Trang_Thai" ColumnName="Trang_Thai" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -931,38 +837,6 @@ warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Phong_Tro_Backup">
-            <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Phong_Tro_Backup">
-              <MappingFragment StoreEntitySet="Phong_Tro_Backup">
-                <ScalarProperty Name="ID_Phong_Tro" ColumnName="ID_Phong_Tro" />
-                <ScalarProperty Name="Mo_Ta" ColumnName="Mo_Ta" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="DaTa_Phong_TroModel.Store.sp_alterdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="DaTa_Phong_TroModel.Store.sp_creatediagram" />
-          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="DaTa_Phong_TroModel.Store.sp_dropdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="DaTa_Phong_TroModel.Store.sp_helpdiagramdefinition">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="DaTa_Phong_TroModel.sp_helpdiagramdefinition_Result">
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="DaTa_Phong_TroModel.Store.sp_helpdiagrams">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="DaTa_Phong_TroModel.sp_helpdiagrams_Result">
-                <ScalarProperty Name="Database" ColumnName="Database" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Owner" ColumnName="Owner" />
-                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="DaTa_Phong_TroModel.Store.sp_renamediagram" />
-          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="DaTa_Phong_TroModel.Store.sp_upgraddiagrams" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

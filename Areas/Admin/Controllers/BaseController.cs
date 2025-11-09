@@ -10,7 +10,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
     public class BaseController : Controller
     {
 
-        protected DaTa_Phong_TroEntities4 db = new DaTa_Phong_TroEntities4();
+        protected DaTa_Phong_TroEntities5 db = new DaTa_Phong_TroEntities5();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
             {
             Session["MaTK"] = 12;

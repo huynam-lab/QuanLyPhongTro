@@ -35,7 +35,7 @@
 
         <!-- Bài viết 1: Cần đảm bảo toàn bộ card là link -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/mo-hinh-phong-tro-nguoi-di-lam-ua-chuong-2025" class="pt-blog-card-link">
+            <a href="@Url.Action("ChiTietChiaSeKinhNghiem", "User", new { id = 1 })" class="pt-blog-card-link">
                 <div class="card pt-blog-card h-100 shadow-sm border-0">
                     <div class="pt-card-img-container">
                         <!-- Ảnh đại diện -->
@@ -52,7 +52,7 @@
 
         <!-- Bài viết 2 -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/gia-phong-tro-tphcm-t8-2025-nguoi-thue-phai-luu-y-gi" class="pt-blog-card-link">
+            <a href="@Url.Action("ChiTietChiaSeKinhNghiem", "User", new { id = 2 })" class="pt-blog-card-link">
                 <div class="card pt-blog-card h-100 shadow-sm border-0">
                     <div class="pt-card-img-container">
                         <img src="~/Assets/Images/blog/100m2-dien-tich-dat-xay-dung-duoc-bao-nhieu-phong-tro_1735638293.jpg" class="card-img-top pt-card-img" alt="Giá phòng trọ TPHCM">
@@ -68,7 +68,7 @@
 
         <!-- Bài viết 3 -->
         <div class="col-lg-4 col-md-6 col-12 mb-4">
-            <a href="/blog/chi-tiet/du-bao-thi-truong-phong-tro-sau-thong-tin-sap-nhap-tinh-thanh" class="pt-blog-card-link">
+            <a href="@Url.Action("ChiTietChiaSeKinhNghiem", "User", new { id = 3 })" class="pt-blog-card-link">
                 <div class="card pt-blog-card h-100 shadow-sm border-0">
                     <div class="pt-card-img-container">
                         <img src="~/Assets/Images/blog/top-5-cau-hoi-nen-hoi-chu-nha-khi-xem-phong-tro_1734342402.jpg" class="card-img-top pt-card-img" alt="Sáp nhập tỉnh thành">
@@ -82,32 +82,32 @@
             </a>
         </div>
 
-       
+
     </div>
 
     <!-- 5. Phân trang (Pagination) -->
     @*<div class="d-flex justify-content-center mt-5 pt-pagination-wrapper">
-        <nav aria-label="Page navigation">
-            <ul class="pagination pt-custom-pagination">
-                <li class="page-item"><a class="page-link" href="#">« Trang trước</a></li>
-                <li class="page-item active"><a class="page-link pt-active-page" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">» Trang sau</a></li>
-            </ul>
-        </nav>
-    </div>*@
+            <nav aria-label="Page navigation">
+                <ul class="pagination pt-custom-pagination">
+                    <li class="page-item"><a class="page-link" href="#">« Trang trước</a></li>
+                    <li class="page-item active"><a class="page-link pt-active-page" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">» Trang sau</a></li>
+                </ul>
+            </nav>
+        </div>*@
 
     <!-- ============================================================= -->
     <!-- 6. TIN ĐĂNG MỚI CẬP NHẬT (Listing Section) -->
     <!-- ============================================================= -->
-    <div class="pt-new-listings" style="background-color: #fff; padding: 24px 24px 0 24px; border-radius :10px">
+    <!--<div class="pt-new-listings" style="background-color: #fff; padding: 24px 24px 0 24px; border-radius :10px">
         <h2 class="h5 fw-bold mb-4 pt-blog-heading">Tin đăng mới cập nhật</h2>
 
-        <div class="row">
+        <div class="row">-->
             <!-- Listing 1 -->
-            <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <!--<div class="col-lg-4 col-md-6 col-12 mb-4">
                 <a href="/listing/details/1" class="card pt-listing-card h-100 shadow-sm">
                     <img src="https://placehold.co/400x250/F44336/white?text=Nhà+Trọ+Mới" class="pt-listing-img" alt="Phòng trọ Thủ Đức">
                     <div class="card-body">
@@ -122,10 +122,10 @@
                         </p>
                     </div>
                 </a>
-            </div>
+            </div>-->
 
             <!-- Listing 2 -->
-            <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <!--<div class="col-lg-4 col-md-6 col-12 mb-4">
                 <a href="/listing/details/2" class="card pt-listing-card h-100 shadow-sm">
                     <img src="https://placehold.co/400x250/2196F3/white?text=Căn+Hộ+Dịch+Vụ" class="pt-listing-img" alt="Căn hộ dịch vụ Q10">
                     <div class="card-body">
@@ -140,10 +140,10 @@
                         </p>
                     </div>
                 </a>
-            </div>
+            </div>-->
 
             <!-- Listing 3 -->
-            <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <!--<div class="col-lg-4 col-md-6 col-12 mb-4">
                 <a href="/listing/details/3" class="card pt-listing-card h-100 shadow-sm">
                     <img src="https://placehold.co/400x250/FF9800/white?text=Nhà+Nguyên+Căn" class="pt-listing-img" alt="Nhà nguyên căn Gò Vấp">
                     <div class="card-body">
@@ -160,47 +160,54 @@
                 </a>
             </div>
         </div>
-    </div>
+    </div>-->
     <!-- bổ sung vào đây nhé -->
-    <!-- 7. HỖ TRỢ CHỦ NHÀ ĐĂNG TIN -->
-    <section class="pt-support-wrap">
-        <div class="pt-support-card">
-            <div class="row align-items-center g-4">
-                <!-- Hình minh hoạ -->
-                <div class="col-lg-5">
-                    <div class="pt-support-illust">
-                        <img src="~/Assets/Images/contact-us-pana-orange.svg" alt="Hỗ trợ đăng tin" />
-                    </div>
+    <section class="pt-support">
+        <div class="wrap">
+            <!-- Hình minh họa trái -->
+            <div class="art">
+                <!-- thay ảnh theo ý bạn -->
+                <img src="~/Assets/Images/imgbanggia/dangtin.jpg" alt="Hỗ trợ đăng tin">
+            </div>
+
+            <!-- Nội dung phải -->
+            <div>
+                <div class="head">
+                    <div class="icon">🎧</div>
+                    <h3>Hỗ trợ chủ nhà đăng tin</h3>
+                    <div class="lead">Nếu bạn cần hỗ trợ đăng tin, vui lòng liên hệ số điện thoại bên dưới:</div>
                 </div>
 
-                <!-- Nội dung -->
-                <div class="col-lg-7">
-                    <div class="pt-support-content">
-                        <div class="pt-support-icon">
-                            <i class="fa-solid fa-headset"></i>
-                        </div>
-                        <h3 class="pt-support-title">Hỗ trợ chủ nhà đăng tin</h3>
-                        <p class="pt-support-desc">
-                            Nếu bạn cần hỗ trợ đăng tin, vui lòng liên hệ số điện thoại bên dưới:
-                        </p>
+                <div class="btns">
+                    <!-- Điện thoại -->
+                    <a class="btn phone" href="tel:0909316890">
+                        <span class="ic">
+                            <!-- phone svg -->
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1v3.61a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.56 1 1 0 01-.24 1.02l-2.32 2.21z" /></svg>
+                        </span>
+                        ĐT: 0909316890
+                    </a>
 
-                        <div class="d-flex flex-wrap gap-3 pt-2">
-                            <a href="tel:0909316890" class="pt-support-btn pt-btn-hotline">
-                                <i class="fa-solid fa-phone-volume me-2"></i>
-                                ĐT: 0909316890
-                            </a>
-                            <a href="https://zalo.me/0909316890" class="pt-support-btn pt-btn-zalo">
-                                <i class="fa-solid fa-message me-2"></i>
-                                Zalo: 0909316890
-                            </a>
-                        </div>
+                    <!-- Zalo trực tiếp số -->
+                    <a class="btn zalo" href="https://zalo.me/0909316890" target="_blank" rel="noopener">
+                        <span class="ic">
+                            <!-- chat bubble svg -->
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" /></svg>
+                        </span>
+                        Zalo: 0909316890
+                    </a>
+                </div>
 
-                        <div class="pt-support-sub mt-4">Hỗ trợ ngoài giờ</div>
-                        <a href="https://zalo.me/Phongtro123" class="pt-support-btn pt-btn-zalo-outline mt-2">
-                            <i class="fa-solid fa-comment-dots me-2"></i>
-                            Zalo: Phongtro123
-                        </a>
-                    </div>
+                <div class="sub">Hỗ trợ ngoài giờ</div>
+
+                <div class="btns">
+                    <!-- Zalo OA -->
+                    <a class="btn zalo" href="https://zalo.me/Phongtro123" target="_blank" rel="noopener">
+                        <span class="ic">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" /></svg>
+                        </span>
+                        Zalo: Phongtro123
+                    </a>
                 </div>
             </div>
         </div>
