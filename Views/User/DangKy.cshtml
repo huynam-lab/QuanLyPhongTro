@@ -5,6 +5,8 @@
 
 <link href="~/Assets/Css/DangKy.css" rel="stylesheet" />
 
+<link href="~/Assets/Css/ToastDangKy.css" rel="stylesheet" />   
+
 <div class="pt-main-content-wrapper">
     <div class="login-container">
 
@@ -18,15 +20,12 @@
         <!-- Nội dung Form Đăng Ký -->
         <form id="registerForm" method="post" action="@Url.Action("DangKy", "User")">
 
-            <!-- Họ tên -->
-            <input type="text" class="form-control-custom" id="regName" placeholder="Họ tên" required>
+            <input type="text" class="form-control-custom" id="regName" name="Name" placeholder="Họ tên" value="@ViewBag.RegName" required>
 
-            <!-- Số điện thoại (Tô màu xanh nhạt như trong mẫu) -->
-            <input type="text" class="form-control-custom" id="regPhone" placeholder="Số điện thoại"
+            <input type="text" class="form-control-custom" id="regPhone" name="SDT" placeholder="Số điện thoại" value="@ViewBag.RegPhone"
                    style=" color: #5a5a5a;" required>
 
-            <!-- Mật khẩu (Tô màu xanh nhạt như trong mẫu) -->
-            <input type="password" class="form-control-custom" id="regPassword" placeholder="Mật khẩu"
+            <input type="password" class="form-control-custom" id="regPassword" name="Pass" placeholder="Mật khẩu"
                    style=" color: #5a5a5a;" required>
 
             <div class="radio-group mb-4">
@@ -35,43 +34,104 @@
                     <input type="radio" name="accountType" value="timkiem" checked> Tìm kiếm
                 </label>
                 <label>
-                    <input type="radio" name="accountType" value="chinhchu"> Chính chủ
+                    <input type="radio" name="accountType" value="chinhchu"> Chủ nhà
                 </label>
-                <label>
-                    <input type="radio" name="accountType" value="moigioi"> Admin
-                </label>
+                @*<label>
+                    <input type="radio" name="accountType" value="admin"> Admin
+                </label>*@
             </div>
 
             <button type="submit" class="btn-primary-custom">Tạo tài khoản</button>
         </form>
 
+
         <!-- Thông báo pháp lý và bản quyền -->
         <p class="legal-text text-center">
             Qua việc đăng nhập hoặc tạo tài khoản, bạn đồng ý với các
             <a href="@Url.Action("QuyDinhSuDung", "User")">quy định sử dụng</a>
-            cũng như <a href="@Url.Action("ChinhSachBaoMat", "User")">chính sách bảo mật</a> của chúng tôi.
+            c<!-- Thông báo toast thành công-->
+            <div id="successModal" class="custom-modal-backdrop">
+                <div class="custom-modal">
+                    <div class="modal-content">
+                        <div class="icon-wrapper success-wrapper">
+                            <svg class="icon-checkmark" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                            </svg>
+                        </div>
+
+                        <p class="modal-text success-text">Bạn đã đăng ký thành công</p>
+                        <button id="modalOkButtonSuccess" class="btn-ok btn-red">OK</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="errorModal" class="custom-modal-backdrop">
+                <div class="custom-modal">
+                    <div class="modal-content">
+                        <div class="icon-wrapper error-wrapper">
+                            <svg class="icon-cross" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                            </svg>
+                        </div>
+
+                        <h3 class="modal-title">Lỗi</h3>
+                        <p class="modal-subtext">
+                            Số điện thoại này đã được sử dụng. Vui lòng sử dụng SĐT khác.<br>
+                            Nếu bạn nghĩ có ai đó sử dụng số điện thoại của bạn, Vui lòng liên hệ với chúng tôi: <span class="phone-number">0917686101</span>
+                        </p>
+                        <button id="modalOkButtonError" class="btn-ok btn-blue">OK</button>
+                    </div>
+                </div>
+            </div>ũng như <a href="@Url.Action("ChinhSachBaoMat", "User")">chính sách bảo mật</a> của chúng tôi.
         </p>
         <p class="legal-text text-center">Bản quyền &copy; 2015 - 2025 Phongtro123.com</p>
 
     </div>
+    
 </div>
-
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
 <script>
-    // Script để xử lý chuyển đổi tab (Nếu bạn muốn tab "Đăng nhập" chuyển màu khi click)
     $(document).ready(function() {
-        // Hàm này chỉ đảm bảo tab "Tạo tài khoản mới" được đánh dấu là active khi ở trang này
-        // Việc chuyển trang thực tế được xử lý bằng asp-action="DangNhap" trong thẻ <a>
-
-        // Kiểm tra hash hoặc đường dẫn để đánh dấu tab (chỉ cần thiết nếu dùng chung form)
-        // Vì đây là trang DangKy riêng, chúng ta chỉ cần đảm bảo tab Đăng ký luôn active
-        // và link DangNhap hoạt động bình thường.
-
-        // Tuy nhiên, để đảm bảo tính responsive cho tab, chúng ta sẽ lắng nghe click
-        // để chuyển trang mượt mà hơn.
-
+        // ... Xử lý Chuyển đổi Tab (Giữ nguyên) ...
         $('#registerTabs a[data-tab="login"]').on('click', function(e) {
-             // Để chuyển đến trang đăng nhập
-             window.location.href = $(this).attr('href');
+            window.location.href = $(this).attr('href');
         });
+
+        // --- Xử lý Logic Đăng Ký ---
+        const successFlag = '@(ViewBag.RegistrationSuccess)';
+        const errorFlag = '@(ViewBag.HasError)';
+
+        // 1. Xử lý THÀNH CÔNG: Hiển thị Success Modal
+        if (successFlag === 'True') {
+            const successModal = $('#successModal');
+            successModal.css('display', 'flex');
+
+            // Xử lý khi click nút OK thành công (Chuyển sang trang Đăng nhập)
+            $('#modalOkButtonSuccess').on('click', function() {
+                window.location.href = '@Url.Action("DangNhap", "User")';
+            });
+        }
+
+        // 2. Xử lý THẤT BẠI: Hiển thị Error Modal, Focus và tô đỏ input SDT
+        else if (errorFlag === 'True') {
+            const phoneInput = $('#regPhone');
+
+            // Tô màu đỏ cho input lỗi ngay lập tức
+            $('.form-control-custom').removeClass('input-error');
+            phoneInput.addClass('input-error');
+
+            // Hiển thị Modal Lỗi
+            const errorModal = $('#errorModal');
+            errorModal.css('display', 'flex');
+
+            // Xử lý khi click nút OK lỗi
+            $('#modalOkButtonError').on('click', function() {
+                // Đóng modal lỗi
+                errorModal.css('display', 'none');
+
+                // Focus vào input SDT
+                phoneInput.focus();
+            });
+        }
     });
 </script>

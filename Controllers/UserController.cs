@@ -259,13 +259,153 @@ namespace QuanLyPhongTro.Controllers
         {
             return View();
         }
+        [HttpGet]
         public ActionResult DangKy()
         {
             return View();
         }
+        [HttpPost]
+        //[ValidateAntiForgeryToken] // Nên thêm để chống Cross-Site Request Forgery (CSRF)
+        public ActionResult DangKy(string Name, string SDT, string Pass, string accountType)
+        {
+
+            // 1. KIỂM TRA TRÙNG SĐT (dùng SDT làm User_Name)
+            if (db.Tai_Khoan.Any(tk => tk.SDT == SDT))
+            {
+                ViewBag.HasError = true; // Cờ báo lỗi để JS focus input SDT
+                ViewBag.RegName = Name; // Cờ báo lỗi để JS xử lý focus và tô đỏ
+                return View();
+            }
+
+            // 2. Gán ID_Phan_Quyen (Đoạn này giữ nguyên)
+            int idPhanQuyen;
+            switch (accountType)
+            {
+                case "timkiem": idPhanQuyen = 2; break;
+                case "chinhchu": idPhanQuyen = 3; break;
+                case "admin": idPhanQuyen = 1; break;
+                default: idPhanQuyen = 2; break;
+            }
+
+            // 3. Tạo đối tượng Tai_Khoan mới (Đoạn này giữ nguyên)
+            Tai_Khoan newAccount = new Tai_Khoan();
+            newAccount.Name = Name;
+            newAccount.SDT = SDT;
+            newAccount.User_Name = SDT;
+            newAccount.Pass = Utilities.HashPassword(Pass);
+            newAccount.ID_Phan_Quyen = idPhanQuyen;
+            newAccount.Ngay_Tao = DateTime.Now;
+            newAccount.Trang_Thai = true; // Hoặc true tùy theo kiểu dữ liệu của bạn
+
+            try
+            {
+                // 4. Lưu vào Database
+                db.Tai_Khoan.Add(newAccount);
+                db.SaveChanges();
+
+                // 5. Đăng ký thành công
+                ViewBag.RegistrationSuccess = true;
+                ViewBag.RegName = Name;
+                return View(); // Trả về View để JS hiển thị Modal
+            }
+            catch (Exception ex)
+            {
+                ViewBag.HasError = true;
+                ViewBag.RegName = Name;
+                return View();
+            }
+        }
+        [HttpGet]
         public ActionResult DangNhap()
         {
             return View();
+        }
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public ActionResult DangNhap(string SDT, string Pass) // Đổi tên tham số đầu vào thành SDT
+        {
+            // --- BƯỚC 0: KIỂM TRA INPUT (Xử lý lỗi thiếu thông tin) ---
+            // SDT lúc này chính là User_Name hoặc số điện thoại mà người dùng nhập
+            if (string.IsNullOrEmpty(SDT) || string.IsNullOrEmpty(Pass))
+            {
+                ViewBag.Error = "Vui lòng nhập đầy đủ Số điện thoại và Mật khẩu.";
+                ViewBag.ErrorType = "EmptyFields";
+                ViewBag.HasError = true;
+                ViewBag.AttemptedUserName = SDT; // Lưu lại SDT đã nhập
+                return View();
+            }
+
+            // 1. Mã hóa mật khẩu người dùng nhập
+            string hashedPassword = Utilities.HashPassword(Pass);
+
+            // Nếu hàm HashPassword trả về null hoặc rỗng, coi là lỗi hệ thống hoặc dữ liệu
+            if (string.IsNullOrEmpty(hashedPassword))
+            {
+                ViewBag.Error = "Lỗi xử lý mật khẩu. Vui lòng thử lại.";
+                ViewBag.HasError = true;
+                ViewBag.AttemptedUserName = SDT;
+                return View();
+            }
+
+            // 2. Tìm kiếm tài khoản dựa trên SDT và mật khẩu đã mã hóa
+            // Dùng tk.SDT để tra cứu, giả định cột SDT trong Model Tai_Khoan là duy nhất
+            var account = db.Tai_Khoan
+                            .SingleOrDefault(tk => tk.SDT == SDT && tk.Pass == hashedPassword);
+            // HOẶC dùng tk.User_Name nếu bạn xác định User_Name chính là SDT
+
+            // --- Xử lý Logic Đăng Nhập ---
+            if (account != null)
+            {
+                // 3. Đăng nhập THÀNH CÔNG
+                Session["UserID"] = account.ID_TK;
+                Session["UserName"] = account.Name;
+                Session["SDT"] = account.SDT;
+                Session["Avatar"] = account.Avata;
+
+                ViewBag.LoginSuccess = true;
+
+                return View(); // Trả về View để JS show Modal
+            }
+            else
+            {
+                // 4. Đăng nhập THẤT BẠI
+                // Kiểm tra xem SDT có tồn tại trong DB không (dùng cột SDT)
+                var checkUser = db.Tai_Khoan.SingleOrDefault(tk => tk.SDT == SDT);
+
+                if (checkUser == null)
+                {
+                    // Lỗi 1: Số điện thoại không tồn tại
+                    ViewBag.Error = "Số điện thoại này không tồn tại.";
+                    ViewBag.ErrorType = "UserNotFound";
+                    ViewBag.HasError = true;
+                }
+                else
+                {
+                    // Lỗi 2: Mật khẩu sai (SDT đúng nhưng Pass không khớp)
+                    ViewBag.Error = "Mật khẩu không đúng.";
+                    ViewBag.ErrorType = "WrongPassword";
+                    ViewBag.HasError = true;
+                }
+
+                ViewBag.AttemptedUserName = SDT; // Lưu lại SDT đã nhập
+                return View();
+            }
+        }
+        public ActionResult DangXuat()
+        {
+            // 1. Xóa tất cả các Session liên quan đến thông tin đăng nhập
+            Session.Clear(); // Xóa tất cả Session trong phiên hiện tại
+                             // HOẶC: Session.Abandon(); // Kết thúc toàn bộ Session
+
+            // Nếu bạn chỉ muốn xóa các Session cụ thể:
+            Session.Remove("UserID");
+            Session.Remove("UserName");
+            Session.Remove("SDT");
+            Session.Remove("Avatar");
+            // Session.Remove("ID_PhanQuyen"); // Nếu có
+
+            // 2. Chuyển hướng người dùng về trang chủ (hoặc trang đăng nhập)
+            return RedirectToAction("Index", "User"); // Chuyển về trang Index của Home Controller
         }
         public ActionResult DangTin()
         {
