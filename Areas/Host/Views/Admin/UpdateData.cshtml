@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "UpdateData";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
 }
 @model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ChuNha
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -284,6 +284,11 @@
 
     </div>
     }
+<hr />
+<div>
+    @Html.Partial("_Footer")
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 

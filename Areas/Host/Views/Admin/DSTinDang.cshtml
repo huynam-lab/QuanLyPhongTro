@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
 
 }
 @model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ChuNha
@@ -22,12 +22,13 @@
             <!-- Ô tìm kiếm -->
             <div class="mb-4 d-flex align-items-center">
                 <div class="input-group" style="max-width: 400px;">
-                    <input type="text" class="form-control" placeholder="Tìm theo mã tin hoặc tiêu đề">
+                    <input id="searchBox" type="text" class="form-control" placeholder="Tìm theo mã tin hoặc tiêu đề">
                     <button class="btn btn-outline-secondary" type="button">
                         <i class="bi bi-search"></i>
                     </button>
                 </div>
             </div>
+
 
             <!-- TRẠNG THÁI KHI KHÔNG CÓ TIN -->
             <div class="text-center py-5 @(Model?.PhongTros != null && Model.PhongTros.Any() ? "d-none" : "")" id="emptyState">
@@ -39,7 +40,7 @@
 
             <!-- TRẠNG THÁI KHI CÓ TIN -->
             <div id="listState" class="@(Model?.PhongTros != null && Model.PhongTros.Any() ? "" : "d-none")">
-                <table class="table table-hover align-middle shadow-sm">
+                <table class="table table-hover align-middle shadow-sm" id="tblTin">
                     <thead class="table-light">
                         <tr>
                             <th scope="col">Mã tin</th>
@@ -71,13 +72,13 @@
                                     <td class="d-flex gap-2">
                                         @if (item.Trang_Thai == true)
                                             {
-                                            <button class="btn btn-sm btn-outline-danger d-none">
+                                            <button class="btn btn-sm btn-outline-danger invisible">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                             }
                                         else
                                             {
-                                                using (Html.BeginForm("DeletePhongTro", "Admin", FormMethod.Post, new { @area = "Admin", onsubmit = "return confirm('Xóa tin này luôn?');" }))
+                                            using (Html.BeginForm("DeletePhongTro", "Admin", FormMethod.Post, new { @area = "Admin", onsubmit = "return confirm('Xóa tin này luôn?');" }))
                                                 {
                                                 @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@item.ID_Phong_Tro" />
@@ -85,7 +86,7 @@
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                                 }
-                                                using (Html.BeginForm("UpdateData", "Admin", FormMethod.Post, new { @area = "Admin"}))
+                                            using (Html.BeginForm("UpdateData", "Admin", FormMethod.Post, new { @area = "Admin" }))
                                                 {
                                                 @Html.AntiForgeryToken()
                                                 <a href="@Url.Action("UpdateData", "Admin", new { area = "Admin", id = item.ID_Phong_Tro })"
@@ -93,7 +94,7 @@
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 }
-                                            
+
                                             }
                                     </td>
                                 </tr>
@@ -106,6 +107,11 @@
         </div>
     </div>
 </div>
+<hr />
+<div>
+    @Html.Partial("_Footer")
+</div>
+
 @if (TempData["SuccessMessage"] != null)
     {
     <script>
@@ -121,3 +127,29 @@
         });
     </script>
     }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchBox = document.getElementById("searchBox");
+        const rows = document.querySelectorAll("#tblTin tbody tr");
+
+        if (!searchBox) return;
+
+        searchBox.addEventListener("input", function () {
+            const kw = this.value.toLowerCase().trim();
+
+            rows.forEach(row => {
+                // cột 0: mã tin (#123)
+                const maTin = row.children[0].textContent.toLowerCase();
+                // cột 1: tiêu đề
+                const tieuDe = row.children[1].textContent.toLowerCase();
+
+                // nếu từ khóa nằm trong mã hoặc tiêu đề thì show
+                if (maTin.includes(kw) || tieuDe.includes(kw)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    });
+</script>

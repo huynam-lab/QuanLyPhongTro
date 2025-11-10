@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-namespace QuanLyPhongTro.Areas.Admin.Controllers
+namespace QuanLyPhongTro.Areas.Host.Controllers
     {
     public class AdminController : BaseController
         {
@@ -55,6 +55,14 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             int maTK = 0;
             if (Session["MaTK"] != null)
                 int.TryParse(Session["MaTK"].ToString(), out maTK);
+            string chuanhoa_mota = "";
+            if (!string.IsNullOrEmpty(MoTa))
+                {
+                chuanhoa_mota = MoTa
+                    .Replace("\r\n", "##split##")
+                    .Replace("\n", "##split##")
+                    .Replace("\r", "##split##");
+                }
 
             // 🏠 Tạo phòng trọ mới
             var pt = new Phong_Tro
@@ -66,7 +74,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
                 Ten_Phong = TieuDe,
                 Dien_Tich = DienTich,
                 Dia_Chi = DiaChi,
-                Mo_Ta = MoTa,
+                Mo_Ta = chuanhoa_mota,
                 Gia_Ca = (decimal?)GiaThue,
                 Ngay_Dang = DateTime.Now,
                 Ngay_Het_Han = DateTime.Now.AddDays(Ngay),
@@ -100,7 +108,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             /* 🖼️ LƯU NHIỀU ẢNH */
             if (imageInput != null && imageInput.Length > 0)
                 {
-                string imgFolder = Server.MapPath("~/Kho/Img/");
+                string imgFolder = Server.MapPath("~/Kho/Img/Avata/");
                 Directory.CreateDirectory(imgFolder);
 
                 var rnd = new Random();
@@ -211,7 +219,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             var imgs = db.Hinh_Anh.Where(x => x.ID_Phong_Tro == id).ToList();
             foreach (var img in imgs)
                 {
-                var path = Server.MapPath("~/Kho/Img/" + img.Url_Anh);
+                var path = Server.MapPath("~/Kho/Img/Avata/" + img.Url_Anh);
                 if (System.IO.File.Exists(path))
                     System.IO.File.Delete(path);
                 }
@@ -312,21 +320,21 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Updates(
-      int ID_Phong_Tro,
-      string TieuDe,
-      string MoTa,
-      decimal GiaThue,
-      float DienTich,
-      string DiaChi,
-      int ID_KV,
-      int ID_CD,
-      int ID_LoaiTin,
-      decimal BangGia,
-      int Ngay,
-      HttpPostedFileBase[] imageInput,
-      HttpPostedFileBase[] videoInput
-  )
+          public ActionResult Updates(
+          int ID_Phong_Tro,
+          string TieuDe,
+          string MoTa,
+          decimal GiaThue,
+          float DienTich,
+          string DiaChi,
+          int ID_KV,
+          int ID_CD,
+          int ID_LoaiTin,
+          decimal BangGia,
+          int Ngay,
+          HttpPostedFileBase[] imageInput,
+          HttpPostedFileBase[] videoInput
+      )
             {
             // 1. Lấy phòng
             var phong = db.Phong_Tro.FirstOrDefault(x => x.ID_Phong_Tro == ID_Phong_Tro);
@@ -380,7 +388,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
                 if (!oldImages.Contains(img.Url_Anh))
                     {
                     // xóa file vật lý
-                    var path = Server.MapPath("~/Kho/Img/" + img.Url_Anh);
+                    var path = Server.MapPath("~/Kho/Img/Avata/" + img.Url_Anh);
                     if (System.IO.File.Exists(path))
                         System.IO.File.Delete(path);
 
@@ -506,7 +514,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
 
             if (AvtFile != null && AvtFile.ContentLength > 0)
                 {
-                string folder = Server.MapPath("~/Kho/Img/");
+                string folder = Server.MapPath("~/Kho/Img/Avata/");
                 Directory.CreateDirectory(folder);
 
                 string ext = Path.GetExtension(AvtFile.FileName);
@@ -591,12 +599,6 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             return RedirectToAction("QuanlyTaiKhoan");
 
             }
-
-
-
-
-
-
 
         }
     }

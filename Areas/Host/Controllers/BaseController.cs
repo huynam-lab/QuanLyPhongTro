@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace QuanLyPhongTro.Areas.Admin.Controllers
+namespace QuanLyPhongTro.Areas.Host.Controllers
 {
     public class BaseController : Controller
     {
@@ -24,7 +24,12 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
                     .Where(x => x.ID_TK == maTK)
                     .Select(x => new { x.Name, x.Avata, x.SDT })
                     .FirstOrDefault();
-
+                var Admin = db.Tai_Khoan
+                   .Where(x => x.ID_TK == 1)
+                   .Select(x => new { x.Name, x.SDT })
+                   .FirstOrDefault();
+                ViewBag.AdminName = Admin?.Name ?? "";
+                ViewBag.AdminSDT = Admin?.SDT ?? "";
                 ViewBag.Name = user?.Name ?? "";
                 ViewBag.SDT = user?.SDT ?? "";
                 ViewBag.Avata = user?.Avata ?? "";

@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
 
 }
 <div class="container-fluid py-3">
@@ -26,14 +26,12 @@
             <!-- THÔNG TIN CÁ NHÂN -->
             <div id="thongtin" class="tab-content active">
                 <div class="container" style="margin-top:-20px;">
-                    <div class="card shadow-sm border-0" style="max-width: 600px; margin: 0 auto;">
+                    <div class="card shadow-sm border-0" style="max-width: 600px; margin: 0 auto; margin-bottom:30px;">
                         <div class="card-body">
                             <div class="text-center mb-3">
                                 @if (ViewBag.Avata != "")
                                     {
-                                    <img src="~/Kho/Img/@ViewBag.Avata"
-                                         class="rounded-circle border" width="90" height="90" alt="avatar">
-
+                                    <img src="~/Kho/Img/Avata/@ViewBag.Avata" class="rounded-circle border" width="90" height="90" alt="avatar" style="object-fit:cover;">
                                     }
                                 else
                                     {
@@ -134,6 +132,11 @@
         <div style="width:25%; display:block;"></div>
     </div>
 </div>
+<hr />
+<div>
+    @Html.Partial("_Footer")
+</div>
+
 @if (TempData["Success"] != null)
     {
     <script>

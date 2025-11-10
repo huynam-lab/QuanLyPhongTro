@@ -162,16 +162,23 @@
                 <ul class="navbar-nav ms-auto align-items-center" style="font-size:13px; font-weight:400;">
                     <li class="nav-item me-3"><a href="#" class="nav-link"><i class="bi bi-heart"></i> Tin đã lưu</a></li>
                     <li class="nav-item me-3"><a href="@Url.Action("DSTinDang", "Admin", new { area = "Admin" })" class="nav-link"><i class="bi bi-folder"></i> Quản lý</a></li>
-                    <li class="nav-item dropdown">
+                    @*<li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" width="28" class="rounded-circle me-1">
-                            huynam
+                            @if (ViewBag.Avata != "")
+                                {
+                                <img src="~/Kho/Img/Avata/@ViewBag.Avata" alt="avatar" width="28" class="rounded-circle me-1" style="object-fit:cover; height:28px;" />
+                                }
+                            else
+                                {
+                                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" width="28" class="rounded-circle me-1">
+                                @ViewBag.Name
+                                }
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="@Url.Action("QuanLyTaiKhoan", "Admin", new { area = "Admin" })">Tài khoản</a></li>
                             <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
                         </ul>
-                    </li>
+                    </li>*@
                     <li class="nav-item ms-3">
                         <a href="@Url.Action("Index", "Admin", new { area = "Admin" })" class="btn btn-dangtin"><i class="bi bi-pencil-square me-1"></i>Đăng tin</a>
                     </li>
@@ -185,7 +192,7 @@
         <div class="profile">
             @if (ViewBag.Avata != "")
                 {
-                <img src="~/Kho/Img/@ViewBag.Avata" alt="avatar" />
+                <img src="~/Kho/Img/Avata/@ViewBag.Avata" alt="avatar" style="object-fit:cover;" />
                 }
             else
                 {
@@ -219,7 +226,7 @@
         </div>
 
         <div class="text-center mt-4 small text-muted border-top pt-3">
-            Hỗ trợ: <b>Thanh Ly - 0909 316 890</b>
+            Hỗ trợ: <b>@ViewBag.AdminName - @ViewBag.AdminSDT</b>
         </div>
     </div>
     <div class="content">
