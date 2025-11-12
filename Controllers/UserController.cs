@@ -357,11 +357,12 @@ namespace QuanLyPhongTro.Controllers
             if (account != null)
             {
                 // 3. Đăng nhập THÀNH CÔNG
+                
                 Session["UserID"] = account.ID_TK;
                 Session["UserName"] = account.Name;
                 Session["SDT"] = account.SDT;
                 Session["Avatar"] = account.Avata;
-
+                ViewBag.ID_Phan_Quyen = account.ID_Phan_Quyen;
                 ViewBag.LoginSuccess = true;
 
                 return View(); // Trả về View để JS show Modal
