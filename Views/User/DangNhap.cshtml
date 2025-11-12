@@ -4,6 +4,7 @@
 }
 
 <link href="~/Assets/Css/DangNhap.css" rel="stylesheet" />
+<link href="~/Assets/Css/ToastDangKy.css" rel="stylesheet" />
 
 <div class="pt-main-content-wrapper">
     <div class="login-container">
@@ -18,9 +19,11 @@
         <div id="login-tab-content" class="tab-content-item active">
             <form id="loginForm" method="post" action="@Url.Action("DangNhap", "User")">
 
-                <input type="text" class="form-control-custom" id="phoneNumber" placeholder="Số điện thoại" required>
+                <input type="text" class="form-control-custom" id="phoneNumber" name="SDT"
+                       placeholder="Số điện thoại" value="@ViewBag.AttemptedUserName" required>
 
-                <input type="password" class="form-control-custom" id="password" placeholder="Mật khẩu" required>
+                <input type="password" class="form-control-custom" id="password" name="Pass"
+                       placeholder="Mật khẩu" required>
 
                 <button type="submit" class="btn-primary-custom">Đăng nhập</button>
 
@@ -28,23 +31,7 @@
             </form>
         </div>
 
-        <!-- Nội dung Tab Tạo Tài Khoản Mới (Dạng Placeholder) -->
-        <div id="register-tab-content" class="tab-content-item">
-            <form id="registerForm" method="post" action="@Url.Action("DangKy", "User")">
 
-                <input type="text" class="form-control-custom" id="regName" placeholder="Tên của bạn" required>
-
-                <input type="text" class="form-control-custom" id="regPhone" placeholder="Số điện thoại" required>
-
-                <input type="password" class="form-control-custom" id="regPassword" placeholder="Mật khẩu" required>
-
-                <button type="submit" class="btn-primary-custom">Đăng ký</button>
-
-                <p class="legal-text text-center">
-                    Bạn đã có tài khoản? <a href="#" data-tab-switch="login">Đăng nhập ngay</a>
-                </p>
-            </form>
-        </div>
 
         <!-- Thông báo và bản quyền -->
         <p class="legal-text text-center">
@@ -55,43 +42,115 @@
         <p class="legal-text text-center">Bản quyền &copy; 2015 - 2025 Phongtro123.com</p>
 
     </div>
+    <!-- Thông báo toast thành công-->
+    <div id="successModal" class="custom-modal-backdrop">
+        <div class="custom-modal">
+            <div class="modal-content">
+                <div class="icon-wrapper success-wrapper">
+                    <svg class="icon-checkmark" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                    </svg>
+                </div>
+                
+                <p class="modal-text success-text">Thông báo</p>
+                <button id="modalOkButtonSuccess" class="btn-ok btn-red">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="errorModal" class="custom-modal-backdrop">
+        <div class="custom-modal">
+            <div class="modal-content">
+                <div class="icon-wrapper error-wrapper">
+                    <svg class="icon-cross" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                    </svg>
+                </div>
+                <h3 class="modal-title">Lỗi</h3>
+                
+                <p class="modal-subtext">Thông báo lỗi</p>
+                <button id="modalOkButtonError" class="btn-ok btn-blue">OK</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
 
 <script>
     // Script để xử lý chuyển đổi giữa Đăng nhập và Đăng ký (Tab Switcher)
     $(document).ready(function() {
-        // Hàm chuyển đổi tab
-        function switchTab(targetTab) {
-            // Cập nhật trạng thái active cho thanh tab
-            $('#loginTabs a').removeClass('active-tab');
-            $(`a[data-tab="${targetTab}"]`).addClass('active-tab');
+        $('#registerTabs a[data-tab="login"]').on('click', function (e) {
+            // Ngăn chặn hành vi mặc định (tránh trường hợp tab switcher có logic khác)
+            e.preventDefault();
 
-            // Cập nhật nội dung tab
-            $('.tab-content-item').removeClass('active');
-            $(`#${targetTab}-tab-content`).addClass('active');
+            // Chuyển hướng trình duyệt đến URL trong thuộc tính href
+            window.location.href = $(this).attr('href');
+        });
+    });
+
+    // Gộp logic xử lý đăng nhập vào khối document ready thứ hai
+    $(document).ready(function() {
+
+        // --- Logic Xử lý Đăng Nhập ---
+        const loginSuccessFlag = '@(ViewBag.LoginSuccess)';
+        const loginErrorFlag = '@(ViewBag.HasError)';
+        const errorType = '@(ViewBag.ErrorType)';
+        const errorMessage = '@(ViewBag.Error)';
+
+        // 1. Xử lý Đăng Nhập THÀNH CÔNG
+        if (loginSuccessFlag === 'True') {
+            const successModal = $('#successModal');
+
+            // Cập nhật nội dung modal để hiển thị "Đăng nhập thành công"
+            successModal.find('.modal-text').text('Bạn đã đăng nhập thành công');
+            successModal.css('display', 'flex');
+
+            // Xử lý khi click nút OK (Chuyển về trang Index)
+            $('#modalOkButtonSuccess').on('click', function() {
+                // Đóng modal trước khi chuyển hướng
+                successModal.css('display', 'none');
+                // Chuyển hướng sang trang chủ
+                window.location.href = '@Url.Action("Index", "User")';
+            });
         }
 
-        // Lắng nghe sự kiện click trên các tab
-        $('#loginTabs a').on('click', function(e) {
-            e.preventDefault();
-            const targetTab = $(this).data('tab');
-            switchTab(targetTab);
-        });
+        // 2. Xử lý Đăng Nhập THẤT BẠI (Giữ nguyên logic)
+        else if (loginErrorFlag === 'True') {
+            const phoneInput = $('#phoneNumber');
+            const passwordInput = $('#password');
 
-        // Lắng nghe sự kiện click trên link "Đăng nhập ngay" trong tab Đăng ký
-        $('a[data-tab-switch]').on('click', function(e) {
-            e.preventDefault();
-            const targetTab = $(this).data('tab-switch');
-            switchTab(targetTab);
-        });
+            // Ẩn/hiện input lỗi
+            $('.form-control-custom').removeClass('input-error');
 
-        // Xử lý khi URL có hash (ví dụ: #register)
-        if (window.location.hash) {
-            const hash = window.location.hash.substring(1); // Lấy giá trị hash (ví dụ: login-tab)
-            const targetTab = hash.replace('-tab', '');
-            if (targetTab === 'register' || targetTab === 'login') {
-                switchTab(targetTab);
+            const errorModal = $('#errorModal');
+
+            // Cập nhật nội dung lỗi
+            errorModal.find('.modal-title').text('Lỗi Đăng Nhập');
+            // Thêm logic để xử lý lỗi trống (EmptyFields)
+            let displayMessage = errorMessage;
+            if (errorType !== 'EmptyFields') {
+                displayMessage += '<br>Vui lòng thử lại.';
             }
+            errorModal.find('.modal-subtext').html(displayMessage);
+
+            errorModal.css('display', 'flex');
+
+            // Lắng nghe sự kiện click nút OK trên Modal lỗi
+            $('#modalOkButtonError').on('click', function() {
+                errorModal.css('display', 'none');
+
+                // Focus và tô đỏ input tương ứng
+                if (errorType === 'UserNotFound' || errorType === 'EmptyFields') {
+                    // Số điện thoại không tồn tại hoặc trường trống
+                    phoneInput.addClass('input-error');
+                    phoneInput.focus();
+                } else if (errorType === 'WrongPassword') {
+                    // Mật khẩu sai
+                    passwordInput.addClass('input-error');
+                    passwordInput.focus();
+                }
+            });
         }
     });
 </script>

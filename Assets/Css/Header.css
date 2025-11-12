@@ -211,3 +211,55 @@
 }
 
 
+/*hồ sơ */
+.user-info-link {
+    /* Đảm bảo liên kết chiếm toàn bộ chiều rộng (thay thế cho p-3 của div cũ) */
+    width: 100%;
+    padding: 0 !important;
+}
+
+    /* Thêm hiệu ứng hover nhẹ */
+    .user-info-link:hover {
+        background-color: #f8f9fa; /* Màu nền xám nhạt */
+        cursor: pointer;
+    }
+
+    /* Đảm bảo border-bottom hoạt động đúng */
+    .user-info-link.border-bottom {
+        border-color: #e9ecef !important;
+    }
+
+/* Đảm bảo Offcanvas Header sử dụng flexbox để căn chỉnh nội dung */
+.offcanvas-header {
+    display: flex;
+    justify-content: space-between; /* Căn chỉnh Profile Link và Close Button */
+    align-items: center;
+    width: 100%;
+    padding-top: 1.5rem; /* Tăng padding trên/dưới cho đẹp */
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #dee2e6; /* Thêm đường kẻ dưới cho rõ ràng */
+}
+
+    /* Định dạng cho liên kết Profile (khối chứa Avatar, Tên, SĐT) */
+    .offcanvas-header a {
+        /* Loại bỏ gạch chân và reset màu mặc định */
+        text-decoration: none !important;
+        color: #212529 !important; /* Màu chữ tối (Bootstrap default text-dark) */
+        /* Đảm bảo khối profile chiếm không gian hợp lý */
+        flex-grow: 1;
+        align-items: center;
+    }
+
+        /* Hiệu ứng hover cho khối Profile Link */
+        .offcanvas-header a:hover {
+            background-color: #f8f9fa; /* Màu nền xám nhạt khi di chuột */
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+    /* Đảm bảo nút đóng không bị ảnh hưởng bởi hover của thẻ <a> */
+    .offcanvas-header .btn-close {
+        /* Đảm bảo nút đóng nằm gọn gàng bên phải */
+        margin-left: 1rem;
+        padding: 0.5rem; /* Thêm padding cho vùng click lớn hơn */
+    }
