@@ -53,8 +53,8 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
         )
             {
             int maTK = 0;
-            if (Session["MaTK"] != null)
-                int.TryParse(Session["MaTK"].ToString(), out maTK);
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
             string chuanhoa_mota = "";
             if (!string.IsNullOrEmpty(MoTa))
                 {
@@ -108,7 +108,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             /* 🖼️ LƯU NHIỀU ẢNH */
             if (imageInput != null && imageInput.Length > 0)
                 {
-                string imgFolder = Server.MapPath("~/Kho/Img/Avata/");
+                string imgFolder = Server.MapPath("~/Assets/Images/Avatar/");
                 Directory.CreateDirectory(imgFolder);
 
                 var rnd = new Random();
@@ -182,8 +182,8 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
         public ActionResult DSTinDang()
             {
             int maTK = 0;
-            if (Session["MaTK"] != null)
-                int.TryParse(Session["MaTK"].ToString(), out maTK);
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
             var listPhong = db.Phong_Tro
                 .Where(x => x.ID_TK == maTK)
                 .Select(x => new PhongTroListVM
