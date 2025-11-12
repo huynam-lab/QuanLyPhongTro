@@ -4,7 +4,6 @@
     ViewBag.Title = "Index";
     Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
 }
-
 @using (Html.BeginForm("SavePost", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
     @Html.AntiForgeryToken()

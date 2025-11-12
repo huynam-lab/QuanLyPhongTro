@@ -1,0 +1,225 @@
+﻿
+@model QuanLyPhongTro.Areas.Admin.AdminViewModels.CatalogVM
+@{
+    var loaiTins = Model.LoaiTins;
+    var bangGias = Model.BangGias;
+    int? filter = ViewBag.FilterLoaiTin as int?;
+}
+<div class="row g-3">
+    <div class="col-lg-5">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Loại tin</h6>
+            <button class="btn btn-sm btn-primary" data-edit="{}" data-target="#mdLoaiTin"><i class="bi bi-plus"></i> Thêm</button>
+        </div>
+        <table class="table table-hover align-middle">
+            <thead><tr><th style="width:80px">ID</th><th>Tên</th><th style="width:120px"></th></tr></thead>
+            <tbody>
+                @foreach (var lt in loaiTins)
+                    {
+                    var data = new
+                        {
+                        ID_LoaiTin = lt.ID_LoaiTin,
+                        Ten_LoaiTin = lt.Ten_LoaiTin,
+                        CapDo = lt.CapDo,
+                        Mau_TieuDe = lt.Mau_TieuDe,
+                        KichThuoc = lt.KichThuoc,
+                        Tu_Dong_Duyet = lt.Tu_Dong_Duyet,
+                        Hien_Thi_Goi_Dien = lt.Hien_Thi_Goi_Dien,
+                        Trang_Thai = lt.Trang_Thai
+                        };
+                    <tr class="@(filter==lt.ID_LoaiTin?"table-active":"")">
+                        <td>@lt.ID_LoaiTin</td>
+                        <td>
+                            <a href="@Url.Action("Catalogs","Quantrivien", new { area="Admin", tab="loaitin", filterLoaiTin = lt.ID_LoaiTin })" style="text-decoration:none; color:black;">@lt.Ten_LoaiTin</a>
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-primary" data-edit='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(data))' data-target="#mdLoaiTin"><i class="bi bi-pencil"></i></button>
+                            @using (Html.BeginForm("DeleteLoaiTin", "Quantrivien", FormMethod.Post, new { area = "Admin", onsubmit = "return confirm('Xóa loại tin?');" }))
+                                {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@lt.ID_LoaiTin" />
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                }
+                        </td>
+                    </tr>
+                    }
+                @if (!loaiTins.Any())
+                    {
+                    <tr><td colspan="3" class="text-center text-muted py-4">Chưa có loại tin</td></tr>
+                    }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">
+                Bảng giá @if (filter != null)
+                    {<small class="text-muted"> (Loại tin #@filter)</small>}
+            </h6>
+            <button class="btn btn-sm btn-primary" data-edit='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(new { ID_LoaiTin = filter }))' data-target="#mdGia"><i class="bi bi-plus"></i> Thêm</button>
+        </div>
+
+
+        <table class="table table-hover align-middle">
+            <thead><tr><th style="width:80px">ID</th><th>Thời gian</th><th>Giá gốc</th><th>Giá giảm</th><th>Tỷ lệ</th><th>Ghi chú</th><th style="width:120px"></th></tr></thead>
+            <tbody>
+                @foreach (var g in bangGias)
+                    {
+                    var data = new
+                        {
+                        ID_Gia = g.ID_Gia,
+                        ID_LoaiTin = g.ID_LoaiTin,
+                        Thoi_Gian = g.Thoi_Gian,
+                        Gia_Goc = g.Gia_Goc,
+                        Gia_Giam = g.Gia_Giam,
+                        Ty_Le_Giam = g.Ty_Le_Giam,
+                        Ghi_Chu = g.Ghi_Chu
+                        };
+                    <tr>
+                        <td>@g.ID_Gia</td>
+                        <td>@g.Thoi_Gian</td>
+                        <td>@g.Gia_Goc</td>
+                        <td>@g.Gia_Giam</td>
+                        <td>@g.Ty_Le_Giam</td>
+                        <td>@g.Ghi_Chu</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-primary" data-edit='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(data))' data-target="#mdGia"><i class="bi bi-pencil"></i></button>
+                            @using (Html.BeginForm("DeleteBangGia", "Quantrivien", FormMethod.Post, new { area = "Admin", onsubmit = "return confirm('Xóa giá này?');" }))
+                                {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@g.ID_Gia" />
+                                <input type="hidden" name="lt" value="@g.ID_LoaiTin" />
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                }
+                        </td>
+                    </tr>
+                    }
+                @if (!bangGias.Any())
+                    {
+                    <tr><td colspan="7" class="text-center text-muted py-4">Chưa có bảng giá</td></tr>
+                    }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modal Loại tin -->
+<div class="modal fade" id="mdLoaiTin" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("SaveLoaiTin", "Quantrivien", FormMethod.Post, new { area = "Admin" }))
+                {
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h6 class="modal-title">Loại tin</h6><button class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <input type="hidden" name="ID_LoaiTin" />
+                    <div class="mb-2"><label class="form-label">Tên</label><input name="Ten_LoaiTin" class="form-control" required /></div>
+                    <div class="mb-2"><label class="form-label">Cấp độ</label><input name="CapDo" class="form-control" /></div>
+                    <div class="mb-2"><label class="form-label">Màu tiêu đề</label><input name="Mau_TieuDe" class="form-control" /></div>
+                    <div class="mb-2"><label class="form-label">Kích thước</label><input name="KichThuoc" class="form-control" /></div>
+                    <div class="row g-2">
+                        <div class="col"><div class="form-check"><input type="checkbox" class="form-check-input" name="Tu_Dong_Duyet" id="lt1"><label for="lt1" class="form-check-label">Tự động duyệt</label></div></div>
+                        <div class="col"><div class="form-check"><input type="checkbox" class="form-check-input" name="Hien_Thi_Goi_Dien" id="lt2" checked><label for="lt2" class="form-check-label">Hiện nút gọi</label></div></div>
+                        <div class="col"><div class="form-check"><input type="checkbox" class="form-check-input" name="Trang_Thai" id="lt3" checked><label for="lt3" class="form-check-label">Đang dùng</label></div></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-primary">Lưu</button></div>
+                }
+        </div>
+    </div>
+</div>
+<!-- Modal Giá -->
+<div class="modal fade" id="mdGia" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("SaveBangGia", "Quantrivien", FormMethod.Post, new { area = "Admin" }))
+                {
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h6 class="modal-title">Bảng giá</h6><button class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <input type="hidden" name="ID_Gia" />
+                    <div class="mb-2">
+                        <label class="form-label">Loại tin</label>
+                        <select name="ID_LoaiTin" class="form-select" required>
+                            <option value="">-- chọn --</option>
+                            @foreach (var lt in Model.LoaiTins)
+                                {
+                                <option value="@lt.ID_LoaiTin">@lt.Ten_LoaiTin</option>
+                                }
+                        </select>
+                    </div>
+                    <div class="mb-2"><label class="form-label">Thời gian (ví dụ: 3 ngày / 1 tuần / 1 tháng)</label><input name="Thoi_Gian" class="form-control" required /></div>
+                    <div class="row g-2">
+                        <div class="col"><label class="form-label">Giá gốc</label><input name="Gia_Goc" type="number" step="0.01" class="form-control" /></div>
+                        <div class="col"><label class="form-label">Giá giảm</label><input name="Gia_Giam" type="number" step="0.01" class="form-control" /></div>
+                        <div class="col"><label class="form-label">Tỷ lệ (%)</label><input name="Ty_Le_Giam" type="number" step="0.01" class="form-control" /></div>
+                    </div>
+                    <div class="mt-2"><label class="form-label">Ghi chú</label><input name="Ghi_Chu" class="form-control" /></div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-primary">Lưu</button></div>
+                }
+        </div>
+    </div>
+</div>
+@{
+    var success = TempData["Success"] ?? TempData["SuccessMessage"];
+    var error = TempData["Error"];
+    var warning = TempData["Warning"];
+    var info = TempData["Info"];
+}
+
+@if (success != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Thành công 🎉",
+                text: "@Html.Raw(success)",
+                icon: "success",
+                confirmButtonText: "OK",
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+    </script>
+    }
+else if (error != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Lỗi ❌",
+                text: "@Html.Raw(error)",
+                icon: "error",
+                confirmButtonText: "Đóng"
+            });
+        });
+    </script>
+    }
+else if (warning != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Cảnh báo ⚠️",
+                text: "@Html.Raw(warning)",
+                icon: "warning",
+                confirmButtonText: "OK"
+            });
+        });
+    </script>
+    }
+else if (info != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Thông báo 💬",
+                text: "@Html.Raw(info)",
+                icon: "info",
+                confirmButtonText: "OK"
+            });
+        });
+    </script>
+    }
+

@@ -58,6 +58,9 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
@@ -679,6 +682,16 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Host\Views\Shared\_Footer.cshtml" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Quantrivien\Dashboard.cshtml" />
+    <Content Include="Areas\Admin\Views\Quantrivien\TaiKhoan.cshtml" />
+    <Content Include="Areas\Admin\Views\Quantrivien\PhongTro.cshtml" />
+    <Content Include="Areas\Admin\Views\Quantrivien\Catalogs.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_PaneKhuVuc.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_PaneLoaiTinGia.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_PaneChuDe.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -688,6 +701,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\AdminViewModels\CatalogVM.cs" />
+    <Compile Include="Areas\Admin\Controllers\QuantrivienController.cs" />
     <Compile Include="Areas\Host\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Host\ChuNhaViewModels\ChuNha.cs" />
     <Compile Include="Areas\Host\Controllers\AdminController.cs" />
@@ -811,6 +827,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Views\Admin\" />
     <Folder Include="Areas\Host\Data\" />
     <Folder Include="Areas\Host\Views\Base\" />
     <Folder Include="Kho\Img\Avata\" />

@@ -153,3 +153,64 @@
         });
     });
 </script>
+@{
+    var success = TempData["Success"] ?? TempData["SuccessMessage"];
+    var error = TempData["Error"];
+    var warning = TempData["Warning"];
+    var info = TempData["Info"];
+}
+
+@if (success != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Thành công 🎉",
+                text: "@Html.Raw(success)",
+                icon: "success",
+                confirmButtonText: "OK",
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+    </script>
+    }
+else if (error != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Lỗi ❌",
+                text: "@Html.Raw(error)",
+                icon: "error",
+                confirmButtonText: "Đóng"
+            });
+        });
+    </script>
+    }
+else if (warning != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Cảnh báo ⚠️",
+                text: "@Html.Raw(warning)",
+                icon: "warning",
+                confirmButtonText: "OK"
+            });
+        });
+    </script>
+    }
+else if (info != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Thông báo 💬",
+                text: "@Html.Raw(info)",
+                icon: "info",
+                confirmButtonText: "OK"
+            });
+        });
+    </script>
+    }
