@@ -1,114 +1,280 @@
-﻿@model QuanLyPhongTro.Models.ViewModels.PhongTroDetailVM
+﻿
 @{
-    string FmtGia(decimal? v)
-    {
-        if (!v.HasValue || v <= 0) return "Thoả thuận";
-        var trieu = v.Value / 1_000_000m;
-        return trieu >= 1 ? trieu.ToString("0.#") + " triệu/tháng" : string.Format("{0:#,0} đ/tháng", v);
-    }
-    string FmtDT(double? m2) => m2.HasValue ? m2.Value.ToString("0.#") + " m²" : "-- m²";
-    string Img(string u)
-    {
-        if (string.IsNullOrWhiteSpace(u))
-            return Url.Content("~/Assets/Images/no-image.png");
+    ViewBag.Title = "ChiTiet";
+}
+@model QuanLyPhongTro.Models.Phong_Tro
 
-        if (u.StartsWith("http") || u.StartsWith("~/"))
-            return Url.Content(u);
+@{
+    ViewBag.Title = Model.Ten_Phong; // Lấy tiêu đề từ tên phòng
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
-        return Url.Content("~/Kho/Img/" + u.TrimStart('/'));
-    }
+    // Lấy các biến phụ từ Model cho dễ dùng
+    var hinhAnh = Model.Hinh_Anh.ToList();
+    var noiBat = Model.Noi_Bat.FirstOrDefault(); // Giả sử mỗi phòng chỉ có 1 dòng Nổi bật
+
+    // Xử lý nút Yêu thích
+    var userFavorites = (List<int>)ViewBag.UserFavorites ?? new List<int>();
+    var isFavorited = userFavorites.Contains(Model.ID_Phong_Tro);
+    var heartIconClass = isFavorited ? "bi-heart-fill" : "bi-heart";
+    var activeClass = isFavorited ? "active" : "";
 }
 
-<div class="container py-3" style="max-width:1140px">
-    <div class="row g-3">
-        <div class="col-lg-8">
-            <!-- Gallery -->
-            <div class="mb-3">
-                <img src="@Img(Model.AnhDaiDien)"
-                     class="img-fluid rounded mb-3"
-                     style="max-height:420px;object-fit:cover"
-                     onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';" />
+<div class="container mt-4">
+    <div class="row">
 
-                <!-- Gallery -->
-                @if (Model.Album != null && Model.Album.Any())
-                {
-                    <div class="row g-2 mb-4">
-                        @foreach (var u in Model.Album.Where(s => !string.IsNullOrWhiteSpace(s)))
+        <div class="col-lg-8">
+
+            <nav aria-label="breadcrumb" class="mb-2">
+                <ol class="breadcrumb" style="background-color: #f8f9fa; padding: 0.5rem 1rem; border-radius: 0.25rem;">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Cho thuê phòng trọ</a></li>
+                    <li class="breadcrumb-item"><a href="#">@(Model.Khu_Vuc != null ? Model.Khu_Vuc.Ten_KV : "...")</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.Ten_Phong</li>
+                </ol>
+            </nav>
+
+            <div id="phongTroCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner rounded">
+                    @if (hinhAnh.Any())
+                    {
+                        for (int i = 0; i < hinhAnh.Count; i++)
                         {
-                            <div class="col-4">
-                                <img src="@Img(u)"
-                                     class="img-fluid rounded"
-                                     onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';" />
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@Url.Content("~/Kho/Img/" + hinhAnh[i].Url_Anh)" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Ảnh @(i+1)">
                             </div>
                         }
-                    </div>
-                }
-            </div>
-
-            <!-- Video (nếu có) -->
-            @if (Model.Videos?.Any() == true)
-            {
-                <div class="mb-3">
-                    @foreach (var v in Model.Videos)
+                    }
+                    else
                     {
-                        <div class="ratio ratio-16x9 mb-2">
-                            <iframe src="@v" allowfullscreen></iframe>
+                        <div class="carousel-item active">
+                            <img src="@Url.Content("~/Kho/Img/placeholder.jpg")" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Chưa có ảnh">
                         </div>
                     }
                 </div>
-            }
+                <button class="carousel-control-prev" type="button" data-bs-target="#phongTroCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#phongTroCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
 
-            <!-- Tiêu đề + meta -->
-            <h4 class="fw-bold" style="color:@Model.LoaiTinMau">@Model.Ten</h4>
-            <div class="text-muted mb-2">
-                <span class="me-3 text-success fw-bold">@FmtGia(Model.Gia)</span>
-                <span class="me-3"><i class="bi bi-aspect-ratio"></i> @FmtDT(Model.DienTich)</span>
-                <span class="me-3"><i class="bi bi-geo-alt"></i> @Model.KhuVuc</span>
-                <span><i class="bi bi-clock"></i> @Model.NgayDang?.ToString("HH:mm dd/MM/yyyy")</span>
-            </div>
-
-            <!-- Mô tả -->
-            @if (!string.IsNullOrWhiteSpace(Model?.MoTa))
-            {
-                @Html.Raw(System.Web.HttpUtility.HtmlEncode(Model.MoTa)
-                                             .Replace("\n", "<br/>"))
-            }
-
-            <!-- Tiện ích -->
-            <div class="bg-white border rounded p-3 mb-3">
-                <div class="fw-bold mb-2">Nổi bật</div>
-                <div class="row row-cols-2 row-cols-md-3 g-2 small">
-                    @if (Model.DayDuNoiThat == true)
-                    {<div>✅ Đầy đủ nội thất</div>}
-                    @if (Model.CoGac == true)
-                    {<div>✅ Có gác</div>}
-                    @if (Model.CoMayLanh == true)
-                    {<div>✅ Có máy lạnh</div>}
-                    @if (Model.CoMayGiat == true)
-                    {<div>✅ Có máy giặt</div>}
-                    @if (Model.GioGiacTuDo == true)
-                    {<div>✅ Giờ giấc tự do</div>}
+                <div class="carousel-indicators" style="position: static; margin-top: 10px;">
+                    @for (int i = 0; i < hinhAnh.Count; i++)
+                    {
+                        <button type="button" data-bs-target="#phongTroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i+1)" style="width: 100px; height: 70px;">
+                            <img src="@Url.Content("~/Kho/Img/" + hinhAnh[i].Url_Anh)" class="d-block w-100" style="height: 70px; object-fit: cover; border-radius: 5px;" alt="Thumbnail @(i+1)">
+                        </button>
+                    }
                 </div>
             </div>
 
-            <!-- Tin liên quan -->
+            <div class="mt-4">
+                <span class="badge bg-danger mb-2">@Model.Loai_Tin.Ten_LoaiTin</span>
+                <div class="mb-1">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                </div>
+                <h1 class="h2 text-danger fw-bold">@Model.Ten_Phong</h1>
 
-        </div>
+                <div class="d-flex flex-wrap align-items-center text-muted mt-3 mb-3">
+                    <span class="fw-bold text-success fs-4 me-4">@(Model.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)Model.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")</span>
+                    <span class="me-4"><i class="bi bi-rulers me-1"></i> @Model.Dien_Tich m²</span>
+                    <span><i class="bi bi-clock me-1"></i> Cập nhật: @(Model.Ngay_Dang.HasValue ? Model.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</span>
+                </div>
+            </div>
 
-        <!-- Sidebar liên hệ -->
-        <div class="col-lg-4">
-            <div class="bg-white border rounded p-3">
-                <div class="fw-bold mb-1">@Model.ChuNha</div>
-                <div class="text-muted small mb-2">Chủ nhà</div>
-                @if (!string.IsNullOrWhiteSpace(Model.SoDienThoai))
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Mã tin:</strong>
+                    <span>#@Model.ID_Phong_Tro</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Địa chỉ:</strong>
+                    <span class="text-end">@Model.Dia_Chi</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Quận/Huyện:</strong>
+                    <span>@(Model.Khu_Vuc != null ? Model.Khu_Vuc.Ten_KV : "...")</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Ngày đăng:</strong>
+                    <span>@(Model.Ngay_Dang.HasValue ? Model.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Ngày hết hạn:</strong>
+                    <span>@(Model.Ngay_Het_Han.HasValue ? Model.Ngay_Het_Han.Value.ToString("dd/MM/yyyy") : "...")</span>
+                </li>
+            </ul>
+
+            <div class="mb-4">
+                <h3 class="h5 fw-bold mb-3">Thông tin mô tả</h3>
+                <div class="text-muted" style="line-height: 1.7;">
+                    @Html.Raw(Model.Mo_Ta.Replace("\n", "<br />"))
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="h5 fw-bold mb-3">Nổi bật</h3>
+                @if (noiBat != null)
                 {
-                    <a class="btn btn-success w-100 mb-2" href="tel:@Model.SoDienThoai">
-                        <i class="bi bi-telephone me-1"></i> @Model.SoDienThoai
-                    </a>
-                    <a class="btn btn-primary w-100" target="_blank" rel="noopener"
-                       href="https://zalo.me/@Model.SoDienThoai">Nhắn Zalo</a>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2 @(noiBat.Day_du_noi_that == true ? "text-success" : "text-muted")">
+                                    <i class="bi @(noiBat.Day_du_noi_that == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Đầy đủ nội thất
+                                </li>
+                                <li class="mb-2 @(noiBat.Co_gac == true ? "text-success" : "text-muted")">
+                                    <i class="bi @(noiBat.Co_gac == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Có gác
+                                </li>
+                                <li class="mb-2 @(noiBat.Ke_bep == true ? "text-success" : "text-muted")">
+                                    <i class="bi @(noiBat.Ke_bep == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Kệ bếp
+                                </li>
+                                <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted")">
+                                    <i class="bi @(noiBat.Co_may_lanh == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Có điều hòa
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted")">
+                                    <i class="bi @(noiBat.Co_may_lanh == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Có máy lạnh
+                                </li>
+                                <li class="mb-2 @(noiBat.Co_tu_lanh == true ? "text-success" : "text-muted")">
+                                    <i class="bi @(noiBat.Co_tu_lanh == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Có tủ lạnh
+                                </li>
+                                <li class="mb-2 @(noiBat.Khong_chung_chu == true ? "text-success" : "text-muted")">
+                                    <i class="bi @(noiBat.Khong_chung_chu == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Không chung chủ
+                                </li>
+                                <li class="mb-2 @(noiBat.Co_bao_ve_24_24 == true ? "text-success" : "text-muted")">
+                                    <i class="bi @(noiBat.Co_bao_ve_24_24 == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Bảo vệ 24/24
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Không có thông tin nổi bật.</p>
                 }
             </div>
+
+            <div class="mb-4">
+                <h3 class="h5 fw-bold mb-3">Vị trí & bản đồ</h3>
+                <p class="text-muted">Địa chỉ: @Model.Dia_Chi</p>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.653991314644!2d106.699774!3d10.761066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f6b86219c79%3A0x640b6188e443a61!2s296%20Nguy%E1%BB%85n%20T%E1%BA%A5t%20Th%C3%A0nh%2C%20Ph%C6%B0%E1%BB%9Dng%2013%2C%20Qu%E1%BA%ADn%204%2C%20Th%C3%A0nh%20ph%E1%BB%91%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam!5e0!3m2!1sen!2s!4v1678888888888!5m2!1sen!2s"
+                        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <div class="alert alert-warning" role="alert">
+                <h6 class="fw-bold">Lưu ý:</h6>
+                <p class="mb-1">Chỉ đặt cọc khi xác định được chủ nhà và có thỏa thuận biên nhận rõ ràng. Kiểm tra mọi điều khoản và yêu cầu liệt kê tất cả chi phí hàng tháng vào hợp đồng. <a href="#">Xem thêm</a></p>
+                <p class="mb-0">Mọi thông tin liên quan đến tin đăng này chỉ mang tính chất tham khảo. Nếu bạn thấy rằng tin đăng này không đúng hoặc có dấu hiệu lừa đảo, <a href="#">hãy phản ánh với chúng tôi</a>.</p>
+            </div>
+
+        </div> <div class="col-lg-4">
+
+            <div class="card mb-3" style="position: sticky; top: 1rem;">
+                <div class="card-body text-center">
+                    <img src="@Url.Content(Model.Tai_Khoan != null && !string.IsNullOrEmpty(Model.Tai_Khoan.Avata) ? Model.Tai_Khoan.Avata : "~/Assets/Images/Avatar/avatar-mac-dinh.jpg")"
+                         class="rounded-circle mb-3" alt="Avatar" style="width: 100px; height: 100px; object-fit: cover;">
+                    <h5 class="card-title fw-bold">@(Model.Tai_Khoan != null ? Model.Tai_Khoan.Name : "...")</h5>
+                    <p class="text-muted small">Đang hoạt động</p>
+
+                    <a href="tel:@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "#")" class="btn btn-success btn-lg d-block w-100 mb-2 fw-bold">
+                        <i class="bi bi-telephone-fill me-2"></i>@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "...")
+                    </a>
+                    <a href="#" class="btn btn-primary btn-lg d-block w-100 mb-3 fw-bold">
+                        <i class="bi bi-chat-dots-fill me-2"></i> Nhắn Zalo
+                    </a>
+
+                    <div class="d-flex justify-content-around">
+                        <a href="#" class="btn-favorite @activeClass" data-post-id="@Model.ID_Phong_Tro" style="font-size: 1rem; color: #6c757d;">
+                            <i class="bi @heartIconClass me-1"></i> Lưu tin
+                        </a>
+                        <a href="#" class="text-muted" style="text-decoration: none;">
+                            <i class="bi bi-share-fill me-1"></i> Chia sẻ
+                        </a>
+                        <a href="#" class="text-muted" style="text-decoration: none;">
+                            <i class="bi bi-flag-fill me-1"></i> Báo xấu
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header fw-bold">Tin đăng nổi bật</div>
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-4">
+                                <img src="@Url.Content("~/Kho/Img/placeholder.jpg")" class="img-fluid rounded" alt="Tin mới">
+                            </div>
+                            <div class="col-8">
+                                <h6 class="mb-1 text-primary title-clamp-2">CHO THUÊ PHÒNG TRỌ DẠNG CHUNG CƯ MINI</h6>
+                                <strong class="text-success d-block fw-bold">1.9 triệu/tháng</strong>
+                                <small class="text-muted">2 ngày trước</small>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-4">
+                                <img src="@Url.Content("~/Kho/Img/placeholder.jpg")" class="img-fluid rounded" alt="Tin mới">
+                            </div>
+                            <div class="col-8">
+                                <h6 class="mb-1 text-primary title-clamp-2">CHO THUÊ PHÒNG TRỌ CAO CẤP TẠI 64 TRƯƠNG VĂN</h6>
+                                <strong class="text-success d-block fw-bold">3.3 triệu/tháng</strong>
+                                <small class="text-muted">2 ngày trước</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
+</div> @section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('.btn-favorite').on('click', function (e) {
+                e.preventDefault();
+
+                var $this = $(this);
+                var postId = $this.data('post-id');
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("ToggleFavorite", "Home")", // Sửa "Home" thành tên Controller của bạn
+                    data: { id: postId },
+                    success: function (data) {
+                        if (data.success) {
+                            if (data.isFavorited) {
+                                // 1. ĐỔI SANG ĐÃ THÍCH
+                                $this.addClass('active');
+                                $this.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                                $this.contents().last().replaceWith(" Đã lưu"); // Cập nhật text
+                            } else {
+                                // 2. ĐỔI SANG BỎ THÍCH
+                                $this.removeClass('active');
+                                $this.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
+                                $this.contents().last().replaceWith(" Lưu tin"); // Cập nhật text
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        if (xhr.status == 401) {
+                            alert("Bạn cần đăng nhập để thực hiện việc này.");
+                        } else {
+                            alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,13 +1,13 @@
-﻿using QuanLyPhongTro.Models;
+﻿using PagedList; // <-- 1. THÊM THƯ VIỆN NÀY
+using QuanLyPhongTro.Models;
+using QuanLyPhongTro.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using QuanLyPhongTro.Models.ViewModels;
-using System.Data.Entity;
-using System.IO;                
-
 
 namespace QuanLyPhongTro.Controllers
 {
@@ -29,205 +29,208 @@ namespace QuanLyPhongTro.Controllers
 
             base.OnActionExecuting(filterContext);
         }
-        // GET: User
-        public ActionResult Index(int page = 1, int pageSize = 10)
+
+        public ActionResult Index(int? page,int? minPrice, int? maxPrice, int? minArea, int? maxArea)
         {
-            var q = db.Phong_Tro
-                .AsNoTracking()
-                .Include(p => p.Khu_Vuc)
-                .Include(p => p.Loai_Tin)
-                .Include(p => p.Hinh_Anh)
-                .Include(p => p.Tai_Khoan);   // <-- QUAN TRỌNG
-
-            var total = q.Count();
-
-            // Lấy thô từ DB
-            var raw = q.OrderByDescending(p => p.Ngay_Dang)
-              .Skip((page - 1) * pageSize)
-              .Take(pageSize)
-              .Select(p => new
-              {
-                  Id = p.ID_Phong_Tro,
-                  Ten = p.Ten_Phong,
-                  Gia = p.Gia_Ca,
-                  DienTich = p.Dien_Tich,
-                  DiaChi = p.Dia_Chi,
-                  KhuVuc = p.Khu_Vuc.Ten_KV,
-
-                  // ---- CHỈ DÙNG CÁC CỘT CÓ THẬT ----
-                  LoaiTinTen = p.Loai_Tin.Ten_LoaiTin,
-                  LoaiTinCapDo = p.Loai_Tin.CapDo,
-                  LoaiTinMau = p.Loai_Tin.Mau_TieuDe,   // có trong DB
-                                                        // LoaiTinKieuChu = p.Loai_Tin.Kieu_Chu, // <-- XÓA DÒNG NÀY
-
-                  UrlAnhDaiDien = p.Hinh_Anh.Select(h => h.Url_Anh).FirstOrDefault(),
-                  UrlAlbum = p.Hinh_Anh.Select(h => h.Url_Anh).ToList(),
-                  NgayDang = p.Ngay_Dang,
-
-                  // tuỳ bạn có hay không:
-                  ChuNha = p.Tai_Khoan.Name,
-                  AvatarUrl = p.Tai_Khoan.Avata,
-                  SoDienThoai = p.Tai_Khoan.SDT,
-                  MoTaTomTat = p.Mo_Ta
-              })
-              .ToList();
-
-            var data = raw.Select(p => new PhongTroVM
+            int? currentUserId = null;
+            if (Session["ID_TK"] != null)
             {
-                Id = p.Id,
-                Ten = p.Ten,
-                Gia = p.Gia,
-                DienTich = p.DienTich,
-                DiaChi = p.DiaChi,
-                KhuVuc = p.KhuVuc,
-
-                LoaiTinTen = p.LoaiTinTen,
-                LoaiTinCapDo = p.LoaiTinCapDo ?? 0,
-                LoaiTinMau = string.IsNullOrWhiteSpace(p.LoaiTinMau) ? "#e03" : p.LoaiTinMau,
-                // LoaiTinKieuChu = ...  // KHÔNG dùng nữa
-
-                AnhDaiDien = BuildKhoImgWithWard(p.UrlAnhDaiDien),
-                Album = (p.UrlAlbum ?? new List<string>()).Select(BuildKhoImgWithWard).Where(s => !string.IsNullOrWhiteSpace(s)).Take(8).ToList(),
-                NgayDang = p.NgayDang,
-
-                ChuNha = p.ChuNha,
-                AvatarUrl = BuildKhoImgWithWard(p.AvatarUrl),
-                SoDienThoai = p.SoDienThoai,
-                MoTaTomTat = p.MoTaTomTat
-                }).ToList();
-                ViewBag.Page = page;
-                ViewBag.PageSize = pageSize;
-                ViewBag.Total = total;
-                return View(data);
-        }
-
-        // Giữ nguyên subfolder phường nếu DB có: "Phuong_X/abc.jpg"
-        // Nếu DB chỉ là "abc.jpg" vẫn hoạt động (không có phường)
-        private string BuildKhoImgWithWard(string raw)
-        {
-            if (string.IsNullOrWhiteSpace(raw)) return null;
-
-            if (raw.StartsWith("http", StringComparison.OrdinalIgnoreCase)) return raw;
-            if (raw.StartsWith("~/")) return raw;
-
-            var sub = raw.Replace('\\', '/').TrimStart('~', '/');
-            var path = "~/Kho/Img/" + sub;
-
-            try
-            {
-                var physical = Server.MapPath(path);
-                if (!System.IO.File.Exists(physical))
-                    return "~/Assets/Images/no-image.png";
+                currentUserId = (int)Session["ID_TK"];
             }
-            catch { /* ignore */ }
 
-            return path;
-        }
-        private string ToYoutubeEmbed(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url)) return null;
-            // https://youtu.be/ID  hoặc https://www.youtube.com/watch?v=ID
-            var m = System.Text.RegularExpressions.Regex.Match(url,
-                @"(?:youtu\.be/|v=)(?<id>[A-Za-z0-9_\-]{6,})");
-            return m.Success ? $"https://www.youtube.com/embed/{m.Groups["id"].Value}" : url;
-        }
-        private IEnumerable<QuanLyPhongTro.Models.ViewModels.PhongTroVM>
-        QueryPhongTroByChuDe(int idCD, int page, int pageSize, out int total)
-        {
-            var q = db.Phong_Tro
-                .AsNoTracking()
-                .Include(p => p.Khu_Vuc)
-                .Include(p => p.Loai_Tin)
-                .Include(p => p.Hinh_Anh)
-                .Where(p => p.ID_CD == idCD);
-
-            total = q.Count();
-
-            var raw = q.OrderByDescending(p => p.Ngay_Dang)
-                       .Skip((page - 1) * pageSize)
-                       .Take(pageSize)
-                       .Select(p => new
-                       {
-                           Id = p.ID_Phong_Tro,
-                           Ten = p.Ten_Phong,
-                           Gia = p.Gia_Ca,
-                           DienTich = p.Dien_Tich,
-                           DiaChi = p.Dia_Chi,
-                           KhuVuc = p.Khu_Vuc.Ten_KV,
-                           LoaiTin = p.Loai_Tin.Ten_LoaiTin,
-                           UrlAnh = p.Hinh_Anh.Select(h => h.Url_Anh).FirstOrDefault(),
-                           NgayDang = p.Ngay_Dang
-                       })
-                       .ToList();
-
-            var data = raw.Select(p => new QuanLyPhongTro.Models.ViewModels.PhongTroVM
+            // ----- LẤY DANH SÁCH YÊU THÍCH CỦA NGƯỜI NÀY -----
+            var userFavorites = new List<int>();
+            if (currentUserId.HasValue)
             {
-                Id = p.Id,
-                Ten = p.Ten,
-                Gia = p.Gia,
-                DienTich = p.DienTich,
-                DiaChi = p.DiaChi,
-                KhuVuc = p.KhuVuc,
-                LoaiTin = p.LoaiTin,
-                AnhDaiDien = BuildKhoImgWithWard(p.UrlAnh),
-                NgayDang = p.NgayDang
-            });
+                userFavorites = db.Yeu_Thich
+                                  .Where(yt => yt.ID_TK == currentUserId.Value)
+                                  .Select(yt => yt.ID_Phong_Tro)
+                                  .ToList();
+            }
+            ViewBag.UserFavorites = userFavorites;
+            ViewBag.CurrentMinPrice = minPrice;
+            ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMinArea = minArea;
+            ViewBag.CurrentMaxArea = maxArea;
+            // ----- PHÂN TRANG -----
+            int pageSize = 10; // Số item mỗi trang
+            int pageNumber = (page ?? 1); // Trang hiện tại, nếu không có thì là trang 1
 
-            return data;
+            // 3. SỬA CÂU TRUY VẤN
+            var query = db.Phong_Tro
+                          .Include(p => p.Tai_Khoan)
+                          .Include(p => p.Khu_Vuc)
+                          .Include(p => p.Hinh_Anh)
+                          .Include(p => p.Loai_Tin)
+                          .Where(p => p.ID_CD == 4); // Lọc theo ID_CD = 4
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Gia_Ca >= minPrice.Value);
+            }
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Gia_Ca < maxPrice.Value); // Dùng '<' để "dưới 2 triệu" không bao gồm 2 triệu
+            }
+            if (minArea.HasValue)
+            {
+                query = query.Where(p => p.Dien_Tich >= minArea.Value);
+            }
+            if (maxArea.HasValue)
+            {
+                query = query.Where(p => p.Dien_Tich <= maxArea.Value);
+            }
+            // SẮP XẾP: Ưu tiên theo Loại Tin (1 -> 5), sau đó mới tới Ngày Đăng
+            var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
+                                   .ThenByDescending(p => p.Ngay_Dang);
+
+            // 4. GỌI ToPagedList() THAY VÌ ToList()
+            // Gửi Model phân trang qua View
+            return View(sortedQuery.ToPagedList(pageNumber, pageSize));
+        }
+        private List<int> GetUserFavorites()
+        {
+            if (Session["ID_TK"] != null)
+            {
+                int currentUserId = (int)Session["ID_TK"];
+                return db.Yeu_Thich
+                         .Where(yt => yt.ID_TK == currentUserId)
+                         .Select(yt => yt.ID_Phong_Tro)
+                         .ToList();
+            }
+            return new List<int>(); // Trả về danh sách rỗng nếu chưa đăng nhập
+        }
+        [HttpPost]
+        public JsonResult ToggleFavorite(int id) // id này là ID_Phong_Tro
+        {
+            // 1. Kiểm tra xem người dùng đã đăng nhập chưa
+            if (Session["ID_TK"] == null)
+            {
+                // Trả về lỗi 401 (Chưa xác thực)
+                return Json(new { success = false, message = "Bạn cần đăng nhập." }, JsonRequestBehavior.AllowGet);
+                // Hoặc bạn có thể trả về lỗi 401
+                // Response.StatusCode = 401gi;
+                // return Json(new { success = false, message = "Bạn cần đăng nhập." });
+            }
+
+            int currentUserId = (int)Session["ID_TK"];
+            bool isFavorited = false;
+
+            // 2. Kiểm tra xem tin này đã được yêu thích chưa
+            var existingFavorite = db.Yeu_Thich
+                                     .FirstOrDefault(yt => yt.ID_Phong_Tro == id && yt.ID_TK == currentUserId);
+
+            if (existingFavorite != null)
+            {
+                // 3a. ĐÃ CÓ -> Bỏ yêu thích (Xóa khỏi DB)
+                db.Yeu_Thich.Remove(existingFavorite);
+                isFavorited = false;
+            }
+            else
+            {
+                // 3b. CHƯA CÓ -> Thêm yêu thích (Thêm vào DB)
+                var newFavorite = new Yeu_Thich
+                {
+                    ID_Phong_Tro = id,
+                    ID_TK = currentUserId
+                };
+                db.Yeu_Thich.Add(newFavorite);
+                isFavorited = true;
+            }
+
+            db.SaveChanges();
+
+            // 4. Trả về kết quả (dạng JSON)
+            return Json(new { success = true, isFavorited = isFavorited });
         }
 
-        public ActionResult CanHoChungCu(int page = 1, int pageSize = 10)
+        public ActionResult CanHoChungCu(int? page) // Sửa tham số thành int? page
         {
-            int total;
-            var model = QueryPhongTroByChuDe(idCD: 6, page: page, pageSize: pageSize, out total);
+            // Lấy danh sách ID yêu thích
+            var userFavorites = GetUserFavorites();
+            ViewBag.UserFavorites = userFavorites;
 
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.Total = total;
-            ViewBag.ActiveTab = "chungcu"; // để tô màu tab
+            // Cấu hình phân trang
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
 
-            return View(model.ToList());
+            // Truy vấn
+            var query = db.Phong_Tro
+                          .Include(p => p.Tai_Khoan)
+                          .Include(p => p.Khu_Vuc)
+                          .Include(p => p.Hinh_Anh)
+                          .Include(p => p.Loai_Tin)
+                          .Where(p => p.ID_CD == 6); // <-- LỌC THEO ID_CD = 6
+
+            var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
+                                   .ThenByDescending(p => p.Ngay_Dang);
+            var newestPosts = db.Phong_Tro
+                        .Include(p => p.Hinh_Anh) // Chỉ cần include ảnh
+                        .OrderByDescending(p => p.Ngay_Dang)
+                        .Take(10)
+                        .ToList();
+
+            // 3. ĐƯA DANH SÁCH SIDEBAR VÀO VIEWBAG
+            ViewBag.NewestPosts = newestPosts;
+            // QUAN TRỌNG: Render ra View tên là "Index"
+
+            return View("Index", sortedQuery.ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult CanHoMini(int page = 1, int pageSize = 10)
+        public ActionResult CanHoMini(int? page) // Sửa tham số thành int? page
         {
-            int total;
-            var model = QueryPhongTroByChuDe(idCD: 5, page: page, pageSize: pageSize, out total);
+            // Lấy danh sách ID yêu thích
+            var userFavorites = GetUserFavorites();
+            ViewBag.UserFavorites = userFavorites;
 
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.Total = total;
-            ViewBag.ActiveTab = "mini";
+            // Cấu hình phân trang
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
 
-            return View(model.ToList());
+            // Truy vấn
+            var query = db.Phong_Tro
+                          .Include(p => p.Tai_Khoan)
+                          .Include(p => p.Khu_Vuc)
+                          .Include(p => p.Hinh_Anh)
+                          .Include(p => p.Loai_Tin)
+                          .Where(p => p.ID_CD == 5); // <-- LỌC THEO ID_CD = 5
+
+            var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
+                                   .ThenByDescending(p => p.Ngay_Dang);
+
+            // QUAN TRỌNG: Render ra View tên là "Index"
+            return View("Index", sortedQuery.ToPagedList(pageNumber, pageSize));
         }
-        public ActionResult ChiTiet(int id)
+        public ActionResult ChiTiet(int id) // <-- SỬA LỖI: Thêm tham số (int id)
         {
-            // lấy 1 phòng theo id + navigation cần thiết
-            var vm = db.Phong_Tro
-         .Where(x => x.ID_Phong_Tro == id)
-         .Select(x => new PhongTroDetailVM
-         {
-             Id = x.ID_Phong_Tro,
-             Ten = x.Ten_Phong,
-             Gia = x.Gia_Ca,
-             DienTich = x.Dien_Tich,
-             DiaChi = x.Dia_Chi,
-             KhuVuc = x.Khu_Vuc.Ten_KV,                 // chỉ lấy Ten_KV
-             LoaiTinTen = x.Loai_Tin.Ten_LoaiTin,       // chỉ lấy 3 cột này
-             LoaiTinCapDo = x.Loai_Tin.CapDo,
-             LoaiTinMau = x.Loai_Tin.Mau_TieuDe,
+            // Truy vấn CSDL để tìm phòng trọ có ID này
+            var phongTro = db.Phong_Tro
+                             .Include(p => p.Tai_Khoan)
+                             .Include(p => p.Khu_Vuc)
+                             .Include(p => p.Hinh_Anh)
+                             .Include(p => p.Loai_Tin)
+                             .Include(p => p.Noi_Bat)
+                             .FirstOrDefault(p => p.ID_Phong_Tro == id);
 
-             // ảnh: lấy đúng Url_Anh
-             Album = x.Hinh_Anh
-                     .OrderBy(h => h.ID_Hinh_Anh)
-                     .Select(h => h.Url_Anh)
-                     .ToList(),
-         })
-         .FirstOrDefault();
+            // Nếu không tìm thấy phòng trọ, trả về lỗi
+            if (phongTro == null)
+            {
+                return HttpNotFound();
+            }
 
-            if (vm == null) return HttpNotFound();
-            return View(vm);
+            // Lấy danh sách yêu thích (cho nút trái tim)
+            var userFavorites = new List<int>();
+            if (Session["ID_TK"] != null)
+            {
+                int currentUserId = (int)Session["ID_TK"];
+                userFavorites = db.Yeu_Thich
+                                  .Where(yt => yt.ID_TK == currentUserId)
+                                  .Select(yt => yt.ID_Phong_Tro)
+                                  .ToList();
+            }
+            ViewBag.UserFavorites = userFavorites;
+
+            // Gửi 1 đối tượng phòng trọ duy nhất qua View
+            return View(phongTro);
         }
         // =============== start blog
         public ActionResult Blog()

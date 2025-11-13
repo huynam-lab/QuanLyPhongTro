@@ -1,322 +1,535 @@
-﻿@model IEnumerable<QuanLyPhongTro.Models.ViewModels.PhongTroVM>
+﻿@using PagedList;
+@using PagedList.Mvc;
 
+@model IPagedList<QuanLyPhongTro.Models.Phong_Tro>
 @{
-    ViewBag.Title = "Kênh thông tin Phòng Trọ số 1 Việt Nam";
-    Func<string, string> Img = (u) => string.IsNullOrWhiteSpace(u)
-        ? Url.Content("~/Assets/Images/no-image.png")
-        : Url.Content(u);
-    var page = (int)(ViewBag.Page ?? 1);
-    var pageSize = (int)(ViewBag.PageSize ?? 10);
-    var total = (int)(ViewBag.Total ?? 0);
-    var totalPages = (int)Math.Ceiling(total / (double)pageSize);
-
-   @functions{
-    string FormatGia(decimal? vnd)
-    {
-        if (!vnd.HasValue || vnd <= 0) return "Thoả thuận";
-        decimal trieu = vnd.Value / 1_000_000m;
-        if (trieu >= 1) return trieu.ToString("0.#") + " triệu/tháng";
-        return string.Format("{0:#,0} đ/tháng", vnd);
-    }
-}
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<style>
-    .chip {
-        border: 1px solid #e6e6e6;
-        border-radius: 10px;
-        padding: .45rem .8rem;
-        background: #fff;
-        font-weight: 600
-    }
-
-        .chip:hover {
-            background: #f5f7fb
-        }
-
-    .post-card {
-        border: 1px solid #eee;
-        border-radius: 12px;
-        overflow: hidden;
-        background: #fff
-    }
-
-        .post-card + .post-card {
-            margin-top: 18px
-        }
-
-    .post-thumb {
-        width: 100%;
-        height: 220px;
-        object-fit: cover
-    }
-
-    .post-title {
-        font-weight: 800;
-        color: #e03;
-        text-transform: uppercase
-    }
-
-    .post-meta {
-        font-size: .95rem
-    }
-
-    .post-price {
-        color: #0aaf55;
-        font-weight: 800
-    }
-
-    .sidebar-box {
-        background: #fff;
-        border: 1px solid #eee;
-        border-radius: 12px;
-        padding: 16px
-    }
-
-        .sidebar-box + .sidebar-box {
-            margin-top: 16px
-        }
-
-    .meta-dot::before {
-        margin: 0 .35rem;
-        color: #999
-    }
-    /* ===== SUPPORT BOX (scoped) ===== */
-    .pt-support {
-        padding: 36px 0;
-        background: #fff;
-    }
-
-        .pt-support .wrap {
-            max-width: 1200px;
-            margin: 0 auto;
-            content: "·";
-            padding: 28px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            box-shadow: 0 10px 28px rgba(15,23,42,.06);
-            display: grid;
-            grid-template-columns: 1fr 1.1fr;
-            gap: 28px;
-            align-items: center;
-        }
-
-.pt-support .art {
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-    .pt-support .art img {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-
-.pt-support .head {
-    text-align: center;
-}
-
-.pt-support .icon {
-    font-size: 36px;
-    margin-bottom: 10px;
-}
-
-.pt-support h3 {
-    font-size: 32px;
-    font-weight: 900;
-    margin: 0 0 6px;
-    color: #0f172a;
-}
-
-.pt-support .lead {
-    color: #475569;
-    margin-bottom: 18px;
-}
-
-.pt-support .btns {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.pt-support .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 18px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 800;
-    border: 0;
-    box-shadow: 0 4px 0 rgba(0,0,0,.07);
-}
-
-    .pt-support .btn .ic {
-        width: 18px;
-        height: 18px;
-        display: inline-block;
-    }
-
-    .pt-support .btn.phone {
-        background: #e6552f;
-        color: #fff;
-    }
-
-    .pt-support .btn.zalo {
-        background: #1677ff;
-        color: #fff;
-    }
-
-.pt-support .sub {
-    text-align: center;
-    color: #6b7280;
-    margin: 18px 0 10px;
-}
-body.page-banggia .pt-left-sidebar,
-body.page-banggia .pt-right-sidebar,
-body.page-banggia .col-lg-1.d-none.d-lg-block.pt-left-sidebar,
-body.page-banggia .col-lg-1.d-none.d-lg-block.pt-right-sidebar {
-    display: none !important;
-}
-body.page-banggia .col-lg-10,
-body.page-banggia .pt-main-col {
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
-}
-
-/* Đảm bảo wrapper/bảng ở giữa, có max-width đẹp */
-body.page-banggia .pt-price-table .wrap,
-body.page-banggia .pt-container {
-    max-width: 1200px; /* hoặc 1360px tùy bạn */
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 16px;
-    padding-right: 16px;
-}
-</style>
-
-<div class="container-fluid py-3" style="max-width:1140px">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="~/Assets/Css/Index.css" rel="stylesheet" />
+<div class="container mt-4">
     <div class="row">
-        <!-- MAIN -->
-        <div class="col-lg-8">
-            <h4 class="mb-1">Kênh thông tin Phòng Trọ số 1 Việt Nam</h4>
-            <div class="text-muted mb-3">Có @total tin đăng cho thuê</div>
 
-            <div class="mb-3 d-flex flex-wrap gap-2">
-                <a class="chip text-decoration-none" href="@Url.Action("Index","User", new { kv = 1 })">Phòng trọ Hồ Chí Minh</a>
-                <a class="chip text-decoration-none" href="@Url.Action("Index","User", new { kv = 2 })">Phòng trọ Hà Nội</a>
-                <a class="chip text-decoration-none" href="@Url.Action("Index","User", new { kv = 3 })">Phòng trọ Đà Nẵng</a>
-                <a class="chip text-decoration-none" href="@Url.Action("Index","User")">Tất cả</a>
-            </div>
+        <div class="col-lg-8">
+
+            <h2 class="h4">Kênh thông tin Phòng Trọ số 1 Việt Nam</h2>
+            <p class="text-muted">Có 77.541 tin đang cho thuê</p>
+
+
 
             <ul class="nav nav-tabs mb-3">
-                <li class="nav-item"><a class="nav-link active" href="#">Đề xuất</a></li>
-                <li class="nav-item"><a class="nav-link" href="@Url.Action("Index","User", new { page = 1 })">Mới đăng</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Có video</a></li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Đề xuất</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Mới đăng</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Có video</a>
+                </li>
             </ul>
-
-            @foreach (var p in Model)
+            @foreach (var item in Model)
             {
-                var img = Img(p.AnhDaiDien);
-                <article class="post-card shadow-sm">
-                    <div class="row g-0">
-                        <div class="col-md-5">
-                            <a href="@Url.Action("ChiTiet","User", new { id = p.Id })">
-                                <img class="post-thumb"
-                                     src="@img"
-                                     alt="@p.Ten"
-                                     onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';" />
-                            </a>
-                        </div>
-                        <div class="col-md-7 p-3">
-                            <a class="text-decoration-none" href="@Url.Action("ChiTiet","User", new { id = p.Id })">
-                                <div class="post-title mb-2">@p.Ten</div>
-                            </a>
+                var userFavorites = (List<int>)ViewBag.UserFavorites ?? new List<int>();
+                var isFavorited = userFavorites.Contains(item.ID_Phong_Tro);
+                var heartIconClass = isFavorited ? "bi-heart-fill" : "bi-heart";
+                var activeClass = isFavorited ? "active" : "";
 
-                            <div class="d-flex align-items-center post-meta mb-2">
-                                <div class="post-price me-3">@FormatGia(p.Gia)</div>
-                                <div class="text-muted"><i class="bi bi-aspect-ratio me-1"></i> @(p.DienTich?.ToString("0.#") ?? "--") m²</div>
-                                <div class="meta-dot"></div>
-                                <div class="text-muted"><i class="bi bi-geo-alt me-1"></i> @p.KhuVuc</div>
+                var hinhAnh = item.Hinh_Anh.ToList();
+                var avatarNguoiDang = (item.Tai_Khoan != null && !string.IsNullOrEmpty(item.Tai_Khoan.Avata)) ? item.Tai_Khoan.Avata : "~/Assets/Images/Avatar/avatar-mac-dinh.jpg";
+
+
+                if (item.ID_LoaiTin == 1)
+                {
+                    <div class="card shadow-sm mb-4 border-0">
+
+                        <div class="p-2">
+                            <div class="media-grid4">
+                                <!-- ẢNH LỚN BÊN TRÁI -->
+                                <div class="media-left">
+                                    <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })">
+                                        <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                             alt="@item.Ten_Phong" loading="lazy" />
+                                    </a>
+                                        <div class="image-count-overlay">
+                                            <i class="bi bi-camera-fill"></i> @hinhAnh.Count
+                                        </div>
+                                </div>
+
+                                <!-- PHẢI: 1 ẢNH TRÊN -->
+                                <div class="media-rtop">
+                                    <img src="@(hinhAnh.Count > 1 ? Url.Content("~/Kho/Img/" + hinhAnh[1].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                         alt="Ảnh phụ 1" loading="lazy" />
+                                </div>
+
+                                <!-- PHẢI: 2 ẢNH DƯỚI -->
+                                <div class="media-rb">
+                                    <img src="@(hinhAnh.Count > 2 ? Url.Content("~/Kho/Img/" + hinhAnh[2].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                         alt="Ảnh phụ 2" loading="lazy" />
+                                    <img src="@(hinhAnh.Count > 3 ? Url.Content("~/Kho/Img/" + hinhAnh[3].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                         alt="Ảnh phụ 3" loading="lazy" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pt-2">
+                            <div class="mb-1">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
                             </div>
 
-                            <div class="text-muted small mb-2">@p.DiaChi</div>
+                            <h5 class="card-title text-danger fw-bold" style="font-size: 1.1rem;">
+                                <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-title-link">
+                                    @item.Ten_Phong
+                                </a>
+                            </h5>
+                            <p class="card-text mb-1">
+                                <span class="fw-bold text-success fs-5">@(item.Gia_Ca.HasValue ? String.Format("{0:N0}", item.Gia_Ca.Value) : "Thỏa thuận")/tháng</span>
+                                <span class="mx-2">·</span>
+                                <span>@item.Dien_Tich m²</span>
+                                <span class="mx-2">·</span>
+                                <span>@(item.Khu_Vuc != null ? item.Khu_Vuc.Ten_KV : "...")</span>
+                            </p>
+                            <p class="card-text text-muted post-description">
+                                @item.Mo_Ta
+                            </p>
+                        </div>
 
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="text-muted small">
-                                    <i class="bi bi-clock me-1"></i>@(p.NgayDang?.ToString("dd/MM/yyyy") ?? "")
+                        <div class="card-footer bg-white d-flex justify-content-between align-items-center border-top-0 pt-0">
+                            <div class="d-flex align-items-center">
+                                <img style="height:30px;width:30px" src="@Url.Content(avatarNguoiDang)" class="rounded-circle" alt="Avatar">
+                                <div class="ms-2">
+                                    <span class="fw-bold d-block" style="font-size: 0.9rem;">@(item.Tai_Khoan != null ? item.Tai_Khoan.Name : "...")</span>
+                                    <small class="text-muted">@(item.Ngay_Dang.HasValue ? item.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</small>
                                 </div>
-                                <a class="btn btn-success btn-sm" href="@Url.Action("ChiTiet","User", new { id = p.Id })">
-                                    Liên hệ / Xem chi tiết
+                            </div>
+
+                            <div class="post-actions">
+                                <a href="tel:@(item.Tai_Khoan != null ? item.Tai_Khoan.SDT : "#")" class="btn btn-success" style="font-size: 0.9rem; font-weight: bold;">
+                                    <i class="bi bi-telephone-fill me-1"></i> @(item.Tai_Khoan != null ? item.Tai_Khoan.SDT : "...")
+                                </a>
+                                <a href="#" class="btn-favorite @activeClass" data-post-id="@item.ID_Phong_Tro">
+                                    <i class="bi @heartIconClass"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
-                </article>
+                }
+                else if (item.ID_LoaiTin == 2)
+                {
+                    <div class="card shadow-sm mb-4 border-0">
+                        <div class="row g-0">
+
+                            <div class="col-md-5">
+                                <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-image-link">
+                                    <div class="gallery-3-leftBig">
+                                        <div class="g3-big">
+                                            <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                                 alt="@item.Ten_Phong" loading="lazy" />
+                                        </div>
+                                        <div class="g3-right1">
+                                            <img src="@(hinhAnh.Count > 1 ? Url.Content("~/Kho/Img/" + hinhAnh[1].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                                 alt="Ảnh 2" loading="lazy" />
+                                        </div>
+                                        <div class="g3-right2">
+                                            <img src="@(hinhAnh.Count > 2 ? Url.Content("~/Kho/Img/" + hinhAnh[2].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                                 alt="Ảnh 3" loading="lazy" />
+                                        </div>
+
+                                        <div class="image-count-overlay">
+                                            <i class="bi bi-camera-fill"></i> @hinhAnh.Count
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-7">
+                                <div class="card-body d-flex flex-column h-100 p-3">
+                                    <div>
+                                        <div class="mb-1">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        </div>
+                                        <h5 class="card-title fw-bold" style="color: #c90076; font-size: 1.1rem; line-height: 1.4;">
+                                            <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-title-link">
+                                                @item.Ten_Phong
+                                            </a>
+                                        </h5>
+                                    </div>
+                                    <div class="my-3">
+                                        <p class="card-text mb-1">
+                                            <span class="fw-bold text-success fs-5">@(item.Gia_Ca.HasValue ? String.Format("{0:N0}", item.Gia_Ca.Value) : "Thỏa thuận")/tháng</span>
+                                            <span class="mx-2">·</span>
+                                            <span>@item.Dien_Tich m²</span>
+                                        </p>
+                                        <p class="card-text text-muted mb-2" style="font-size: 0.95rem;">
+                                            <i class="bi bi-geo-alt-fill me-1"></i>@(item.Khu_Vuc != null ? item.Khu_Vuc.Ten_KV : "...")
+                                        </p>
+                                        <p class="card-text text-muted post-description">
+                                            @item.Mo_Ta
+                                        </p>
+                                    </div>
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <img style="height:40px; width:40px" src="@Url.Content(avatarNguoiDang)" class="rounded-circle" alt="Avatar">
+                                                <div class="ms-2">
+                                                    <span class="fw-bold d-block" style="font-size: 0.9rem;">@(item.Tai_Khoan != null ? item.Tai_Khoan.Name : "...")</span>
+                                                    <small class="text-muted">@(item.Ngay_Dang.HasValue ? item.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <a href="tel:@(item.Tai_Khoan != null ? item.Tai_Khoan.SDT : "#")" class="btn btn-success" style="font-size: 0.9rem; font-weight: bold;">
+                                                    <i class="bi bi-telephone-fill me-1"></i> @(item.Tai_Khoan != null ? item.Tai_Khoan.SDT : "...")
+                                                </a>
+                                                <a href="#" class="btn-favorite @activeClass" data-post-id="@item.ID_Phong_Tro">
+                                                    <i class="bi @heartIconClass"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (item.ID_LoaiTin == 3)
+                {
+                    <div class="card shadow-sm mb-4 border-0">
+                        <div class="row g-0 align-items-start">
+                            <div class="col-md-5 p-3 align-self-start">
+                                <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-image-link">
+                                    <div class="pt-img">
+                                        <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                             alt="@item.Ten_Phong" loading="lazy" />
+                                        <div class="pt-count"><i class="bi bi-camera-fill"></i>@hinhAnh.Count</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-7 d-flex flex-column">
+                                <div class="card-body py-3">
+                                    <div class="mb-1">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    </div>
+                                    <h5 class="pt-title--orange"><a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-title-link">
+    @item.Ten_Phong
+</a></h5>
+
+                                    <p class="mb-1">
+                                        <span class="pt-price">
+                                            @(item.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng", (decimal)item.Gia_Ca.Value / 1_000_000M) : "Thỏa thuận")
+                                        </span>
+                                        <span class="mx-2">·</span><span>@item.Dien_Tich m²</span>
+                                    </p>
+
+                                    <p class="pt-meta">
+                                        <i class="bi bi-geo-alt-fill me-1"></i>@(item.Khu_Vuc?.Ten_KV ?? "...")
+                                    </p>
+
+                                    <p class="pt-desc post-description">@item.Mo_Ta</p>
+                                </div>
+
+                                <div class="pt-footer d-flex justify-content-between align-items-center px-3 pb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img class="avatar" src="@Url.Content(avatarNguoiDang)" alt="Avatar">
+                                        <div class="ms-2">
+                                            <span class="fw-bold d-block" style="font-size:.92rem;">@(item.Tai_Khoan?.Name ?? "...")</span>
+                                            <small class="text-muted">@(item.Ngay_Dang?.ToString("dd/MM/yyyy") ?? "...")</small>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="btn-favorite @activeClass" data-post-id="@item.ID_Phong_Tro">
+                                        <i class="bi @heartIconClass"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                else if (item.ID_LoaiTin == 4)
+                {
+                    <div class="card listing-card">
+                        <div class="row g-0">
+                            <!-- ẢNH -->
+                            <div class="col-md-5">
+                                <a href="@Url.Action("ChiTiet", "User" ,new { id = item.ID_Phong_Tro })" class="post-image-link">
+                                    <div class="lc-thumb">
+                                        <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                             alt="@item.Ten_Phong">
+                                        @* (tuỳ chọn) icon play nếu là video *@
+                                        @* <div class="lc-play"><i class="bi bi-play-circle-fill"></i></div> *@
+                                        <div class="lc-count"><i class="bi bi-camera-fill"></i>@hinhAnh.Count</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- NỘI DUNG -->
+                            <div class="col-md-7">
+                                <div class="card-body d-flex flex-column h-100 p-3">
+                                    <div class="mb-1">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    </div>
+
+                                    <a class="lc-title" href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })">@item.Ten_Phong</a>
+                                    <div class="my-2">
+                                        <p class="mb-1">
+                                            <span class="lc-price">@(item.Gia_Ca.HasValue ? String.Format("{0:N0}", item.Gia_Ca.Value) : "Thỏa thuận")/tháng</span>
+                                            <span class="lc-dot">•</span>
+                                            <span>@item.Dien_Tich m²</span>
+                                        </p>
+                                        <p class="lc-meta mb-2">
+                                            <i class="bi bi-geo-alt-fill"></i>@(item.Khu_Vuc != null ? item.Khu_Vuc.Ten_KV : "...")
+                                        </p>
+                                    </div>
+
+                                    <p class="lc-desc post-description">@item.Mo_Ta</p>
+                                    <div class="lc-footer">
+                                        <div class="lc-author">
+                                            <img src="@Url.Content(avatarNguoiDang)" class="lc-avatar" alt="Avatar">
+                                            <div>
+                                                <span class="lc-name">@(item.Tai_Khoan != null ? item.Tai_Khoan.Name : "...")</span>
+                                                <div class="lc-time">@(item.Ngay_Dang?.ToString("dd/MM/yyyy") ?? "...")</div>
+                                            </div>
+                                        </div>
+                                        <a href="#" class="btn-favorite @activeClass" data-post-id="@item.ID_Phong_Tro">
+                                            <i class="bi @heartIconClass"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (item.ID_LoaiTin == 5)
+                {
+                    <div class="card listing-card">
+                        <div class="row g-0">
+                            <!-- ẢNH -->
+                            <div class="col-md-5">
+                                <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-image-link">
+                                    <div class="lc-thumb">
+                                        <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                             alt="@item.Ten_Phong">
+                                        <div class="lc-count"><i class="bi bi-camera-fill"></i>@hinhAnh.Count</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- NỘI DUNG -->
+                            <div class="col-md-7">
+                                <div class="card-body d-flex flex-column h-100 p-3">
+                                    <a class="lc-title" href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })">@item.Ten_Phong</a>
+                                    <div class="my-2">
+                                        <p class="mb-1">
+                                            <span class="lc-price">@(item.Gia_Ca.HasValue ? String.Format("{0:N0}", item.Gia_Ca.Value) : "Thỏa thuận")/tháng</span>
+                                            <span class="lc-dot">•</span>
+                                            <span>@item.Dien_Tich m²</span>
+                                        </p>
+                                        <p class="lc-meta mb-2">
+                                            <i class="bi bi-geo-alt-fill"></i>@(item.Khu_Vuc != null ? item.Khu_Vuc.Ten_KV : "...")
+                                        </p>
+                                    </div>
+
+                                    <p class="lc-desc post-description">@item.Mo_Ta</p>
+                                    <div class="lc-footer">
+                                        <div class="lc-time">@(item.Ngay_Dang.HasValue ? item.Ngay_Dang.Value.ToString("H' giờ trước'") : "Hôm nay")</div>
+                                        <a href="#" class="btn-favorite @activeClass" data-post-id="@item.ID_Phong_Tro">
+                                            <i class="bi @heartIconClass"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
-
-            @if (totalPages > 1)
-            {
-                <nav class="mt-3">
-                    <ul class="pagination">
-                        <li class="page-item @(page==1?"disabled":"")">
-                            <a class="page-link" href="@Url.Action("Index","User", new { page = page - 1, pageSize })">« Trang trước</a>
-                        </li>
-
-                        @for (int i = Math.Max(1, page - 2); i <= Math.Min(totalPages, page + 2); i++)
-                        {
-                            <li class="page-item @(i==page?"active":"")">
-                                <a class="page-link" href="@Url.Action("Index","User", new { page = i, pageSize })">@i</a>
-                            </li>
-                        }
-
-                        <li class="page-item @(page==totalPages?"disabled":"")">
-                            <a class="page-link" href="@Url.Action("Index","User", new { page = page + 1, pageSize })">Trang sau »</a>
-                        </li>
-                    </ul>
-                </nav>
-            }
+        <div class="pagination-container d-flex justify-content-center">
+            @Html.PagedListPager(Model, page => Url.Action("Index",
+                    new
+                    {
+                        page = page,
+                        minPrice = ViewBag.CurrentMinPrice,
+                        maxPrice = ViewBag.CurrentMaxPrice,
+                        minArea = ViewBag.CurrentMinArea,
+                        maxArea = ViewBag.CurrentMaxArea
+                    }),
+                    new PagedListRenderOptions
+                    {
+                        UlElementClasses = new[] { "pagination" },
+                        LiElementClasses = new[] { "page-item" },
+                        LinkToPreviousPageFormat = "« Trang trước",
+                        LinkToNextPageFormat = "Trang sau »"
+                    })
+        </div>
         </div>
 
-        <!-- SIDEBAR -->
+
         <div class="col-lg-4">
-            <div class="sidebar-box">
-                <h6 class="fw-bold mb-3">Xem theo khoảng giá</h6>
-                <div class="row">
-                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=0, max=1_000_000 })">Dưới 1 triệu</a></div>
-                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=1_000_000, max=2_000_000 })">1 - 2 triệu</a></div>
-                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=2_000_000, max=3_000_000 })">2 - 3 triệu</a></div>
-                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=3_000_000, max=5_000_000 })">3 - 5 triệu</a></div>
-                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=5_000_000, max=7_000_000 })">5 - 7 triệu</a></div>
-                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=7_000_000, max=10_000_000 })">7 - 10 triệu</a></div>
-                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=10_000_000, max=15_000_000 })">10 - 15 triệu</a></div>
-                    <div class="col-6"><a class="d-block mb-2 text-decoration-none" href="@Url.Action("Index","User", new { min=15_000_000 })">Trên 15 triệu</a></div>
+
+            <div class="card mb-3">
+                <div class="card-body pb-1">
+
+                    <h6 class="fw-bold mb-2" style="font-size: 1rem;">Xem theo khoảng giá</h6>
+                    <div class="row g-1">
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = (int?)null, maxPrice = (int?)null, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Tất cả</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = (int?)null, maxPrice = 1000000, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Dưới 1 triệu</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = 1000000, maxPrice = 2000000, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Từ 1 - 2 triệu</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = 2000000, maxPrice = 3000000, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Từ 2 - 3 triệu</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = 3000000, maxPrice = 5000000, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Từ 3 - 5 triệu</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = 5000000, maxPrice = 7000000, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Từ 5 - 7 triệu</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = 7000000, maxPrice = 10000000, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Từ 7 - 10 triệu</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = 10000000, maxPrice = 15000000, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Từ 10 - 15 triệu</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = 15000000, maxPrice = (int?)null, minArea = ViewBag.CurrentMinArea, maxArea = ViewBag.CurrentMaxArea })" class="sidebar-filter-link">Trên 15 triệu</a>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold mb-2 mt-3" style="font-size: 1rem;">Xem theo diện tích</h6>
+                    <div class="row g-1 mb-2">
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = ViewBag.CurrentMinPrice, maxPrice = ViewBag.CurrentMaxPrice, minArea = (int?)null, maxArea = (int?)null })" class="sidebar-filter-link">Tất cả</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = ViewBag.CurrentMinPrice, maxPrice = ViewBag.CurrentMaxPrice, minArea = (int?)null, maxArea = 20 })" class="sidebar-filter-link">Dưới 20 m²</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = ViewBag.CurrentMinPrice, maxPrice = ViewBag.CurrentMaxPrice, minArea = 20, maxArea = 30 })" class="sidebar-filter-link">Từ 20 - 30m²</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = ViewBag.CurrentMinPrice, maxPrice = ViewBag.CurrentMaxPrice, minArea = 30, maxArea = 50 })" class="sidebar-filter-link">Từ 30 - 50m²</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = ViewBag.CurrentMinPrice, maxPrice = ViewBag.CurrentMaxPrice, minArea = 50, maxArea = 70 })" class="sidebar-filter-link">Từ 50 - 70m²</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = ViewBag.CurrentMinPrice, maxPrice = ViewBag.CurrentMaxPrice, minArea = 70, maxArea = 90 })" class="sidebar-filter-link">Từ 70 - 90m²</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="@Url.Action("Index", new { minPrice = ViewBag.CurrentMinPrice, maxPrice = ViewBag.CurrentMaxPrice, minArea = 90, maxArea = (int?)null })" class="sidebar-filter-link">Trên 90m²</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <div class="sidebar-box">
-                <h6 class="fw-bold mb-3">Tin mới đăng</h6>
-                @foreach (var p in Model.Take(6))
-                {
-                    var img = Img(p.AnhDaiDien);
-                    <a class="d-flex gap-2 text-decoration-none mb-2" href="@Url.Action("ChiTiet","User", new { id = p.Id })">
-                        <img src="@img"
-                             style="width:76px;height:52px;object-fit:cover;border-radius:6px"
-                             onerror="this.onerror=null;this.src='@Url.Content("~/Assets/Images/no-image.png")';" />
-                        <div class="small">
-                            <div class="fw-semibold text-dark text-truncate" style="max-width:220px">@p.Ten</div>
-                            <div class="text-success fw-bold">@FormatGia(p.Gia)</div>
-                        </div>
-                    </a>
-                }
+            <div class="card mb-3">
+                <div class="card-header fw-bold">Tin mới đăng</div>
+                <div class="list-group list-group-flush">
+
+                    @{
+                        // Lấy danh sách từ ViewBag
+                        var newestPosts = ViewBag.NewestPosts as List<QuanLyPhongTro.Models.Phong_Tro>;
+                    }
+
+                    @if (newestPosts != null && newestPosts.Any())
+                    {
+                        foreach (var item in newestPosts) // Lặp qua danh sách 10 tin mới
+                        {
+                            var hinhAnhDauTien = item.Hinh_Anh.Any()
+                                ? Url.Content("~/Kho/Img/" + item.Hinh_Anh.First().Url_Anh)
+                                : Url.Content("~/Kho/Img/placeholder.jpg");
+
+                            <a href="@Url.Action("ChiTiet", "Home", new { id = item.ID_Phong_Tro })" class="list-group-item list-group-item-action">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-4">
+                                        <img src="@hinhAnhDauTien" class="img-fluid rounded" alt="@item.Ten_Phong">
+                                    </div>
+                                    <div class="col-8">
+                                        <h6 class="mb-1 text-primary title-clamp-2">
+                                            @item.Ten_Phong
+                                        </h6>
+                                        <strong class="text-success d-block fw-bold">
+                                            @(item.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)item.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")
+                                        </strong>
+                                        <small class="text-muted">
+                                            @(item.Ngay_Dang.HasValue ? item.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="list-group-item">Chưa có tin đăng nào.</div>
+                    }
+                </div>
             </div>
+
         </div>
     </div>
 </div>
-<!-- ===== GIỚI THIỆU / CONTENT LONGFORM ===== -->
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // Lắng nghe sự kiện click trên TẤT CẢ các nút có class .btn-favorite
+            $('.btn-favorite').on('click', function (e) {
+                e.preventDefault(); // Ngăn trình duyệt nhảy lên đầu trang
+
+                var $this = $(this); // Nút trái tim vừa được click
+                var postId = $this.data('post-id'); // Lấy ID của phòng trọ
+
+                // Gửi yêu cầu AJAX đến Controller
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("ToggleFavorite", "Home")", // Sửa "Home" thành tên Controller của bạn
+                    data: { id: postId },
+                    success: function (data) {
+                        // Khi Controller trả về kết quả thành công
+                        if (data.success) {
+                            if (data.isFavorited) {
+                                // 1. ĐỔI SANG ĐÃ THÍCH
+                                $this.addClass('active');
+                                $this.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                            } else {
+                                // 2. ĐỔI SANG BỎ THÍCH
+                                $this.removeClass('active');
+                                $this.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Khi Controller trả về lỗi (như 401 - chưa đăng nhập)
+                        if (xhr.status == 401 || (xhr.responseJSON && !xhr.responseJSON.success)) {
+                            alert("Bạn cần đăng nhập để thực hiện việc này.");
+                            // Tùy chọn: Chuyển hướng đến trang đăng nhập
+                            // window.location.href = "@Url.Action("Login", "Account")";
+                        } else {
+                            alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}
 <section class="mt-4">
     <div class="bg-white rounded-3 border p-4 p-md-5">
         <h5 class="text-center fw-bold mb-4">CHO THUÊ PHÒNG TRỌ, NHÀ TRỌ</h5>
@@ -454,5 +667,5 @@ body.page-banggia .pt-container {
             </div>
         </div>
     </div>
-    
+
 </section>
