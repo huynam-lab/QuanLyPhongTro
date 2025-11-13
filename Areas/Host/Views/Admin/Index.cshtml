@@ -2,9 +2,8 @@
 
 @{
     ViewBag.Title = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
 }
-
 @using (Html.BeginForm("SavePost", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
     @Html.AntiForgeryToken()
@@ -231,6 +230,12 @@
 
     </div>
     }
+<hr />
+<div>
+    @Html.Partial("_Footer")
+</div>
+
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 

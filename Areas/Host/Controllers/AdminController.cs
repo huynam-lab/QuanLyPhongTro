@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-namespace QuanLyPhongTro.Areas.Admin.Controllers
+namespace QuanLyPhongTro.Areas.Host.Controllers
     {
     public class AdminController : BaseController
         {
@@ -53,8 +53,16 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
         )
             {
             int maTK = 0;
-            if (Session["MaTK"] != null)
-                int.TryParse(Session["MaTK"].ToString(), out maTK);
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+            string chuanhoa_mota = "";
+            if (!string.IsNullOrEmpty(MoTa))
+                {
+                chuanhoa_mota = MoTa
+                    .Replace("\r\n", "##split##")
+                    .Replace("\n", "##split##")
+                    .Replace("\r", "##split##");
+                }
 
             // 🏠 Tạo phòng trọ mới
             var pt = new Phong_Tro
@@ -66,7 +74,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
                 Ten_Phong = TieuDe,
                 Dien_Tich = DienTich,
                 Dia_Chi = DiaChi,
-                Mo_Ta = MoTa,
+                Mo_Ta = chuanhoa_mota,
                 Gia_Ca = (decimal?)GiaThue,
                 Ngay_Dang = DateTime.Now,
                 Ngay_Het_Han = DateTime.Now.AddDays(Ngay),
@@ -174,8 +182,8 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
         public ActionResult DSTinDang()
             {
             int maTK = 0;
-            if (Session["MaTK"] != null)
-                int.TryParse(Session["MaTK"].ToString(), out maTK);
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
             var listPhong = db.Phong_Tro
                 .Where(x => x.ID_TK == maTK)
                 .Select(x => new PhongTroListVM
@@ -252,8 +260,8 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
 
             // lấy user để đổ vào viewbag như cũ
             int maTK = 0;
-            if (Session["MaTK"] != null)
-                int.TryParse(Session["MaTK"].ToString(), out maTK);
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
 
             var user = db.Tai_Khoan
                 .Where(x => x.ID_TK == maTK)
@@ -312,21 +320,21 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Updates(
-      int ID_Phong_Tro,
-      string TieuDe,
-      string MoTa,
-      decimal GiaThue,
-      float DienTich,
-      string DiaChi,
-      int ID_KV,
-      int ID_CD,
-      int ID_LoaiTin,
-      decimal BangGia,
-      int Ngay,
-      HttpPostedFileBase[] imageInput,
-      HttpPostedFileBase[] videoInput
-  )
+          public ActionResult Updates(
+          int ID_Phong_Tro,
+          string TieuDe,
+          string MoTa,
+          decimal GiaThue,
+          float DienTich,
+          string DiaChi,
+          int ID_KV,
+          int ID_CD,
+          int ID_LoaiTin,
+          decimal BangGia,
+          int Ngay,
+          HttpPostedFileBase[] imageInput,
+          HttpPostedFileBase[] videoInput
+      )
             {
             // 1. Lấy phòng
             var phong = db.Phong_Tro.FirstOrDefault(x => x.ID_Phong_Tro == ID_Phong_Tro);
@@ -447,9 +455,9 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             }
 
         public ActionResult QuanlyTaiKhoan()
-            {
+        {
             return View();
-            }
+        }
 
 
 
@@ -458,13 +466,13 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
         public ActionResult CapNhatThongTin(string SDT, string Name)
             {
             // kiểm tra đăng nhập
-            if (Session["MaTK"] == null)
+            if (Session["UserID"] == null)
                 {
                 TempData["Error"] = "Vui lòng đăng nhập lại.";
                 return RedirectToAction("DangNhap", "TaiKhoan");
                 }
 
-            int maTK = Convert.ToInt32(Session["MaTK"]);
+            int maTK = Convert.ToInt32(Session["UserID"]);
             var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == maTK);
             if (tk == null)
                 {
@@ -489,13 +497,13 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
         public ActionResult CapNhatAnhDaiDien(HttpPostedFileBase AvtFile)
             {
             // 🔒 Kiểm tra đăng nhập
-            if (Session["MaTK"] == null)
+            if (Session["UserID"] == null)
                 {
                 TempData["Error"] = "Vui lòng đăng nhập lại.";
                 return RedirectToAction("DangNhap", "TaiKhoan");
                 }
 
-            int maTK = Convert.ToInt32(Session["MaTK"]);
+            int maTK = Convert.ToInt32(Session["UserID"]);
             var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == maTK);
 
             if (tk == null)
@@ -506,7 +514,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
 
             if (AvtFile != null && AvtFile.ContentLength > 0)
                 {
-                string folder = Server.MapPath("~/Kho/Img/");
+                string folder = Server.MapPath("~/Assets/Images/Avatar/");
                 Directory.CreateDirectory(folder);
 
                 string ext = Path.GetExtension(AvtFile.FileName);
@@ -591,12 +599,6 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             return RedirectToAction("QuanlyTaiKhoan");
 
             }
-
-
-
-
-
-
 
         }
     }

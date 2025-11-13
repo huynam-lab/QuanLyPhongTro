@@ -1,0 +1,105 @@
+﻿
+@{
+
+}
+
+@model QuanLyPhongTro.Areas.Admin.AdminViewModels.CatalogVM
+@{
+    ViewBag.Title = "Quản lý danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    string active = (ViewBag.ActiveTab as string ?? "khuvuc").ToLower();
+    int? filterLoaiTin = ViewBag.FilterLoaiTin as int?;
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+
+<style>
+    .admin-content {
+        height: calc(108vh - 7px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .toolbar {
+        flex-shrink: 0;
+        background: #f5f6fa;
+        padding: 10px 0 4px
+    }
+
+    .tab-btns .btn {
+        border-radius: 10px;
+    }
+
+    .pane {
+        flex: 1;
+        background: #fff;
+        border-radius: 12px;
+        padding: 12px;
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #eef0f4;
+        z-index: 2;
+    }
+</style>
+
+<div class="admin-content">
+    <div class="toolbar">
+        <h5 class="mb-2">Quản lý danh mục</h5>
+        <div class="tab-btns btn-group">
+            <a class="btn @(active=="khuvuc"?"btn-primary":"btn-outline-primary")" href="@Url.Action("Catalogs","Quantrivien", new { area="Admin", tab="khuvuc"})">
+                <i class="bi bi-geo-alt"></i> Khu vực
+            </a>
+            <a class="btn @(active=="loaitin"?"btn-primary":"btn-outline-primary")" href="@Url.Action("Catalogs","Quantrivien", new { area="Admin", tab="loaitin", filterLoaiTin = filterLoaiTin})">
+                <i class="bi bi-tag"></i> Loại tin & Giá
+            </a>
+            <a class="btn @(active=="chude"?"btn-primary":"btn-outline-primary")" href="@Url.Action("Catalogs","Quantrivien", new { area="Admin", tab="chude"})">
+                <i class="bi bi-journal-text"></i> Chủ đề
+            </a>
+        </div>
+
+
+        @if (TempData["Success"] != null)
+            {<div class="alert alert-success mt-2 mb-0">@TempData["Success"]</div> }
+        else if (TempData["Error"] != null)
+            { <div class="alert alert-danger mt-2 mb-0">@TempData["Error"]</div>}
+    </div>
+
+    <!-- ======= PANE ======= -->
+    <div class="pane mt-2">
+        @if (active == "khuvuc")
+            {
+            @Html.Partial("_PaneKhuVuc", Model.KhuVucs)
+            }
+        else if (active == "loaitin")
+            {
+            @Html.Partial("_PaneLoaiTinGia", Model)
+            }
+        else if (active == "chude")
+            {
+            @Html.Partial("_PaneChuDe", Model.ChuDes)
+            }
+    </div>
+
+</div>
+
+@section scripts{
+    <script>
+    document.addEventListener("click", (e)=>{
+        const btn = e.target.closest("[data-edit]");
+        if(!btn) return;
+        const t = btn.dataset.target;
+        const json = JSON.parse(btn.dataset.edit || "{}");
+        for (const [k,v] of Object.entries(json)) {
+            const el = document.querySelector(`${t} [name='${k}']`);
+            if (!el) continue;
+            if (el.type === "checkbox") el.checked = (v===true || v==="true" || v==="True");
+            else el.value = v ?? "";
+        }
+        const modal = new bootstrap.Modal(document.querySelector(t));
+        modal.show();
+    });
+    </script>
+}
+

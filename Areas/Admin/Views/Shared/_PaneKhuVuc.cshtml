@@ -1,0 +1,117 @@
+﻿@model IEnumerable<QuanLyPhongTro.Models.Khu_Vuc>
+
+<div class="d-flex justify-content-between align-items-center mb-2 sticky-top bg-white pt-2" style="z-index:10;">
+    <h6 class="mb-0">Khu vực</h6>
+    <button class="btn btn-sm btn-primary" data-edit="{}" data-target="#mdKV">
+        <i class="bi bi-plus"></i> Thêm
+    </button>
+</div>
+
+<!-- Ô tìm kiếm -->
+<div class="mb-2">
+    <input type="text" id="searchKhuVuc" class="form-control form-control-sm" placeholder="🔍 Tìm khu vực..." />
+</div>
+
+<!-- Bảng khu vực có thể cuộn -->
+<div class="table-responsive" style="max-height:70vh; overflow-y:auto;">
+    <table class="table table-hover align-middle mb-0" id="tableKhuVuc">
+        <thead class="table-light">
+            <tr>
+                <th style="width:80px">ID</th>
+                <th>Tên khu vực</th>
+                <th style="width:120px">Trạng thái</th>
+                <th style="width:120px"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var kv in Model)
+                {
+                var data = new
+                    {
+                    ID_KV = kv.ID_KV,
+                    Ten_KV = kv.Ten_KV,
+                    Trang_Thai = kv.Trang_Thai
+                    };
+                <tr>
+                    <td>@kv.ID_KV</td>
+                    <td>@kv.Ten_KV</td>
+                    <td>@((kv.Trang_Thai ?? false) ? "Đang dùng" : "Ẩn")</td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                data-edit='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(data))'
+                                data-target="#mdKV">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        @if ((kv.Trang_Thai ?? false) == false)
+                            {
+                            using (Html.BeginForm("DeleteKhuVuc", "Quantrivien", FormMethod.Post,
+                                new { area = "Admin", onsubmit = "return confirm('Xóa khu vực này?');" }))
+                                {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@kv.ID_KV" />
+                                <button class="btn btn-sm btn-outline-danger ms-1">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                }
+                            }
+                    </td>
+                </tr>
+                }
+            @if (!Model.Any())
+                {
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-4">Chưa có dữ liệu</td>
+                </tr>
+                }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal thêm / sửa khu vực -->
+<div class="modal fade" id="mdKV" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("SaveKhuVuc", "Quantrivien", FormMethod.Post, new { area = "Admin" }))
+                {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h6 class="modal-title">Khu vực</h6>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="ID_KV" />
+                    <div class="mb-2">
+                        <label class="form-label">Tên khu vực</label>
+                        <input name="Ten_KV" class="form-control" required />
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="Trang_Thai" checked id="kv_tt">
+                        <label class="form-check-label" for="kv_tt">Đang dùng</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Lưu</button>
+                </div>
+                }
+        </div>
+    </div>
+</div>
+
+<!-- 🔍 Script tìm kiếm -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchKhuVuc");
+        const rows = document.querySelectorAll("#tableKhuVuc tbody tr");
+
+        if (searchInput) {
+            searchInput.addEventListener("keyup", function () {
+                const filter = this.value.toLowerCase();
+                rows.forEach(row => {
+                    const nameCell = row.querySelector("td:nth-child(2)");
+                    const text = nameCell ? nameCell.textContent.toLowerCase() : "";
+                    row.style.display = text.includes(filter) ? "" : "none";
+                });
+            });
+        }
+    });
+</script>

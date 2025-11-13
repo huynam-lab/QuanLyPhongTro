@@ -97,6 +97,8 @@
         const loginErrorFlag = '@(ViewBag.HasError)';
         const errorType = '@(ViewBag.ErrorType)';
         const errorMessage = '@(ViewBag.Error)';
+        // THÊM: Lấy ID_Phan_Quyen từ ViewBag
+        const roleId = parseInt('@(ViewBag.ID_Phan_Quyen)');
 
         // 1. Xử lý Đăng Nhập THÀNH CÔNG
         if (loginSuccessFlag === 'True') {
@@ -110,8 +112,22 @@
             $('#modalOkButtonSuccess').on('click', function() {
                 // Đóng modal trước khi chuyển hướng
                 successModal.css('display', 'none');
-                // Chuyển hướng sang trang chủ
-                window.location.href = '@Url.Action("Index", "User")';
+
+                // *** LOGIC PHÂN QUYỀN MỚI ***
+                let redirectUrl;
+
+                if (roleId === 1) {
+                    // Quyền Admin: Chuyển hướng đến Dashboard trong Area Admin
+                    // Điều chỉnh URL này nếu cấu hình Area Route của bạn khác
+                    redirectUrl = '@Url.Action("Dashboard", "Quantrivien", new { Area = "Admin" })';
+                } else {
+                    // Quyền người dùng thường: Chuyển hướng về trang chủ User
+                    redirectUrl = '@Url.Action("Index", "User")';
+                }
+
+                // Chuyển hướng
+                window.location.href = redirectUrl;
+                // ******************************
             });
         }
 

@@ -1,0 +1,248 @@
+﻿@model IEnumerable<QuanLyPhongTro.Models.Phong_Tro>
+@{
+    ViewBag.Title = "Quản lý phòng / tin đăng";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h5 class="mb-3">Quản lý phòng / tin đăng</h5>
+
+<form class="row g-2 mb-3" method="get">
+    <div class="col-md-3">
+        <input name="search" class="form-control" placeholder="Mã tin hoặc tiêu đề" value="@Request["search"]" />
+    </div>
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="">-- Tất cả trạng thái --</option>
+            <option value="hienthi" @(Request["status"] == "hienthi" ? "selected" : "")>Hiển thị</option>
+            <option value="choduyet" @(Request["status"] == "choduyet" ? "selected" : "")>Chờ duyệt</option>
+            <option value="hethang" @(Request["status"] == "hethang" ? "selected" : "")>Hết hạn</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary"><i class="bi bi-search"></i> Lọc</button>
+    </div>
+</form>
+
+<!-- ✅ Vùng bảng cuộn -->
+<div class="admin-table-wrapper">
+    <table class="table table-hover align-middle bg-white shadow-sm mb-0">
+        <thead class="table-light">
+            <tr>
+                <th style="width:80px;">Mã</th>
+                <th>Tiêu đề</th>
+                <th style="width:170px;">Người đăng</th>
+                <th style="width:130px;">Ngày đăng</th>
+                <th style="width:130px;">Ngày hết hạn</th>
+                <th style="width:120px;">Trạng thái</th>
+                <th style="width:110px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+                {
+                var daHetHan = p.Ngay_Het_Han.HasValue && p.Ngay_Het_Han.Value < DateTime.Now;
+
+                <tr>
+                    <td>#@p.ID_Phong_Tro</td>
+                    <td>@p.Ten_Phong</td>
+                    <td>@(p.Tai_Khoan != null ? p.Tai_Khoan.Name : "")</td>
+                    <td>@(p.Ngay_Dang?.ToString("dd/MM/yyyy"))</td>
+                    <td>@(p.Ngay_Het_Han?.ToString("dd/MM/yyyy"))</td>
+                    <td>
+                        @if (p.Trang_Thai == true)
+                            {
+                            if (daHetHan)
+                                {
+                                <span class="badge bg-danger">Hết hạn</span>
+                                }
+                            else
+                                {
+                                <span class="badge bg-success">Hiển thị</span>
+                                }
+                            }
+                        else
+                            {
+                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                            }
+                    </td>
+
+                    <td class="d-flex justify-content-end align-items-center gap-2">
+                        @* ✅ Cho phép DUYỆT nếu chưa duyệt hoặc đã hết hạn *@
+                        @if (p.Trang_Thai == false || daHetHan)
+                            {
+                            using (Html.BeginForm("DuyetTin", "Quantrivien", FormMethod.Post, new { area = "Admin" }))
+                                {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@p.ID_Phong_Tro" />
+                                <button class="btn btn-sm btn-outline-success" type="submit" title="Duyệt tin">
+                                    <i class="bi bi-check"></i>
+                                </button>
+                                }
+
+                            @* ✅ Nút XÓA chỉ xuất hiện nếu chưa duyệt *@
+                            if (p.Trang_Thai == false)
+                                {
+                                using (Html.BeginForm("XoaTin", "Quantrivien", FormMethod.Post, new { area = "Admin" }))
+                                    {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@p.ID_Phong_Tro" />
+                                    <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa luôn tin này?');" title="Xóa tin">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    }
+                                }
+                            }
+
+                        @* ✅ Nút GIA HẠN chỉ hiển thị nếu tin đang hoạt động *@
+                        @if (p.Trang_Thai == true)
+                            {
+                            <button type="button"
+                                    class="btn btn-sm @(daHetHan ? "btn-outline-warning" : "btn-outline-primary")"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalGiaHan"
+                                    data-id="@p.ID_Phong_Tro"
+                                    data-ten="@p.Ten_Phong"
+                                    title="Gia hạn tin">
+                                <i class="bi bi-clock-history"></i>
+                            </button>
+                            }
+                    </td>
+                </tr>
+                }
+
+            @if (!Model.Any())
+                {
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">Không có dữ liệu</td>
+                </tr>
+                }
+        </tbody>
+    </table>
+</div>
+
+<!-- 🕒 Modal Gia hạn -->
+<div class="modal fade" id="modalGiaHan" tabindex="-1" aria-labelledby="modalGiaHanLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="modalGiaHanLabel">Gia hạn tin đăng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="post" action="@Url.Action("GiaHanTin", "Quantrivien", new { area = "Admin" })">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="modalGiaHanId" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên phòng</label>
+                        <input type="text" class="form-control" id="modalGiaHanTen" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số ngày gia hạn thêm</label>
+                        <input type="number" name="soNgay" class="form-control" min="1" max="60" value="7" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Gia hạn</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Thông báo SweetAlert -->
+@if (TempData["Message"] != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Thành công 🎉",
+                text: "@Html.Raw(TempData["Message"])",
+                icon: "success",
+                confirmButtonText: "OK",
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+    </script>
+    }
+
+<!-- ✅ Script xử lý modal gia hạn -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalGiaHan = document.getElementById('modalGiaHan');
+        modalGiaHan.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var ten = button.getAttribute('data-ten');
+            document.getElementById('modalGiaHanId').value = id;
+            document.getElementById('modalGiaHanTen').value = ten;
+        });
+    });
+</script>
+
+
+@section styles{
+    <style>
+        .admin-table-wrapper {
+            max-height: 70vh;
+            overflow-y: auto;
+            border-radius: .5rem;
+        }
+
+            .admin-table-wrapper thead th {
+                position: sticky;
+                top: 0;
+                background: #f8f9fa;
+                z-index: 10;
+            }
+
+        h5 {
+            position: sticky;
+            top: 0;
+            background: #f5f6fa;
+            padding: -1rem 0;
+            z-index: 11;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+            .table td:last-child {
+                width: 80px;
+                text-align: right;
+                vertical-align: middle;
+                padding-right: 0.75rem;
+            }
+
+                .table td:last-child form {
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    height: 100%;
+                }
+
+                .table td:last-child button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 32px;
+                    width: 32px;
+                    padding: 0;
+                }
+
+
+            .table td:nth-child(2) {
+                max-width: 380px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+    </style>
+}
+

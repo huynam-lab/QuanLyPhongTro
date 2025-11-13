@@ -1,0 +1,163 @@
+﻿@model IEnumerable<QuanLyPhongTro.Models.Tai_Khoan>
+@{
+    ViewBag.Title = "Tài khoản";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var roles = ViewBag.Roles as IEnumerable<QuanLyPhongTro.Models.Phan_Quyen>;
+}
+
+<style>
+    /* vùng bên phải của layout */
+    .admin-content {
+        height: calc(100vh - 56px); /* 56px = chiều cao topbar của bạn */
+        display: flex;
+        flex-direction: column;
+        background: #f5f6fa;
+    }
+
+    /* thanh tiêu đề + filter */
+    .account-toolbar {
+        background: #f5f6fa;
+        padding: 14px 0 6px 0;
+        flex-shrink: 0;
+        z-index: 1;
+    }
+
+    /* vùng bảng cuộn */
+    .account-table-wrap {
+        flex: 1;
+        background: #fff;
+        border-radius: 12px 12px 0 0;
+        overflow-y: auto;
+    }
+
+        .account-table-wrap table {
+            margin-bottom: 0;
+        }
+
+        /* header bảng dính trên cùng TRONG khối bảng */
+        .account-table-wrap thead th {
+            position: sticky;
+            top: 0;
+            background: #eef0f4;
+            z-index: 2;
+        }
+</style>
+
+<div class="admin-content">
+
+    <!-- thanh trên cố định -->
+    <div class="account-toolbar">
+        <h5 class="mb-3">Tài khoản</h5>
+        <form class="row g-2" method="get">
+            <div class="col-md-3">
+                <input name="search" class="form-control" placeholder="Tên, SDT, username..." value="@Request["search"]" />
+            </div>
+            <div class="col-md-3">
+                <select name="role" class="form-select">
+                    <option value="">-- Tất cả quyền --</option>
+                    @if (roles != null)
+                        {
+                        foreach (var r in roles)
+                            {
+                            <option value="@r.ID_Phan_Quyen" @(Request["role"] == r.ID_Phan_Quyen.ToString() ? "selected" : "")>
+                                @r.Name
+                            </option>
+                            }
+                        }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary"><i class="bi bi-search"></i> Lọc</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- chỉ phần này cuộn -->
+    <div class="account-table-wrap mt-2">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th style="width:70px;">ID</th>
+                    <th style="width:160px;">Username</th>
+                    <th>Họ tên</th>
+                    <th style="width:140px;">SDT</th>
+                    <th style="width:150px;">Quyền</th>
+                    <th style="width:120px;">Trạng thái</th>
+                    <th style="width:90px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                    {
+                    foreach (var u in Model)
+                        {
+                        <tr>
+                            <td>@u.ID_TK</td>
+                            <td>@u.User_Name</td>
+                            <td>@u.Name</td>
+                            <td>@u.SDT</td>
+                            <td>@(u.Phan_Quyen != null ? u.Phan_Quyen.Name : "")</td>
+                            <td>
+                                @if (u.Trang_Thai == true)
+                                    {
+                                    <span class="badge bg-success">Hoạt động</span>
+                                    }
+                                else
+                                    {
+                                    <span class="badge bg-secondary">Khóa</span>
+                                    }
+                            </td>
+                            <td>
+                                @using (Html.BeginForm("ToggleTaiKhoan", "Admin", FormMethod.Post, new { area = "Admin" }))
+                                    {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@u.ID_TK" />
+                                    <button class="btn btn-sm @(u.Trang_Thai == true ? "btn-outline-danger" : "btn-outline-success")">
+                                        @(u.Trang_Thai == true ? "Khóa" : "Mở")
+                                    </button>
+                                    }
+                            </td>
+                        </tr>
+                        }
+                    }
+                else
+                    {
+                    <tr><td colspan="7" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>
+                    }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<!-- 🔍 Script tìm kiếm tài khoản -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.querySelector('input[name="search"]');
+    const rows = document.querySelectorAll(".account-table-wrap tbody tr");
+
+    if (input) {
+        input.addEventListener("keyup", function () {
+            const keyword = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const username = row.querySelector("td:nth-child(2)")?.textContent.toLowerCase() || "";
+                const fullname = row.querySelector("td:nth-child(3)")?.textContent.toLowerCase() || "";
+                const phone = row.querySelector("td:nth-child(4)")?.textContent.toLowerCase() || "";
+
+                // Nếu ô nhập trống → hiển thị tất cả
+                if (!keyword) {
+                    row.style.display = "";
+                    return;
+                }
+
+                // Hiển thị nếu có từ khóa trong username / họ tên / SDT
+                if (username.includes(keyword) || fullname.includes(keyword) || phone.includes(keyword)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    }
+});
+</script>

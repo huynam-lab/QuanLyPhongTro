@@ -78,7 +78,7 @@
                             <i class="bi bi-bookmark-fill text-warning me-1"></i> Tin đã lưu
                         </a>
 
-                        <a href="@Url.Action("Index", "Admin", new { Area = "Admin" })"
+                        <a href="@Url.Action("Index", "Admin", new { Area = "Host" })"
                            class="btn btn-link text-decoration-none text-dark d-none d-lg-block ms-2">
                             <i class="bi bi-folder me-1"></i> Quản lý
                         </a>
@@ -98,7 +98,7 @@
                                  style="min-width:400px; box-shadow: 0px 2px 10px #ccc" aria-labelledby="profileDropdown">
 
                                 @* SỬA KHỐI NÀY THÀNH LIÊN KẾT: div.user-info -> a.user-info-link *@
-                                <a href="@Url.Action("QuanlyTaiKhoan", "Admin", new { Area = "Admin" })"
+                                <a href="@Url.Action("QuanlyTaiKhoan", "Admin", new { Area = "Host" })"
                                    class="user-info-link d-flex align-items-center border-bottom text-decoration-none text-dark"
                                    id="profileHeaderLink">
                                     <div class="p-3 d-flex align-items-center">
@@ -114,7 +114,7 @@
                                 <p class="text-uppercase text-muted px-3 mt-3 mb-2 small fw-bold">Quản lý tin đăng</p>
                                 <div class="d-flex justify-content-between text-center px-3 mb-3 small">
                                     @* Giữ nguyên các liên kết quản lý tin đăng *@
-                                    <a href="@Url.Action("DSTinDang", "Admin", new { Area = "Admin" })" class="text-dark text-decoration-none">
+                                    <a href="@Url.Action("DSTinDang", "Admin", new { Area = "Host" })" class="text-dark text-decoration-none">
                                         <i class="bi bi-folder-fill fs-5"></i><br>Tất cả
                                     </a>
                                     <a href="#" class="text-dark text-decoration-none">
@@ -134,7 +134,7 @@
                                     </a>
 
                                     @* Liên kết Quản lý tài khoản (Admin) đã được dùng cho phần Header Link, nhưng giữ lại ở đây nếu cần *@
-                                    <a href="@Url.Action("QuanlyTaiKhoan", "Admin", new { Area = "Admin" })" class="list-group-item list-group-item-action py-2">
+                                    <a href="@Url.Action("QuanlyTaiKhoan", "Admin", new { Area = "Host" })" class="list-group-item list-group-item-action py-2">
                                         <i class="bi bi-person-gear me-2 text-secondary"></i> Quản lý tài khoản
                                     </a>
 
@@ -226,20 +226,20 @@
                 </div>
 
                 @* Menu chính (giữ nguyên) *@
-            <ul class="list-group list-group-flush offcanvas-menu">
-                <li class="list-group-item">
-                    <a href="@Url.Action("TinDaLuu", "User")" class="d-flex justify-content-between align-items-center">
-                        <div><i class="bi bi-bookmark-fill me-3 text-warning"></i> Tin đã lưu</div>
-                        <i class="bi bi-chevron-right text-muted"></i>
-                    </a>
-                </li>
-                @* ... Các mục menu khác ... *@
-                <li class="list-group-item"><a href="@Url.Action("Index", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-house me-3 text-muted"></i> Cho thuê phòng trọ</div><i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li class="list-group-item"><a href="@Url.Action("CanHoChungCu", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-house me-3 text-muted"></i> Cho thuê nhà nguyên căn</div><i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li class="list-group-item"><a href="@Url.Action("CanHoMini", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-grid-3x3-gap me-3 text-muted"></i> Cho thuê căn hộ</div><i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li class="list-group-item"><a href="@Url.Action("Blog", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-file-text me-3 text-muted"></i> Blog</div><i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li class="list-group-item"><a href="@Url.Action("BangGiaDichVu", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-cash me-3 text-muted"></i> Bảng giá dịch vụ</div><i class="bi bi-chevron-right text-muted"></i></a></li>
-            </ul>
+                <ul class="list-group list-group-flush offcanvas-menu">
+                    <li class="list-group-item">
+                        <a href="@Url.Action("TinDaLuu", "User")" class="d-flex justify-content-between align-items-center">
+                            <div><i class="bi bi-bookmark-fill me-3 text-warning"></i> Tin đã lưu</div>
+                            <i class="bi bi-chevron-right text-muted"></i>
+                        </a>
+                    </li>
+                    @* ... Các mục menu khác ... *@
+                    <li class="list-group-item"><a href="@Url.Action("Index", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-house me-3 text-muted"></i> Cho thuê phòng trọ</div><i class="bi bi-chevron-right text-muted"></i></a></li>
+                    <li class="list-group-item"><a href="@Url.Action("CanHoChungCu", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-house me-3 text-muted"></i> Cho thuê nhà nguyên căn</div><i class="bi bi-chevron-right text-muted"></i></a></li>
+                    <li class="list-group-item"><a href="@Url.Action("CanHoMini", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-grid-3x3-gap me-3 text-muted"></i> Cho thuê căn hộ</div><i class="bi bi-chevron-right text-muted"></i></a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Blog", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-file-text me-3 text-muted"></i> Blog</div><i class="bi bi-chevron-right text-muted"></i></a></li>
+                    <li class="list-group-item"><a href="@Url.Action("BangGiaDichVu", "User")" class="d-flex justify-content-between align-items-center"><div><i class="bi bi-cash me-3 text-muted"></i> Bảng giá dịch vụ</div><i class="bi bi-chevron-right text-muted"></i></a></li>
+                </ul>
             </div>
         }
         else
@@ -250,7 +250,7 @@
 
             <div class="offcanvas-header">
                 @* A: Khối liên kết Profile *@
-                <a href="@Url.Action("QuanlyTaiKhoan", "Admin", new { Area = "Admin" })" class="d-flex align-items-center">
+                <a href="@Url.Action("QuanlyTaiKhoan", "Admin", new { Area = "Host" })" class="d-flex align-items-center">
                     <img src="@Url.Content(avatarPath)"
                          class="rounded-circle me-3"
                          alt="Avatar"
@@ -267,7 +267,7 @@
             <div class="offcanvas-body p-0">
                 @* Khối Trang Quản lý và Đăng tin mới *@
                 <div class="p-3">
-                    <a href="@Url.Action("Index", "Admin", new { Area = "Admin" })" class="btn btn-outline-secondary w-100 p-2 mb-2">
+                    <a href="@Url.Action("Index", "Admin", new { Area = "Host" })" class="btn btn-outline-secondary w-100 p-2 mb-2">
                         <i class="bi bi-folder-open me-2"></i> Trang quản lý
                     </a>
                     <a href="@Url.Action("DangTin", "User")" class="btn btn-danger w-100 p-2">
@@ -314,7 +314,9 @@
                 <!-- Thêm d-flex, justify-content-center, align-items-center để căn giữa banner -->
                 <div class="col-lg-1 d-none d-lg-block pt-left-sidebar d-flex justify-content-center align-items-center">
                     <div class="pt-fixed-ad-wrapper">
-                        <img src="~/Assets/Images/bds123_120_300.gif" alt="Banner Left" class="img-fluid rounded shadow-sm">
+                        <a href="https://bds123.vn/" target="_blank">
+                            <img src="~/Assets/Images/bds123_120_300.gif" alt="Banner Left" class="img-fluid rounded shadow-sm">
+                        </a>
                     </div>
                 </div>
 
@@ -328,7 +330,9 @@
                 <!-- Thêm d-flex, justify-content-center, align-items-center để căn giữa banner -->
                 <div class="col-lg-1 col-md-4 d-none d-md-block pt-right-sidebar d-flex justify-content-center align-items-center">
                     <div class="pt-fixed-ad-wrapper-right">
-                        <img src="~/Assets/Images/banner-thuecanho.jpg" alt="Banner Right" class="img-fluid rounded shadow-sm">
+                        <a href="https://thuecanho123.com/" target="_blank">
+                            <img src="~/Assets/Images/banner-thuecanho.jpg" alt="Banner Right" class="img-fluid rounded shadow-sm">
+                        </a>
                     </div>
                 </div>
 

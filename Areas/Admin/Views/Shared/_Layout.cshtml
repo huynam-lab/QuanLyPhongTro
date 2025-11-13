@@ -1,241 +1,275 @@
-﻿<!DOCTYPE html>
+﻿@{
+    Layout = null;
+    var title = ViewBag.Title ?? "Admin";
+}
+
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
+    <title>@title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewBag.Title - Quản lý phòng trọ</title>
 
-    <!-- Bootstrap + Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="~/Areas/Admin/Assets/ChuNhacss.css" rel="stylesheet" type="text/css" />
+
     <style>
+        :root {
+            --sidebar-width: 248px;
+            --sidebar-bg: #101827;
+            --sidebar-hover: rgba(255,255,255,.065);
+            --topbar-height: 58px;
+        }
+
         body {
-            background-color: #f5f6fa;
-            font-family: "Segoe UI", sans-serif;
+            background: #f3f4f6;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
         }
 
-        .navbar {
-            background-color: #0047b3;
-            font-weight: 100;
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: radial-gradient(circle at top, #1c275a 0%, #101827 55%);
+            color: #fff;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
         }
 
-            .navbar .nav-link {
-                color: #fff !important;
-                margin: 0 6px;
-                transition: 0.2s;
-            }
-
-                .navbar .nav-link:hover {
-                    color: #ffeb3b !important;
-                }
-
-            .navbar .btn-dangtin {
-                background-color: #ffb400;
-                border: none;
-                color: #000;
-                font-weight: 500;
-                border-radius: 20px;
-                padding: 4px 10px;
-            }
-
-                .navbar .btn-dangtin:hover {
-                    background-color: #ffca28;
-                }
-
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            width: 250px;
-            background-color: #fff;
-            position: fixed;
-            top: 40px; /* trừ chiều cao navbar */
-            bottom: 0;
-            left: 0;
-            border-right: 1px solid #e0e0e0;
-            padding: 20px 10px;
-        }
-
-            .sidebar .profile {
-                text-align: center;
-                margin-bottom: 20px;
-            }
-
-                .sidebar .profile img {
-                    width: 70px;
-                    height: 70px;
-                    border-radius: 50%;
-                    margin-bottom: 8px;
-                }
-
-                .sidebar .profile small {
-                    color: #666;
-                }
-
-            .sidebar .btn-naptien {
-                background-color: #ffb400;
-                border: none;
-                padding: 4px 12px;
+            .admin-sidebar .brand {
+                padding: 1rem 1.25rem .8rem;
                 font-weight: 600;
-                border-radius: 6px;
-                font-size: 14px;
+                display: flex;
+                gap: .55rem;
+                align-items: center;
+                border-bottom: 1px solid rgba(255,255,255,.065);
             }
 
-            .sidebar .nav-section {
-                margin-top: 25px;
-            }
-
-                .sidebar .nav-section h6 {
-                    font-size: 13px;
-                    color: #999;
-                    text-transform: uppercase;
-                    padding-left: 10px;
-                    margin-bottom: 8px;
+                .admin-sidebar .brand i {
+                    font-size: 1.3rem;
                 }
 
-            .sidebar a {
+            .admin-sidebar small.version {
+                font-size: .65rem;
+                opacity: .6;
                 display: block;
-                padding: 8px 16px;
-                color: #333;
-                text-decoration: none;
-                border-radius: 6px;
-                margin: 2px 0;
-                font-size: 15px;
-                transition: 0.2s;
+                margin-top: .15rem;
             }
 
-                .sidebar a:hover, .sidebar a.active {
-                    background-color: #f0f0f5;
-                    color: #0047b3;
+            .admin-sidebar .nav {
+                padding: .75rem .5rem;
+                flex: 1;
+            }
+
+            .admin-sidebar .nav-link {
+                color: rgba(255,255,255,.65);
+                display: flex;
+                align-items: center;
+                gap: .6rem;
+                padding: .5rem .85rem;
+                border-radius: .6rem;
+                margin-bottom: .25rem;
+                transition: background .15s ease-out;
+                font-size: .92rem;
+            }
+
+                .admin-sidebar .nav-link i {
+                    width: 20px;
+                    text-align: center;
+                    font-size: 1.05rem;
                 }
 
-        /* ===== CONTENT ===== */
-        .content {
-            margin-left: 250px;
+                .admin-sidebar .nav-link.active,
+                .admin-sidebar .nav-link:hover {
+                    background: rgba(255,255,255,.11);
+                    color: #fff;
+                }
+
+        /* ============ MAIN ============ */
+        .admin-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
         }
 
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        .admin-topbar {
+            height: var(--topbar-height);
+            background: #fff;
+            border-bottom: 1px solid rgba(15,23,42,.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1.125rem;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .admin-topbar .page-title {
+            display: flex;
+            gap: .5rem;
+            align-items: center;
+        }
+
+        .admin-topbar .rightbox {
+            display: flex;
+            gap: .65rem;
+            align-items: center;
+        }
+
+        .admin-topbar .circle-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
             border: none;
+            background: #edf2ff;
+            display: grid;
+            place-items: center;
+            color: #364fc7;
         }
 
-        .form-control, .form-select {
-            border-radius: 8px;
+        .admin-content {
+            padding: 1.25rem clamp(.5rem, 1.3vw, 1.25rem);
         }
 
-        .navbar,
-        .navbar * {
-            z-index: 1055 !important;
+        footer.admin-footer {
+            padding: .75rem 1.25rem 1.25rem;
+            font-size: .7rem;
+            color: #94a3b8;
         }
 
-        .dropdown-menu {
-            position: absolute !important;
-            z-index: 2000 !important;
+        /* ============ RESPONSIVE ============ */
+        @*@media (max-width: 991.98px) {
+            .admin-sidebar {
+                position: fixed;
+                left: -260px;
+                transition: left .2s;
+                z-index: 30;
+            }
+
+            .admin-sidebar.show {
+                left: 0;
+            }
+
+            .admin-main {
+                flex: 1;
+            }
+        }*@
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.35);
+            z-index: 25;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
         }
     </style>
 
+    @RenderSection("styles", required: false)
 </head>
 <body>
-    @model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ChuNha
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="height:40px;">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold " href="#" style="font-size:13px;">
-                PHONGTRO<span style="color:#ff6b00;">123.COM</span>
-                <div style="font-size:12px; font-weight:400;">Kênh thông tin phòng trọ số 1 Việt Nam</div>
-            </a>
+    <div class="overlay" id="sidebarOverlay"></div>
 
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav me-auto" style="font-size: 13px; font-weight: 400;">
-                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "User", new { area = "" })">Phòng trọ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CanHoMini", "User", new { area = "" })">Căn hộ mini</a></li>
-                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CanHoChungCu", "User", new { area = "" })">Chung cư</a></li>
-                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Blog", "User", new { area = "" })">Blog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="@Url.Action("BangGiaDichVu", "User", new { area = "" })">Bảng giá dịch vụ</a></li>
-                </ul>
-
-                <ul class="navbar-nav ms-auto align-items-center" style="font-size:13px; font-weight:400;">
-                    <li class="nav-item me-3"><a href="#" class="nav-link"><i class="bi bi-heart"></i> Tin đã lưu</a></li>
-                    <li class="nav-item me-3"><a href="@Url.Action("DSTinDang", "Admin", new { area = "Admin" })" class="nav-link"><i class="bi bi-folder"></i> Quản lý</a></li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" width="28" class="rounded-circle me-1">
-                            huynam
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="@Url.Action("QuanLyTaiKhoan", "Admin", new { area = "Admin" })">Tài khoản</a></li>
-                            <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item ms-3">
-                        <a href="@Url.Action("Index", "Admin", new { area = "Admin" })" class="btn btn-dangtin"><i class="bi bi-pencil-square me-1"></i>Đăng tin</a>
-                    </li>
-                </ul>
+    <div class="admin-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="brand">
+                <i class="bi bi-shield-lock"></i>
+                <div>
+                    Admin panel
+                    <small class="version">QL Phòng trọ</small>
+                </div>
             </div>
-        </div>
-    </nav>
+            <nav class="nav flex-column mt-2">
+                <a class="nav-link @(ViewBag.Menu == "dashboard" ? "active" : "")"
+                   href="@Url.Action("Dashboard","Quantrivien", new { area = "Admin" })">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a class="nav-link @(ViewBag.Menu == "account" ? "active" : "")"
+                   href="@Url.Action("TaiKhoan","Quantrivien", new { area = "Admin" })">
+                    <i class="bi bi-people"></i> Tài khoản
+                </a>
+                <a class="nav-link @(ViewBag.Menu == "phong" ? "active" : "")"
+                   href="@Url.Action("PhongTro","Quantrivien", new { area = "Admin" })">
+                    <i class="bi bi-houses"></i> Phòng / Tin đăng
+                </a>
+                <a class="nav-link @(ViewBag.Menu == "Dichvu" ? "active" : "")"
+                   href="@Url.Action("Catalogs","Quantrivien", new { area = "Admin" })">
+                    <i class="bi bi-grid"></i> Quản lý danh mục
+                </a>
+            </nav>
+        </aside>
 
+        <!-- MAIN -->
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div class="page-title">
+                    <button class="btn btn-link d-lg-none p-0 me-2" id="sidebarToggle">
+                        <i class="bi bi-list" style="font-size:1.35rem;"></i>
+                    </button>
+                    <h6 class="mb-0">@title</h6>
+                </div>
+                <div class="rightbox">
+                    <button class="circle-btn d-none d-sm-grid" title="Thông báo">
+                        <i class="bi bi-bell"></i>
+                    </button>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="text-end d-none d-sm-block">
+                            <div class="small fw-semibold">Admin</div>
+                            <div class="small text-muted">Quản trị viên</div>
+                        </div>
+                        <div class="rounded-circle bg-light" style="width:34px;height:34px;display:grid;place-items:center;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
-    <div class="sidebar">
-        <div class="profile">
-            @if (ViewBag.Avata != "")
-                {
-                <img src="~/Kho/Img/@ViewBag.Avata" alt="avatar" />
-                }
-            else
-                {
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" />
-                }
-            <h6 class="mt-2 mb-1">@ViewBag.Name</h6>
-            <small>Mã tài khoản: @Session["MaTK"] </small><br>
-        </div>
+            <main class="admin-content">
+                @RenderBody()
+            </main>
 
-        <div class="nav-section">
-            <h6>Quản lý tin</h6>
-            <a href="@Url.Action("Index", "Admin", new { area = "Admin" })">
-                <i class="bi bi-pencil-square me-2"></i> Đăng tin mới
-            </a>
-
-            <a href="@Url.Action("DSTinDang", "Admin", new { area = "Admin" })">
-                <i class="bi bi-list-ul me-2"></i> Danh sách tin đăng
-            </a>
-
-            @*<a href="#"><i class="bi bi-clock-history me-2"></i>Lịch sử nạp tiền</a>
-                <a href="#"><i class="bi bi-wallet2 me-2"></i>Lịch sử thanh toán</a>*@
-            <a href="@Url.Action("BangGiaDichVu", "User", new { area = "" })"><i class="bi bi-tags me-2"></i>Bảng giá dịch vụ</a>
-        </div>
-
-        <div class="nav-section">
-            <h6>Tài khoản</h6>
-            <a href="@Url.Action("QuanlyTaiKhoan", "Admin", new { area = "Admin" })">
-                <i class="bi bi-person-circle me-2"></i> Quản lý tài khoản
-            </a>
-            <a href="#"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a>
-        </div>
-
-        <div class="text-center mt-4 small text-muted border-top pt-3">
-            Hỗ trợ: <b>Thanh Ly - 0909 316 890</b>
+            <footer class="admin-footer text-center">
+                © @DateTime.Now.Year Phòng trọ – Admin panel
+            </footer>
         </div>
     </div>
-    <div class="content">
-        @RenderBody()
-    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    @RenderSection("scripts", required: false)
+
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(el => {
-                new bootstrap.Dropdown(el);
+        // toggle sidebar on mobile
+        const sidebar = document.getElementById("adminSidebar");
+        const toggle = document.getElementById("sidebarToggle");
+        const overlay = document.getElementById("sidebarOverlay");
+
+        if (toggle) {
+            toggle.addEventListener("click", function () {
+                sidebar.classList.toggle("show");
+                overlay.classList.toggle("show");
             });
-        });
+        }
+        if (overlay) {
+            overlay.addEventListener("click", function () {
+                sidebar.classList.remove("show");
+                overlay.classList.remove("show");
+            });
+        }
     </script>
 
+    @RenderSection("scripts", required: false)
 </body>
-
-
 </html>

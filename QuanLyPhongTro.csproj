@@ -60,6 +60,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+
 	</Reference>
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
@@ -665,10 +666,10 @@
     <Content Include="Kho\Video\67_9834.mp4" />
     <Content Include="Kho\Video\68_9283.mp4" />
     <Content Include="Kho\Video\88_2389.mp4" />
-    <Content Include="Areas\Admin\Views\Admin\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\DSTinDang.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\QuanlyTaiKhoan.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\UpdateData.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\Index.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\DSTinDang.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\QuanlyTaiKhoan.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\UpdateData.cshtml" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model1.edmx</DependentUpon>
@@ -692,6 +693,17 @@
     <Content Include="Models\Model1.edmx.diagram">
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
+    <Content Include="Areas\Host\Views\Shared\_Footer.cshtml" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Quantrivien\Dashboard.cshtml" />
+    <Content Include="Areas\Admin\Views\Quantrivien\TaiKhoan.cshtml" />
+    <Content Include="Areas\Admin\Views\Quantrivien\PhongTro.cshtml" />
+    <Content Include="Areas\Admin\Views\Quantrivien\Catalogs.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_PaneKhuVuc.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_PaneLoaiTinGia.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_PaneChuDe.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -702,9 +714,12 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
-    <Compile Include="Areas\Admin\ChuNhaViewModels\ChuNha.cs" />
-    <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
-    <Compile Include="Areas\Admin\Controllers\BaseController.cs" />
+    <Compile Include="Areas\Admin\AdminViewModels\CatalogVM.cs" />
+    <Compile Include="Areas\Admin\Controllers\QuantrivienController.cs" />
+    <Compile Include="Areas\Host\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Host\ChuNhaViewModels\ChuNha.cs" />
+    <Compile Include="Areas\Host\Controllers\AdminController.cs" />
+    <Compile Include="Areas\Host\Controllers\BaseController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -768,9 +783,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
-    <Content Include="Areas\Admin\Views\web.config" />
-    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Host\Views\web.config" />
+    <Content Include="Areas\Host\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Host\Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
@@ -827,7 +842,9 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\Base\" />
+    <Folder Include="Areas\Admin\Views\Admin\" />
+    <Folder Include="Areas\Host\Data\" />
+    <Folder Include="Areas\Host\Views\Base\" />
     <Folder Include="Kho\Img\Avata\" />
     <Folder Include="Views\Admin\" />
   </ItemGroup>
