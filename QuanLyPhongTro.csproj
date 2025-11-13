@@ -715,6 +715,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\AdminViewModels\CatalogVM.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminBaseController.cs" />
     <Compile Include="Areas\Admin\Controllers\QuantrivienController.cs" />
     <Compile Include="Areas\Host\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Host\ChuNhaViewModels\ChuNha.cs" />
@@ -842,6 +843,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Views\AdminBase\" />
     <Folder Include="Areas\Admin\Views\Admin\" />
     <Folder Include="Areas\Host\Data\" />
     <Folder Include="Areas\Host\Views\Base\" />
