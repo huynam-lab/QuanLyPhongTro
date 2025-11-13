@@ -108,7 +108,7 @@ namespace QuanLyPhongTro.Controllers
                 // Trả về lỗi 401 (Chưa xác thực)
                 return Json(new { success = false, message = "Bạn cần đăng nhập." }, JsonRequestBehavior.AllowGet);
                 // Hoặc bạn có thể trả về lỗi 401
-                // Response.StatusCode = 401;
+                // Response.StatusCode = 401gi;
                 // return Json(new { success = false, message = "Bạn cần đăng nhập." });
             }
 
