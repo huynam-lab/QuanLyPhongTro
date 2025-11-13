@@ -108,7 +108,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             /* 🖼️ LƯU NHIỀU ẢNH */
             if (imageInput != null && imageInput.Length > 0)
                 {
-                string imgFolder = Server.MapPath("~/Assets/Images/Avatar/");
+                string imgFolder = Server.MapPath("~/Kho/Img/");
                 Directory.CreateDirectory(imgFolder);
 
                 var rnd = new Random();
@@ -219,7 +219,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             var imgs = db.Hinh_Anh.Where(x => x.ID_Phong_Tro == id).ToList();
             foreach (var img in imgs)
                 {
-                var path = Server.MapPath("~/Kho/Img/Avata/" + img.Url_Anh);
+                var path = Server.MapPath("~/Kho/Img/" + img.Url_Anh);
                 if (System.IO.File.Exists(path))
                     System.IO.File.Delete(path);
                 }
@@ -260,8 +260,8 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
 
             // lấy user để đổ vào viewbag như cũ
             int maTK = 0;
-            if (Session["MaTK"] != null)
-                int.TryParse(Session["MaTK"].ToString(), out maTK);
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
 
             var user = db.Tai_Khoan
                 .Where(x => x.ID_TK == maTK)
@@ -388,7 +388,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 if (!oldImages.Contains(img.Url_Anh))
                     {
                     // xóa file vật lý
-                    var path = Server.MapPath("~/Kho/Img/Avata/" + img.Url_Anh);
+                    var path = Server.MapPath("~/Kho/Img/" + img.Url_Anh);
                     if (System.IO.File.Exists(path))
                         System.IO.File.Delete(path);
 
@@ -455,9 +455,9 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             }
 
         public ActionResult QuanlyTaiKhoan()
-            {
+        {
             return View();
-            }
+        }
 
 
 
@@ -466,13 +466,13 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
         public ActionResult CapNhatThongTin(string SDT, string Name)
             {
             // kiểm tra đăng nhập
-            if (Session["MaTK"] == null)
+            if (Session["UserID"] == null)
                 {
                 TempData["Error"] = "Vui lòng đăng nhập lại.";
                 return RedirectToAction("DangNhap", "TaiKhoan");
                 }
 
-            int maTK = Convert.ToInt32(Session["MaTK"]);
+            int maTK = Convert.ToInt32(Session["UserID"]);
             var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == maTK);
             if (tk == null)
                 {
@@ -497,13 +497,13 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
         public ActionResult CapNhatAnhDaiDien(HttpPostedFileBase AvtFile)
             {
             // 🔒 Kiểm tra đăng nhập
-            if (Session["MaTK"] == null)
+            if (Session["UserID"] == null)
                 {
                 TempData["Error"] = "Vui lòng đăng nhập lại.";
                 return RedirectToAction("DangNhap", "TaiKhoan");
                 }
 
-            int maTK = Convert.ToInt32(Session["MaTK"]);
+            int maTK = Convert.ToInt32(Session["UserID"]);
             var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == maTK);
 
             if (tk == null)
@@ -514,7 +514,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
 
             if (AvtFile != null && AvtFile.ContentLength > 0)
                 {
-                string folder = Server.MapPath("~/Kho/Img/Avata/");
+                string folder = Server.MapPath("~/Assets/Images/Avatar/");
                 Directory.CreateDirectory(folder);
 
                 string ext = Path.GetExtension(AvtFile.FileName);
