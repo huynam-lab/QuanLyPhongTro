@@ -28,6 +28,8 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
                 filterContext.Result = new HttpNotFoundResult();
                 return;
                 }
+            int pending = db.Phong_Tro.Count(x => x.Trang_Thai == false);
+            ViewBag.PendingCount = pending;
             // Admin → cho đi tiếp
             base.OnActionExecuting(filterContext);
             }
