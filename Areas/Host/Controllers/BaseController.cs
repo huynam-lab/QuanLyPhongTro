@@ -13,11 +13,15 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
         protected DaTa_Phong_TroEntities5 db = new DaTa_Phong_TroEntities5();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
             {
-            Session["MaTK"] = 12;
+      
             int maTK = 0;
-            if (Session["MaTK"] != null)
-                int.TryParse(Session["MaTK"].ToString(), out maTK);
-
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+            if (Session["UserID"] == null)
+                {
+                filterContext.Result = new HttpNotFoundResult();
+                return;
+                }
             if (maTK > 0)
                 {
                 var user = db.Tai_Khoan

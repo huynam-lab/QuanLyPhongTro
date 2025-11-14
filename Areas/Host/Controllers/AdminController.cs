@@ -555,8 +555,8 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             {
             // lấy lại mấy thứ để view còn hiển thị
             int maTK = 0;
-            if (Session["MaTK"] != null)
-                int.TryParse(Session["MaTK"].ToString(), out maTK);
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
 
             var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == maTK);
             if (tk == null)
@@ -599,6 +599,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             return RedirectToAction("QuanlyTaiKhoan");
 
             }
+        
 
         }
     }

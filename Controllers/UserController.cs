@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using QuanLyPhongTro.Models.ViewModels; // <-- THÊM CÁI NÀY
+
 
 namespace QuanLyPhongTro.Controllers
 {
@@ -82,7 +84,21 @@ namespace QuanLyPhongTro.Controllers
             // SẮP XẾP: Ưu tiên theo Loại Tin (1 -> 5), sau đó mới tới Ngày Đăng
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
                                    .ThenByDescending(p => p.Ngay_Dang);
+            var paginatedPosts = sortedQuery.ToPagedList(pageNumber, pageSize);
 
+            // 2. LẤY TOP 10 TIN MỚI NHẤT (CHO SIDEBAR)
+            var newestPosts = db.Phong_Tro
+                                .Include(p => p.Hinh_Anh) // Chỉ cần include ảnh
+                                .OrderByDescending(p => p.Ngay_Dang)
+                                .Take(10)
+                                .ToList();
+
+            // 3. TẠO VIEWMODEL VÀ GÁN DỮ LIỆU
+            var viewModel = new IndexViewModel
+            {
+                PaginatedPosts = paginatedPosts, // Gán danh sách chính
+                NewestPosts = newestPosts       // Gán danh sách sidebar
+            };
             // 4. GỌI ToPagedList() THAY VÌ ToList()
             // Gửi Model phân trang qua View
             return View(sortedQuery.ToPagedList(pageNumber, pageSize));
@@ -138,6 +154,15 @@ namespace QuanLyPhongTro.Controllers
             }
 
             db.SaveChanges();
+            var newestPosts = db.Phong_Tro
+                           .Include(p => p.Hinh_Anh) // Chỉ cần include ảnh
+                           .OrderByDescending(p => p.Ngay_Dang)
+                           .Take(10)
+                           .ToList();
+
+           
+
+            // 3. TẠO VIEWMODEL VÀ GÁN DỮ LIỆU
 
             // 4. Trả về kết quả (dạng JSON)
             return Json(new { success = true, isFavorited = isFavorited });

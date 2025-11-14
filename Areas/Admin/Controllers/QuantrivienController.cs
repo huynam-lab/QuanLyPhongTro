@@ -8,10 +8,8 @@ using System.Web.Mvc;
 
 namespace QuanLyPhongTro.Areas.Admin.Controllers
 {
-    public class QuantrivienController : Controller
+    public class QuantrivienController : AdminBaseController
     {
-        private readonly DaTa_Phong_TroEntities5 db = new DaTa_Phong_TroEntities5(); // ĐỔI TÊN context
-
         // GET: Admin/Dashboard
         public ActionResult Dashboard()
             {

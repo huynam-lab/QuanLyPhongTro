@@ -354,22 +354,33 @@
                 }
             }
         <div class="pagination-container d-flex justify-content-center">
-            @Html.PagedListPager(Model, page => Url.Action("Index",
-                    new
-                    {
-                        page = page,
-                        minPrice = ViewBag.CurrentMinPrice,
-                        maxPrice = ViewBag.CurrentMaxPrice,
-                        minArea = ViewBag.CurrentMinArea,
-                        maxArea = ViewBag.CurrentMaxArea
-                    }),
-                    new PagedListRenderOptions
-                    {
-                        UlElementClasses = new[] { "pagination" },
-                        LiElementClasses = new[] { "page-item" },
-                        LinkToPreviousPageFormat = "« Trang trước",
-                        LinkToNextPageFormat = "Trang sau »"
-                    })
+            @Html.PagedListPager(
+                Model,
+                page => Url.Action("Index", new
+                {
+                    page = page,
+                    minPrice = ViewBag.CurrentMinPrice,
+                    maxPrice = ViewBag.CurrentMaxPrice,
+                    minArea = ViewBag.CurrentMinArea,
+                    maxArea = ViewBag.CurrentMaxArea
+                }),
+                new PagedListRenderOptions
+                {
+                    UlElementClasses = new[] { "pagination", "pt-custom-pagination" },
+                    LiElementClasses = new[] { "page-item" },
+
+                    DisplayLinkToFirstPage = PagedList.Mvc.PagedListDisplayMode.Always,
+                    DisplayLinkToLastPage = PagedList.Mvc.PagedListDisplayMode.Always,
+                    DisplayLinkToPreviousPage = PagedList.Mvc.PagedListDisplayMode.Always,
+                    DisplayLinkToNextPage = PagedList.Mvc.PagedListDisplayMode.Always,
+                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                    MaximumPageNumbersToDisplay = 5,
+
+                    LinkToPreviousPageFormat = "« Trang trước",
+                    LinkToNextPageFormat = "Trang sau »",
+                    LinkToFirstPageFormat = "««",
+                    LinkToLastPageFormat = "»»"
+                })
         </div>
         </div>
 

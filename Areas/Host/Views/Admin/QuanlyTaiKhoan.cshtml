@@ -29,15 +29,25 @@
                     <div class="card shadow-sm border-0" style="max-width: 600px; margin: 0 auto; margin-bottom:30px;">
                         <div class="card-body">
                             <div class="text-center mb-3">
-                                @if (ViewBag.Avata != "")
-                                    {
-                                    <img src="~/Kho/Img/Avata/@ViewBag.Avata" class="rounded-circle border" width="90" height="90" alt="avatar" style="object-fit:cover;">
-                                    }
-                                else
-                                    {
-                                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" class="rounded-circle border" width="90" height="90" />
-                                    }
+                                @{
+                                    var userID = Session["UserID"];
+                                    var userName = Session["UserName"] as string;
+                                    var userSDT = Session["SDT"] as string; // Giả sử bạn lưu SDT vào Session
+                                    var userAvatar = Session["Avatar"] as string;
+                                    string avatarPath;
+                                    if (string.IsNullOrEmpty(userAvatar))
+                                        {
+                                        // Nếu Session["Avatar"] null hoặc rỗng, dùng ảnh mặc định
+                                        avatarPath = "~/Assets/Images/Avatar/avatar-mac-dinh.jpg";
+                                        }
+                                    else
+                                        {
+                                        // Nếu có, dùng đường dẫn ảnh tùy chỉnh
+                                        avatarPath = "~/Assets/Images/Avatar/" + userAvatar;
+                                        }
+                                }
 
+                                <img src="@Url.Content(avatarPath)" class="rounded-circle border" width="90" height="90" alt="avatar" style="object-fit:cover;">
                                 <h5 class="mt-2 mb-0 fw-semibold">@ViewBag.Name</h5>
                                 <small class="text-muted">@ViewBag.SDT</small>
                                 <div class="mt-2 text-center">
