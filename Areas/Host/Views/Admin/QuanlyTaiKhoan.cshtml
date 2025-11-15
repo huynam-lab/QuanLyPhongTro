@@ -30,10 +30,7 @@
                         <div class="card-body">
                             <div class="text-center mb-3">
                                 @{
-                                    var userID = Session["UserID"];
-                                    var userName = Session["UserName"] as string;
-                                    var userSDT = Session["SDT"] as string; // Giả sử bạn lưu SDT vào Session
-                                    var userAvatar = Session["Avatar"] as string;
+                                    var userAvatar = ViewBag.Avata;
                                     string avatarPath;
                                     if (string.IsNullOrEmpty(userAvatar))
                                         {
@@ -46,7 +43,6 @@
                                         avatarPath = "~/Assets/Images/Avatar/" + userAvatar;
                                         }
                                 }
-
                                 <img src="@Url.Content(avatarPath)" class="rounded-circle border" width="90" height="90" alt="avatar" style="object-fit:cover;">
                                 <h5 class="mt-2 mb-0 fw-semibold">@ViewBag.Name</h5>
                                 <small class="text-muted">@ViewBag.SDT</small>

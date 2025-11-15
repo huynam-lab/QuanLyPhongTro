@@ -188,28 +188,25 @@
     </nav>
 
     @{ 
-        var userID = Session["UserID"];
-        var userName = Session["UserName"] as string;
-        var userSDT = Session["SDT"] as string; // Giả sử bạn lưu SDT vào Session
-        var userAvatar = Session["Avatar"] as string;
+        var userAvatar = ViewBag.Avata;
         string avatarPath;
         if (string.IsNullOrEmpty(userAvatar))
-        {
+            {
             // Nếu Session["Avatar"] null hoặc rỗng, dùng ảnh mặc định
             avatarPath = "~/Assets/Images/Avatar/avatar-mac-dinh.jpg";
-        }
+            }
         else
-        {
+            {
             // Nếu có, dùng đường dẫn ảnh tùy chỉnh
             avatarPath = "~/Assets/Images/Avatar/" + userAvatar;
-        }
+            }
     }
 
     <div class="sidebar">
         <div class="profile">
             <img src="@Url.Content(avatarPath)" alt="avatar" style="object-fit:cover;" />
 
-            <h6 class="mt-2 mb-1">@userName</h6>
+            <h6 class="mt-2 mb-1">@ViewBag.Name</h6>
             <small>Mã tài khoản: @Session["UserID"] </small><br>
         </div>
 

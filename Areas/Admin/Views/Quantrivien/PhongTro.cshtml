@@ -33,6 +33,7 @@
                 <th style="width:170px;">Người đăng</th>
                 <th style="width:130px;">Ngày đăng</th>
                 <th style="width:130px;">Ngày hết hạn</th>
+                <th style="width:130px;">Thanh toán</th>
                 <th style="width:120px;">Trạng thái</th>
                 <th style="width:110px;"></th>
             </tr>
@@ -48,6 +49,7 @@
                     <td>@(p.Tai_Khoan != null ? p.Tai_Khoan.Name : "")</td>
                     <td>@(p.Ngay_Dang?.ToString("dd/MM/yyyy"))</td>
                     <td>@(p.Ngay_Het_Han?.ToString("dd/MM/yyyy"))</td>
+                    <td>@(p.Gia_Duyet?.ToString("#,##0") + " ₫")</td>
                     <td>
                         @if (p.Trang_Thai == true)
                             {
