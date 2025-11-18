@@ -35,9 +35,9 @@ namespace QuanLyPhongTro.Controllers
         public ActionResult Index(int? page,int? minPrice, int? maxPrice, int? minArea, int? maxArea, string filterBy = "de-xuat")
         {
             int? currentUserId = null;
-            if (Session["ID_TK"] != null)
+            if (Session["UserID"] != null)
             {
-                currentUserId = (int)Session["ID_TK"];
+                currentUserId = (int)Session["UserID"];
             }
 
             // ----- LẤY DANH SÁCH YÊU THÍCH CỦA NGƯỜI NÀY -----
@@ -96,8 +96,14 @@ namespace QuanLyPhongTro.Controllers
                     break;
 
                 case "co-video": // Nếu là tab "Có video"
-                    sortedQuerys = query.Where(p => p.Videos.Any()) // Lọc những tin có video
-                                         .OrderByDescending(p => p.Ngay_Dang); // Sắp xếp mới nhất
+                    sortedQuery = db.Phong_Tro
+                     .Include(p => p.Tai_Khoan)
+                     .Include(p => p.Khu_Vuc)
+                     .Include(p => p.Hinh_Anh)
+                     .Include(p => p.Loai_Tin)
+                     .Include(p => p.Videos)
+                     .Where(p => p.Videos.Any())
+                     .OrderByDescending(p => p.Ngay_Dang);
                     break;
 
                 case "de-xuat": // Nếu là tab "Đề xuất" (Mặc định)
@@ -123,9 +129,9 @@ namespace QuanLyPhongTro.Controllers
         }
         private List<int> GetUserFavorites()
         {
-            if (Session["ID_TK"] != null)
+            if (Session["UserID"] != null)
             {
-                int currentUserId = (int)Session["ID_TK"];
+                int currentUserId = (int)Session["UserID"];
                 return db.Yeu_Thich
                          .Where(yt => yt.ID_TK == currentUserId)
                          .Select(yt => yt.ID_Phong_Tro)
@@ -138,16 +144,16 @@ namespace QuanLyPhongTro.Controllers
         public JsonResult ToggleFavorite(int id)
         {
             // 1. Kiểm tra đăng nhập
-            if (Session["ID_TK"] == null)
+            if (Session["UserID"] == null)
             {
-                Response.StatusCode = 401; // Lỗi 401 (Chưa xác thực)
-                return Json(new { success = false, message = "Bạn cần đăng nhập." });
+                // Trả về JSON để JS xử lý, cho phép GET trong trường hợp này để không lỗi
+                return Json(new { success = false, message = "Bạn cần đăng nhập." }, JsonRequestBehavior.AllowGet);
             }
 
-            int currentUserId = (int)Session["ID_TK"];
+            int currentUserId = (int)Session["UserID"];
             bool isFavorited = false;
 
-            // 2. Kiểm tra
+            // 2. Kiểm tra xem tin này đã được yêu thích chưa
             var existingFavorite = db.Yeu_Thich
                                      .FirstOrDefault(yt => yt.ID_Phong_Tro == id && yt.ID_TK == currentUserId);
 
@@ -334,7 +340,7 @@ namespace QuanLyPhongTro.Controllers
             int pageNumber = (page ?? 1);
 
             // 1. Kiểm tra xem người dùng đã đăng nhập chưa
-            if (Session["ID_TK"] == null)
+            if (Session["UserID"] == null)
             {
                 // === SỬA LỖI NULL TẠI ĐÂY ===
                 // Nếu chưa đăng nhập, tạo một danh sách rỗng
@@ -347,7 +353,7 @@ namespace QuanLyPhongTro.Controllers
             }
 
             // --- Nếu đã đăng nhập, code cũ của bạn sẽ chạy ---
-            int currentUserId = (int)Session["ID_TK"];
+            int currentUserId = (int)Session["UserID"];
 
             // 2. Lấy danh sách ID các phòng trọ mà người này đã thích
             var favoritedIds = db.Yeu_Thich

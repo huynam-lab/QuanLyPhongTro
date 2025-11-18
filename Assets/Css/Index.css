@@ -614,11 +614,12 @@ a.btn-favorite.active i {
     line-height: 1.35;
     color: #1463ff;
     margin: 2px 0 6px;
+    text-decoration: none;
 }
 
     .lc-title:hover {
         color: #0d4fe0;
-        text-decoration: none;
+        
     }
 
 .lc-price {

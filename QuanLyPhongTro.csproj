@@ -663,14 +663,14 @@
     <Content Include="Kho\Img\99_5115.jpg" />
     <Content Include="Kho\Img\99_6909.jpg" />
     <Content Include="Kho\Img\99_8318.jpg" />
-    <Content Include="Kho\Video\23_2384.mp4" />
-    <Content Include="Kho\Video\67_9834.mp4" />
-    <Content Include="Kho\Video\68_9283.mp4" />
-    <Content Include="Kho\Video\88_2389.mp4" />
     <Content Include="Areas\Host\Views\Admin\Index.cshtml" />
     <Content Include="Areas\Host\Views\Admin\DSTinDang.cshtml" />
     <Content Include="Areas\Host\Views\Admin\QuanlyTaiKhoan.cshtml" />
     <Content Include="Areas\Host\Views\Admin\UpdateData.cshtml" />
+    <Content Include="Kho\Video\23_2384.mp4" />
+    <Content Include="Kho\Video\67_9834.mp4" />
+    <Content Include="Kho\Video\68_9283.mp4" />
+    <Content Include="Kho\Video\88_2389.mp4" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model1.edmx</DependentUpon>

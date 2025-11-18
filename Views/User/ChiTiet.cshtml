@@ -52,232 +52,273 @@
                     <li class="breadcrumb-item active" aria-current="page">@Model.Ten_Phong</li>
                 </ol>
             </nav>
+            <div class="card shadow-sm border-0 p-3">
+                <div id="phongTroCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner rounded">
 
-            <div id="phongTroCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner rounded">
-                    @if (hinhAnh.Any())
-                    {
-                        for (int i = 0; i < hinhAnh.Count; i++)
+                        @{
+                            var itemIndex = 0; // Biến đếm để xác định 'active'
+                        }
+
+                        @* 1. HIỂN THỊ VIDEO TRƯỚC (NẾU CÓ) *@
+                        @if (Model.Videos != null && Model.Videos.Any())
                         {
-                            <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img src="@Url.Content("~/Kho/Img/" + hinhAnh[i].Url_Anh)" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Ảnh @(i+1)">
+                            foreach (var vid in Model.Videos)
+                            {
+                                <div class="carousel-item @(itemIndex == 0 ? "active" : "")">
+                                    <video controls class="d-block w-100" style="height: 450px; object-fit: cover; background: #000;">
+                                        <source src="@Url.Content("~/Kho/Video/" + vid.Url_Video)" type="video/mp4">
+                                        Trình duyệt không hỗ trợ video.
+                                    </video>
+                                </div>
+                                itemIndex++;
+                            }
+                        }
+
+                        @* 2. HIỂN THỊ HÌNH ẢNH SAU *@
+                        @if (hinhAnh.Any())
+                        {
+                            foreach (var img in hinhAnh)
+                            {
+                                <div class="carousel-item @(itemIndex == 0 ? "active" : "")">
+                                    <img src="@Url.Content("~/Kho/Img/" + img.Url_Anh)" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Ảnh phòng trọ">
+                                </div>
+                                itemIndex++;
+                            }
+                        }
+                        else if (itemIndex == 0) // Nếu không có cả video lẫn ảnh
+                        {
+                            <div class="carousel-item active">
+                                <img src="@Url.Content("~/Kho/Img/placeholder.jpg")" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Chưa có ảnh">
                             </div>
                         }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#phongTroCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#phongTroCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+
+                    <div class="carousel-indicators" style="position: static; margin-top: 10px; overflow-x: auto; white-space: nowrap; justify-content: start;">
+                        @{ itemIndex = 0; }
+
+                        @* Thumbnail Video *@
+                        @if (Model.Videos != null)
+                        {
+                            foreach (var vid in Model.Videos)
+                            {
+                                <button type="button" data-bs-target="#phongTroCarousel" data-bs-slide-to="@itemIndex" class="@(itemIndex == 0 ? "active" : "")" aria-current="true" style="width: 100px; height: 70px; border: none; background: none; padding: 0; margin-right: 5px;">
+                                    <div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+                                        <i class="bi bi-play-circle-fill text-white fs-2"></i>
+                                    </div>
+                                </button>
+                                itemIndex++;
+                            }
+                        }
+
+                        @* Thumbnail Ảnh *@
+                        @foreach (var img in hinhAnh)
+                        {
+                            <button type="button" data-bs-target="#phongTroCarousel" data-bs-slide-to="@itemIndex" class="@(itemIndex == 0 ? "active" : "")" aria-current="true" style="width: 100px; height: 70px; border: none; background: none; padding: 0; margin-right: 5px;">
+                                <img src="@Url.Content("~/Kho/Img/" + img.Url_Anh)" class="d-block w-100" style="height: 70px; object-fit: cover; border-radius: 5px;" alt="Thumbnail">
+                            </button>
+                            itemIndex++;
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <span class="badge bg-danger mb-2">@Model.Loai_Tin.Ten_LoaiTin</span>
+                    <div class="mb-1">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                    </div>
+                    <h1 class="h2 text-danger fw-bold">@Model.Ten_Phong</h1>
+
+                    <div class="d-flex flex-wrap align-items-center text-muted mt-3 mb-3">
+                        <span class="fw-bold text-success fs-4 me-4">@(Model.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)Model.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")</span>
+                        <span class="me-4"><i class="bi bi-rulers me-1"></i> @Model.Dien_Tich m²</span>
+                        <span><i class="bi bi-clock me-1"></i> Cập nhật: @(Model.Ngay_Dang.HasValue ? Model.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</span>
+                    </div>
+                </div>
+
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Mã tin:</strong>
+                        <span>#@Model.ID_Phong_Tro</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Địa chỉ:</strong>
+                        <span class="text-end">@Model.Dia_Chi</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Quận/Huyện:</strong>
+                        <span>@(Model.Khu_Vuc != null ? Model.Khu_Vuc.Ten_KV : "...")</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Ngày đăng:</strong>
+                        <span>@(Model.Ngay_Dang.HasValue ? Model.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Ngày hết hạn:</strong>
+                        <span>@(Model.Ngay_Het_Han.HasValue ? Model.Ngay_Het_Han.Value.ToString("dd/MM/yyyy") : "...")</span>
+                    </li>
+                </ul>
+
+                <!-- Thông tin mô tả -->
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-3">Thông tin mô tả</h3>
+                    <div class="text-muted" style="line-height: 1.7;">
+                        @Html.Raw(Model.Mo_Ta.Replace("**##split##", "<br />").Replace("##split##", "<br />"))
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-3">Nổi bật</h3>
+                    @if (noiBat != null)
+                    {
+                        <div class="row">
+
+                            <!-- CỘT 1 (Đổi col-md-6 thành col-md-4) -->
+                            <div class="col-md-4">
+                                <ul class="list-unstyled">
+                                    <!--
+                                SỬA LOGIC:
+                                - Đổi icon "bi-x-circle" thành "bi-check-circle-fill"
+                                - Đổi class "text-muted" thành "text-muted opacity-75"
+                            -->
+                                    <li class="mb-2 @(noiBat.Day_du_noi_that == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Đầy đủ nội thất
+                                    </li>
+                                    <li class="mb-2 @(noiBat.Co_may_giat == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Có máy giặt
+                                    </li>
+                                    <li class="mb-2 @(noiBat.Gio_giac_tu_do == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Giờ giấc tự do
+                                    </li>
+                                    <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Có điều hòa
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- CỘT 2 (Đổi col-md-6 thành col-md-4) -->
+                            <div class="col-md-4">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2 @(noiBat.Co_gac == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Có gác
+                                    </li>
+                                    <li class="mb-2 @(noiBat.Co_tu_lanh == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Có tủ lạnh
+                                    </li>
+                                    <li class="mb-2 @(noiBat.Co_bao_ve_24_24 == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Bảo vệ 24/24
+                                    </li>
+                                    <li class="mb-2 @(noiBat.Co_thang_may == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Có thang máy
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- THÊM MỚI CỘT 3 (col-md-4) -->
+                            <div class="col-md-4">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2 @(noiBat.Ke_bep == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Kệ bếp
+                                    </li>
+                                    <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Có máy lạnh
+                                    </li>
+                                    <li class="mb-2 @(noiBat.Khong_chung_chu == true ? "text-success" : "text-muted opacity-75")">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Không chung chủ
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
                     }
                     else
                     {
-                        <div class="carousel-item active">
-                            <img src="@Url.Content("~/Kho/Img/placeholder.jpg")" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Chưa có ảnh">
-                        </div>
+                        <p class="text-muted">Không có thông tin nổi bật.</p>
                     }
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#phongTroCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#phongTroCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
 
-                <div class="carousel-indicators" style="position: static; margin-top: 10px;">
-                    @for (int i = 0; i < hinhAnh.Count; i++)
-                    {
-                        <button type="button" data-bs-target="#phongTroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i+1)" style="width: 100px; height: 70px;">
-                            <img src="@Url.Content("~/Kho/Img/" + hinhAnh[i].Url_Anh)" class="d-block w-100" style="height: 70px; object-fit: cover; border-radius: 5px;" alt="Thumbnail @(i+1)">
-                        </button>
-                    }
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-3">Vị trí & bản đồ</h3>
+
+                    <!-- Hiển thị địa chỉ và link "Xem bản đồ lớn" (giống ảnh mẫu) -->
+                    <p class="text-muted d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="bi bi-geo-alt-fill me-1"></i>
+                            Địa chỉ: @Model.Dia_Chi
+                        </span>
+                        <a href="@mapSearchUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Xem bản đồ lớn
+                        </a>
+                    </p>
+
+                    <!--
+                SỬA Ở ĐÂY:
+                Thay thế src cố định bằng @mapEmbedUrl động
+            -->
+                    <iframe src="@mapEmbedUrl"
+                            width="100%"
+                            height="400"
+                            style="border:0; border-radius: 8px;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
-            </div>
+                <!-- ============================================== -->
+                <!-- KẾT THÚC PHẦN VỊ TRÍ & BẢN ĐỒ -->
+                <!-- ============================================== -->
 
-            <div class="mt-4">
-                <span class="badge bg-danger mb-2">@Model.Loai_Tin.Ten_LoaiTin</span>
-                <div class="mb-1">
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                </div>
-                <h1 class="h2 text-danger fw-bold">@Model.Ten_Phong</h1>
-
-                <div class="d-flex flex-wrap align-items-center text-muted mt-3 mb-3">
-                    <span class="fw-bold text-success fs-4 me-4">@(Model.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)Model.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")</span>
-                    <span class="me-4"><i class="bi bi-rulers me-1"></i> @Model.Dien_Tich m²</span>
-                    <span><i class="bi bi-clock me-1"></i> Cập nhật: @(Model.Ngay_Dang.HasValue ? Model.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</span>
-                </div>
-            </div>
-
-            <ul class="list-group list-group-flush mb-4">
-                <li class="list-group-item d-flex justify-content-between">
-                    <strong>Mã tin:</strong>
-                    <span>#@Model.ID_Phong_Tro</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <strong>Địa chỉ:</strong>
-                    <span class="text-end">@Model.Dia_Chi</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <strong>Quận/Huyện:</strong>
-                    <span>@(Model.Khu_Vuc != null ? Model.Khu_Vuc.Ten_KV : "...")</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <strong>Ngày đăng:</strong>
-                    <span>@(Model.Ngay_Dang.HasValue ? Model.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <strong>Ngày hết hạn:</strong>
-                    <span>@(Model.Ngay_Het_Han.HasValue ? Model.Ngay_Het_Han.Value.ToString("dd/MM/yyyy") : "...")</span>
-                </li>
-            </ul>
-
-            <!-- Thông tin mô tả -->
-            <div class="mb-4">
-                <h3 class="h5 fw-bold mb-3">Thông tin mô tả</h3>
-                <div class="text-muted" style="line-height: 1.7;">
-                    @Html.Raw(Model.Mo_Ta.Replace("**##split##", "<br />").Replace("##split##", "<br />"))
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <h3 class="h5 fw-bold mb-3">Nổi bật</h3>
-                @if (noiBat != null)
-                {
-                    <div class="row">
-
-                        <!-- CỘT 1 (Đổi col-md-6 thành col-md-4) -->
-                        <div class="col-md-4">
-                            <ul class="list-unstyled">
-                                <!--
-                                    SỬA LOGIC:
-                                    - Đổi icon "bi-x-circle" thành "bi-check-circle-fill"
-                                    - Đổi class "text-muted" thành "text-muted opacity-75"
-                                -->
-                                <li class="mb-2 @(noiBat.Day_du_noi_that == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Đầy đủ nội thất
-                                </li>
-                                <li class="mb-2 @(noiBat.Co_may_giat == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Có máy giặt
-                                </li>
-                                <li class="mb-2 @(noiBat.Gio_giac_tu_do == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Giờ giấc tự do
-                                </li>
-                                <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Có điều hòa
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- CỘT 2 (Đổi col-md-6 thành col-md-4) -->
-                        <div class="col-md-4">
-                            <ul class="list-unstyled">
-                                <li class="mb-2 @(noiBat.Co_gac == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Có gác
-                                </li>
-                                <li class="mb-2 @(noiBat.Co_tu_lanh == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Có tủ lạnh
-                                </li>
-                                <li class="mb-2 @(noiBat.Co_bao_ve_24_24 == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Bảo vệ 24/24
-                                </li>
-                                <li class="mb-2 @(noiBat.Co_thang_may == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Có thang máy
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- THÊM MỚI CỘT 3 (col-md-4) -->
-                        <div class="col-md-4">
-                            <ul class="list-unstyled">
-                                <li class="mb-2 @(noiBat.Ke_bep == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Kệ bếp
-                                </li>
-                                <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Có máy lạnh
-                                </li>
-                                <li class="mb-2 @(noiBat.Khong_chung_chu == true ? "text-success" : "text-muted opacity-75")">
-                                    <i class="bi bi-check-circle-fill me-2"></i>Không chung chủ
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <p class="text-muted">Không có thông tin nổi bật.</p>
-                }
-            </div>
-
-            <div class="mb-4">
-                <h3 class="h5 fw-bold mb-3">Vị trí & bản đồ</h3>
-
-                <!-- Hiển thị địa chỉ và link "Xem bản đồ lớn" (giống ảnh mẫu) -->
-                <p class="text-muted d-flex justify-content-between align-items-center">
-                    <span>
-                        <i class="bi bi-geo-alt-fill me-1"></i>
-                        Địa chỉ: @Model.Dia_Chi
-                    </span>
-                    <a href="@mapSearchUrl" target="_blank" class="btn btn-sm btn-outline-primary">
-                        Xem bản đồ lớn
-                    </a>
-                </p>
-
-                <!--
-                    SỬA Ở ĐÂY:
-                    Thay thế src cố định bằng @mapEmbedUrl động
-                -->
-                <iframe src="@mapEmbedUrl"
-                        width="100%"
-                        height="400"
-                        style="border:0; border-radius: 8px;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-            <!-- ============================================== -->
-            <!-- KẾT THÚC PHẦN VỊ TRÍ & BẢN ĐỒ -->
-            <!-- ============================================== -->
-
-            <div class="mb-4">
-                <h3 class="h5 fw-bold mb-3">Thông tin liên hệ</h3>
-                <div class="card p-3 post-contact-box-bottom">
-                    <div class="row g-3 align-items-center">
-                        <!-- Avatar -->
-                        <div class="col-md-2 col-3 text-center">
-                            <img src="@Url.Content(avatarNguoiDang)" class="rounded-circle" alt="Avatar"
-                                 style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #eee;">
-                        </div>
-                        <!-- Info -->
-                        <div class="col-md-5 col-9">
-                            <h6 class="fw-bold mb-0">@(Model.Tai_Khoan != null ? Model.Tai_Khoan.Name : "...")</h6>
-                            <p class="text-muted small mb-1">
-                                <span class="text-success me-1" style="font-size: 0.7rem; vertical-align: middle;">●</span> Đang hoạt động
-                            </p>
-                            <p class="text-muted small mb-0">
-                                @Model.Tai_Khoan.Phong_Tro.Count() tin đăng • Tham gia từ: @(Model.Tai_Khoan != null && Model.Tai_Khoan.Ngay_Tao.HasValue ? Model.Tai_Khoan.Ngay_Tao.Value.ToString("dd/MM/yyyy") : "...")
-                            </p>
-                        </div>
-                        <!-- Buttons -->
-                        <div class="col-md-5">
-                            <a href="tel:@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "#")" class="btn btn-success d-block w-100 mb-2 fw-bold">
-                                <i class="bi bi-telephone-fill me-2"></i>@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "...")
-                            </a>
-                            <a href="#" class="btn btn-primary d-block w-100 fw-bold">
-                                <i class="bi bi-chat-dots-fill me-2"></i> Nhắn Zalo
-                            </a>
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-3">Thông tin liên hệ</h3>
+                    <div class="card p-3 post-contact-box-bottom">
+                        <div class="row g-3 align-items-center">
+                            <!-- Avatar -->
+                            <div class="col-md-2 col-3 text-center">
+                                <img src="@Url.Content(avatarNguoiDang)" class="rounded-circle" alt="Avatar"
+                                     style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #eee;">
+                            </div>
+                            <!-- Info -->
+                            <div class="col-md-5 col-9">
+                                <h6 class="fw-bold mb-0">@(Model.Tai_Khoan != null ? Model.Tai_Khoan.Name : "...")</h6>
+                                <p class="text-muted small mb-1">
+                                    <span class="text-success me-1" style="font-size: 0.7rem; vertical-align: middle;">●</span> Đang hoạt động
+                                </p>
+                                <p class="text-muted small mb-0">
+                                    @Model.Tai_Khoan.Phong_Tro.Count() tin đăng • Tham gia từ: @(Model.Tai_Khoan != null && Model.Tai_Khoan.Ngay_Tao.HasValue ? Model.Tai_Khoan.Ngay_Tao.Value.ToString("dd/MM/yyyy") : "...")
+                                </p>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="col-md-5">
+                                <a href="tel:@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "#")" class="btn btn-success d-block w-100 mb-2 fw-bold">
+                                    <i class="bi bi-telephone-fill me-2"></i>@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "...")
+                                </a>
+                                <a href="#" class="btn btn-primary d-block w-100 fw-bold">
+                                    <i class="bi bi-chat-dots-fill me-2"></i> Nhắn Zalo
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ============================================== -->
-            <!-- LƯU Ý (GIỐNG ẢNH MẪU) -->
-            <!-- ============================================== -->
-            <div class="post-note-box">
-                <span class="note-title">Lưu ý:</span>
-                <p>Chỉ đặt cọc khi xác định được chủ nhà và có thỏa thuận biên nhận rõ ràng. Kiểm tra mọi điều khoản và yêu cầu liệt kê tất cả chi phí hàng tháng vào hợp đồng. <a href="#">Xem thêm</a></p>
-                <p>Mọi thông tin liên quan đến tin đăng này chỉ mang tính chất tham khảo. Nếu bạn thấy rằng tin đăng này không đúng hoặc có dấu hiệu lừa đảo, <a href="#">hãy phản ánh với chúng tôi</a>.</p>
+                <!-- ============================================== -->
+                <!-- LƯU Ý (GIỐNG ẢNH MẪU) -->
+                <!-- ============================================== -->
+                <div class="post-note-box">
+                    <span class="note-title">Lưu ý:</span>
+                    <p>Chỉ đặt cọc khi xác định được chủ nhà và có thỏa thuận biên nhận rõ ràng. Kiểm tra mọi điều khoản và yêu cầu liệt kê tất cả chi phí hàng tháng vào hợp đồng. <a href="#">Xem thêm</a></p>
+                    <p>Mọi thông tin liên quan đến tin đăng này chỉ mang tính chất tham khảo. Nếu bạn thấy rằng tin đăng này không đúng hoặc có dấu hiệu lừa đảo, <a href="#">hãy phản ánh với chúng tôi</a>.</p>
+                </div>
             </div>
             <!-- KHỐI MỚI: TIN ĐĂNG CÙNG KHU VỰC -->
             @if (relatedPosts != null && relatedPosts.Any())

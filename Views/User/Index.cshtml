@@ -85,13 +85,34 @@
                             <div class="media-grid4">
                                 <!-- ẢNH LỚN BÊN TRÁI -->
                                 <div class="media-left">
-                                    <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })">
-                                        <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
-                                             alt="@item.Ten_Phong" loading="lazy" />
-                                    </a>
-                                    <div class="image-count-overlay">
-                                        <i class="bi bi-camera-fill"></i> @hinhAnh.Count
-                                    </div>
+                                    @if (item.Videos != null && item.Videos.Any())
+                                    {
+                                        // Lấy video đầu tiên
+                                        var firstVideo = item.Videos.First();
+
+                                        // HIỂN THỊ VIDEO
+                                        // (Giả sử Url_Video là tên file mp4 nằm trong thư mục ~/Kho/Video/)
+                                        <video controls style="width: 100%; height: 100%; object-fit: cover;">
+                                            <source src="@Url.Content("~/Kho/Video/" + firstVideo.Url_Video)" type="video/mp4">
+                                            Trình duyệt của bạn không hỗ trợ thẻ video.
+                                        </video>
+
+                                        // (Tùy chọn) Vẫn hiển thị số lượng ảnh nếu bạn muốn
+                                        <div class="image-count-overlay">
+                                            <i class="bi bi-camera-fill"></i> @hinhAnh.Count
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        // KHÔNG CÓ VIDEO -> HIỂN THỊ ẢNH NHƯ CŨ
+                                        <a href="@Url.Action("ChiTiet", "Home", new { id = item.ID_Phong_Tro })">
+                                            <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
+                                                 alt="@item.Ten_Phong" loading="lazy" />
+                                        </a>
+                                        <div class="image-count-overlay">
+                                            <i class="bi bi-camera-fill"></i> @hinhAnh.Count
+                                        </div>
+                                    }
                                 </div>
 
                                 <!-- PHẢI: 1 ẢNH TRÊN -->
@@ -221,7 +242,7 @@
                                                 </div>
                                             </div>
                                             <div class="d-flex align-items-center">
-                                                <a href="tel:@(item.Tai_Khoan != null ? item.Tai_Khoan.SDT : "#")" class="btn btn-success" style="font-size: 0.9rem; font-weight: bold;">
+                                                <a href="tel:@(item.Tai_Khoan != null ? item.Tai_Khoan.SDT : "#")" class="btn btn-success" style="font-size: 0.9rem; font-weight: bold;margin-right: 10px">
                                                     <i class="bi bi-telephone-fill me-1"></i> @(item.Tai_Khoan != null ? item.Tai_Khoan.SDT : "...")
                                                 </a>
                                                 <a href="#" class="btn-favorite @activeClass" data-post-id="@item.ID_Phong_Tro">
@@ -239,7 +260,7 @@
                 {
                     <div class="card shadow-sm mb-4 border-0">
                         <div class="row g-0 align-items-start">
-                            <div class="col-md-5 p-3 align-self-start">
+                            <div class="col-md-5 p-0 align-self-start">
                                 <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-image-link">
                                     <div class="pt-img">
                                         <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
@@ -249,7 +270,7 @@
                                 </a>
                             </div>
 
-                            <div class="col-md-7 d-flex flex-column">
+                            <div class="col-md-7 p-3 d-flex flex-column">
                                 <div class="card-body py-3">
                                     <div class="mb-1">
                                         <i class="bi bi-star-fill text-warning"></i>
@@ -276,7 +297,7 @@
                                     <p class="pt-desc post-description">@item.Mo_Ta.Replace("**##split##", " ").Replace("##split##", " ")</p>
                                 </div>
 
-                                <div class="pt-footer d-flex justify-content-between align-items-center px-3 pb-3">
+                                <div class="pt-footer d-flex justify-content-between align-items-center ">
                                     <div class="d-flex align-items-center">
                                         <img class="avatar" src="@Url.Content(avatarNguoiDang)" alt="Avatar">
                                         <div class="ms-2">
@@ -556,9 +577,9 @@
                 <div class="card-header fw-bold">Bài viết mới</div>
                 <div class="card-body" style="padding: 0.5rem 1rem;">
                     <!--
-                (Lưu ý: Bạn cần có class 'sidebar-filter-link'
-                trong file Index.css để hiển thị mũi tên cam)
-            -->
+                        (Lưu ý: Bạn cần có class 'sidebar-filter-link'
+                        trong file Index.css để hiển thị mũi tên cam)
+                    -->
                     <a href="#" class="sidebar-filter-link">Phòng trọ giá rẻ đang dần biến mất tại các khu trung tâm?</a>
                     <a href="#" class="sidebar-filter-link">Năm 2025: Người đi làm sẽ ưa chuộng loại phòng trọ nào?</a>
                     <a href="#" class="sidebar-filter-link">Giá phòng trọ TPHCM tháng 8/2025: Tăng hay giảm?</a>
@@ -582,51 +603,75 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script>
-        $(document).ready(function () {
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@@section Scripts {
+<script>
+       $(document).ready(function () {
 
-            // 1. Đọc Token từ thẻ input mà @Html.AntiForgeryToken() vừa tạo
-            var token = $('input[name="__RequestVerificationToken"]').val();
+    // 1. Lấy thẻ input chứa Token
+    var tokenInput = $('input[name="__RequestVerificationToken"]');
+    var token = tokenInput.val();
 
-            $('.btn-favorite').on('click', function (e) {
-                e.preventDefault();
-                var $this = $(this);
-                var postId = $this.data('post-id');
+    // Lấy tên tham số (để phòng trường hợp nó không phải là __RequestVerificationToken)
+    // Mặc định là __RequestVerificationToken, nhưng lấy động cho chắc ăn.
+    var tokenName = tokenInput.attr('name');
 
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("ToggleFavorite", "Home")", // Sửa "Home" thành tên Controller của bạn
-                    data: { id: postId },
+    // Tạo object dữ liệu để gửi đi
+    var dataToSend = { id: 0 }; // Giá trị id tạm thời
+    dataToSend[tokenName] = token; // Thêm token vào object với tên đúng
 
-                    // 2. Gửi Token này trong header của request
-                    headers: {
-                        'RequestVerificationToken': token
-                    },
+    $('.btn-favorite').on('click', function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var postId = $this.data('post-id');
 
-                    success: function (data) {
-                        if (data.success) {
-                            if (data.isFavorited) {
-                                $this.addClass('active');
-                                $this.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
-                            } else {
-                                $this.removeClass('active');
-                                $this.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
-                            }
+        // Cập nhật ID cho object dữ liệu
+        dataToSend.id = postId;
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ToggleFavorite", "User")",
+
+            // 2. Gửi data đã có Token (với tên đúng)
+            data: dataToSend,
+
+            success: function (data) {
+                if (data.success) {
+                    if (data.isFavorited) {
+                        $this.addClass('active');
+                        $this.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                        if ($this.contents().length > 1 && $this.contents().last()[0].nodeType === 3) {
+                            $this.contents().last().replaceWith("");
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        if (xhr.status == 401) {
-                            alert("Bạn cần đăng nhập để thực hiện việc này.");
-                        } else {
-                            // Lỗi 500 (Internal Server Error) hoặc lỗi khác sẽ hiển thị ở đây
-                            alert("Đã xảy ra lỗi. Vui lòng thử lại. (Lỗi: " + error + ")");
+                    } else {
+                        $this.removeClass('active');
+                        $this.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
+                        if ($this.contents().length > 1 && $this.contents().last()[0].nodeType === 3) {
+                            $this.contents().last().replaceWith("");
                         }
                     }
-                });
-            });
+                } else {
+                     // Nếu server trả về false (ví dụ chưa đăng nhập), hiển thị thông báo từ server
+                    alert(data.message);
+
+                    // Nếu chưa đăng nhập, có thể chuyển hướng
+                    // window.location.href = "@Url.Action("Login", "Account")";
+                }
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    alert("Bạn cần đăng nhập để thực hiện việc này.");
+                } else {
+                    console.error("Lỗi chi tiết:", xhr.responseText);
+                    alert("Đã xảy ra lỗi kết nối (" + xhr.status + "). Vui lòng thử lại.");
+                }
+            }
         });
-    </script>
+    });
+});
+</script>
+
 }
 <section class="mt-4">
     <div class="bg-white rounded-3 border p-4 p-md-5">

@@ -226,7 +226,7 @@
                                     </p>
                                     <p class="pt-desc post-description">@item.Mo_Ta.Replace("**##split##", " ").Replace("##split##", " ")</p>
                                 </div>
-                                <div class="pt-footer d-flex justify-content-between align-items-center px-3 pb-3">
+                                <div class="pt-footer d-flex justify-content-between align-items-center ">
                                     <div class="d-flex align-items-center">
                                         <img class="avatar" src="@Url.Content(avatarNguoiDang)" alt="Avatar">
                                         <div class="ms-2">
@@ -347,52 +347,74 @@
 @section Scripts {
     <!-- Script cho nút Yêu thích (giữ nguyên) -->
     <script>
-        $(document).ready(function () {
-            // Lấy Token
-            var token = $('input[name="__RequestVerificationToken"]').val();
+       $(document).ready(function () {
 
-            $('.btn-favorite').on('click', function (e) {
-                e.preventDefault();
-                var $this = $(this);
-                var postId = $this.data('post-id');
+    // 1. Lấy thẻ input chứa Token
+    var tokenInput = $('input[name="__RequestVerificationToken"]');
+    var token = tokenInput.val();
 
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("ToggleFavorite", "Home")", // Sửa "Home" nếu cần
-                    data: { id: postId },
-                    headers: {
-                        'RequestVerificationToken': token
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            if (data.isFavorited) {
-                                // (Không nên xảy ra, vì đây là trang Tin Đã Lưu)
-                                $this.addClass('active');
-                                $this.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
-                            } else {
-                                // CẢI TIẾN: Bỏ thích thì tin sẽ biến mất
-                                $this.closest('.card, .listing-card').fadeOut(400, function () {
-                                    $(this).remove();
-                                    // Kiểm tra xem còn tin nào không
-                                    if ($('.listing-card, .card.shadow-sm').length === 0) {
-                                        $('.col-lg-8.offset-lg-2').append('<div class="alert alert-info mt-4">Bạn không còn tin nào đã lưu.</div>');
-                                        // Ẩn phân trang nếu hết tin
-                                        $('.pagination-container').hide();
-                                    }
-                                });
-                            }
+    // Lấy tên tham số (để phòng trường hợp nó không phải là __RequestVerificationToken)
+    // Mặc định là __RequestVerificationToken, nhưng lấy động cho chắc ăn.
+    var tokenName = tokenInput.attr('name');
+
+    // Tạo object dữ liệu để gửi đi
+    var dataToSend = { id: 0 }; // Giá trị id tạm thời
+    dataToSend[tokenName] = token; // Thêm token vào object với tên đúng
+
+    $('.btn-favorite').on('click', function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var postId = $this.data('post-id');
+
+        // Cập nhật ID cho object dữ liệu
+        dataToSend.id = postId;
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ToggleFavorite", "User")",
+
+            // 2. Gửi data đã có Token (với tên đúng)
+            data: dataToSend,
+
+            success: function (data) {
+                if (data.success) {
+                    if (data.isFavorited) {
+                        $this.addClass('active');
+                        $this.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                        if ($this.contents().length > 1 && $this.contents().last()[0].nodeType === 3) {
+                            $this.contents().last().replaceWith("");
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        if (xhr.status == 401) {
-                            alert("Bạn cần đăng nhập để thực hiện việc này.");
-                        } else {
-                            alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+                    } else {
+                        $this.removeClass('active');
+                        $this.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
+                        if ($this.contents().length > 1 && $this.contents().last()[0].nodeType === 3) {
+                            $this.contents().last().replaceWith("");
+                        }
+                        if ($('.listing-card, .card.shadow-sm').length === 0) {
+                            $('.col-lg-8.offset-lg-2').append('<div class="alert alert-info mt-4">Bạn không còn tin nào đã lưu.</div>');
+                            // Ẩn phân trang nếu hết tin
+                            $('.pagination-container').hide();
                         }
                     }
-                });
-            });
+                } else {
+                     // Nếu server trả về false (ví dụ chưa đăng nhập), hiển thị thông báo từ server
+                    alert(data.message);
+
+                    // Nếu chưa đăng nhập, có thể chuyển hướng
+                    // window.location.href = "@Url.Action("Login", "Account")";
+                }
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    alert("Bạn cần đăng nhập để thực hiện việc này.");
+                } else {
+                    console.error("Lỗi chi tiết:", xhr.responseText);
+                    alert("Đã xảy ra lỗi kết nối (" + xhr.status + "). Vui lòng thử lại.");
+                }
+            }
         });
+    });
+});
     </script>
 }
 
