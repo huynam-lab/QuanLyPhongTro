@@ -1,4 +1,6 @@
 ﻿
+
+
 :root {
     --color-orange-500: #f56c00;
 }
@@ -9,7 +11,7 @@
 
     .post-title-link:hover {
         color: inherit;
-        text-decoration: underline;
+       
     }
 .post-image-link {
     display: block;
@@ -210,6 +212,7 @@ a.btn-favorite.active i {
 
 
 .gallery-3-leftBig {
+    
     display: grid;
     grid-template-columns: 7fr 5fr; /* tỉ lệ giống ảnh mẫu */
     grid-template-rows: 1fr 1fr;
@@ -217,7 +220,7 @@ a.btn-favorite.active i {
         "big r1"
         "big r2";
     gap: .25rem;
-    height: 230px; /* chỉnh 200–280 tùy card */
+    height: 100%; /* chỉnh 200–280 tùy card */
     border-radius: .5rem;
     overflow: hidden;
     position: relative; /* để đặt overlay */
@@ -389,7 +392,7 @@ a.btn-favorite.active i {
 }
 .pt-img {
     position: relative;
-    aspect-ratio: 4 / 3; /* Giữ tỉ lệ chuẩn như mẫu */
+    aspect-ratio: 3 / 3; /* Giữ tỉ lệ chuẩn như mẫu */
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
@@ -468,7 +471,7 @@ a.btn-favorite.active i {
 /* ===== ẢNH ===== */
 .pt-img {
     position: relative;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 3;
     border-radius: 8px;
     overflow: hidden;
     background: #f5f5f5;
@@ -549,7 +552,7 @@ a.btn-favorite.active i {
 /* ===== ẢNH ===== */
 .lc-thumb {
     position: relative;
-    aspect-ratio: 4/3;
+    aspect-ratio: 3/3;
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
@@ -980,4 +983,85 @@ body.page-banggia .pt-container {
     margin-right: auto !important;
     padding-left: 16px;
     padding-right: 16px;
+}
+
+/* Thêm vào Index.css */
+.video-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem; /* Kích thước icon */
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 8px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.sidebar-post-image {
+    width: 100%;
+    height: 80px; /* <-- CỐ ĐỊNH CHIỀU CAO */
+    object-fit: cover; /* <-- CHỐNG MÉO/PHÌNH ẢNH */
+    border-radius: 0.25rem; /* (Giữ bo tròn góc) */
+}
+.col-md-5 .post-image-link {
+    display: block; /* Thẻ <a> mặc định là inline, cần đổi sang block */
+    height: 100%; /* <-- Dòng CSS quan trọng số 1 */
+    text-decoration: none;
+}
+
+/* BƯỚC 2: Ép 'div.gallery-3-leftBig'
+  phải dãn 100% chiều cao của thẻ <a>
+*/
+.gallery-3-leftBig {
+    height: 100%; /* <-- Dòng CSS quan trọng số 2 */
+    /* (Phần CSS Grid của bạn. 
+       Hãy đảm bảo CSS của bạn giống như này
+       để tạo bố cục 1 lớn - 2 nhỏ) 
+    */
+    display: grid;
+    grid-template-columns: 55% auto; /* Cột trái 55%, cột phải tự động */
+    grid-template-rows: 50% 50%; /* 2 hàng cao 50% */
+    grid-template-areas:
+        "big right1"
+        "big right2";
+    gap: 6px; /* Khoảng cách giữa các ảnh */
+    padding: 6px; /* Khoảng đệm nhỏ bên trong (nếu bạn muốn) */
+    box-sizing: border-box; /* Đảm bảo padding không làm vỡ layout */
+}
+
+/* (Các class con của gallery) */
+.g3-big {
+    grid-area: big;
+    position: relative; /* Cần cho nút đếm ảnh */
+}
+
+.g3-right1 {
+    grid-area: right1;
+}
+
+.g3-right2 {
+    grid-area: right2;
+}
+
+/* BƯỚC 3: Đảm bảo ảnh bên trong
+  luôn lấp đầy mà không bị méo 
+*/
+.gallery-3-leftBig img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Chống phình/méo ảnh */
+    border-radius: 8px; /* Bo tròn góc (giống ảnh mẫu) */
+}
+
+/* (Class đếm ảnh của bạn, giữ nguyên) */
+.image-count-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    z-index: 2; /* Nằm trên ảnh */
 }

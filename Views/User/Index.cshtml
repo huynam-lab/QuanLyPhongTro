@@ -2,9 +2,11 @@
 @using PagedList.Mvc;
 
 @model IPagedList<QuanLyPhongTro.Models.Phong_Tro>
+
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var currentFilter = ViewBag.CurrentFilter as string ?? "de-xuat";
 }
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -15,21 +17,50 @@
         <div class="col-lg-8">
 
             <h2 class="h4">Kênh thông tin Phòng Trọ số 1 Việt Nam</h2>
-            <p class="text-muted">Có 77.541 tin đang cho thuê</p>
+            <p class="text-muted">Có @Model.TotalItemCount.ToString("N0") tin đang cho thuê</p>
 
 
 
             <ul class="nav nav-tabs mb-3">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Đề xuất</a>
+                    <a class="nav-link @(currentFilter == "de-xuat" ? "active" : "")"
+                       aria-current="page"
+                       href="@Url.Action("Index", new {
+                        filterBy = "de-xuat",
+                        minPrice = ViewBag.CurrentMinPrice,
+                        maxPrice = ViewBag.CurrentMaxPrice,
+                        minArea = ViewBag.CurrentMinArea,
+                        maxArea = ViewBag.CurrentMaxArea
+                    })">
+                        Đề xuất
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Mới đăng</a>
+                    <a class="nav-link @(currentFilter == "moi-dang" ? "active" : "")"
+                       href="@Url.Action("Index", new {
+                        filterBy = "moi-dang",
+                        minPrice = ViewBag.CurrentMinPrice,
+                        maxPrice = ViewBag.CurrentMaxPrice,
+                        minArea = ViewBag.CurrentMinArea,
+                        maxArea = ViewBag.CurrentMaxArea
+                    })">
+                        Mới đăng
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Có video</a>
+                    <a class="nav-link @(currentFilter == "co-video" ? "active" : "")"
+                       href="@Url.Action("Index", new {
+                        filterBy = "co-video",
+                        minPrice = ViewBag.CurrentMinPrice,
+                        maxPrice = ViewBag.CurrentMaxPrice,
+                        minArea = ViewBag.CurrentMinArea,
+                        maxArea = ViewBag.CurrentMaxArea
+                    })">
+                        Có video
+                    </a>
                 </li>
             </ul>
+            @Html.AntiForgeryToken()
             @foreach (var item in Model)
             {
                 var userFavorites = (List<int>)ViewBag.UserFavorites ?? new List<int>();
@@ -38,10 +69,15 @@
                 var activeClass = isFavorited ? "active" : "";
 
                 var hinhAnh = item.Hinh_Anh.ToList();
-                var avatarNguoiDang = (item.Tai_Khoan != null && !string.IsNullOrEmpty(item.Tai_Khoan.Avata)) ? item.Tai_Khoan.Avata : "~/Assets/Images/Avatar/avatar-mac-dinh.jpg";
+                var avatarNguoiDang = (item.Tai_Khoan != null && !string.IsNullOrEmpty(item.Tai_Khoan.Avata))
+                    ? "~/Assets/Images/Avatar/" + item.Tai_Khoan.Avata
+                    : "~/Assets/Images/Avatar/avatar-mac-dinh.jpg"; var useSimpleLayout = false;
+                if ((item.ID_LoaiTin == 1 && hinhAnh.Count < 4) || (item.ID_LoaiTin == 2 && hinhAnh.Count < 3))
+                {
+                    useSimpleLayout = true;
+                }
 
-
-                if (item.ID_LoaiTin == 1)
+                if (item.ID_LoaiTin == 1 && !useSimpleLayout)
                 {
                     <div class="card shadow-sm mb-4 border-0">
 
@@ -53,9 +89,9 @@
                                         <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
                                              alt="@item.Ten_Phong" loading="lazy" />
                                     </a>
-                                        <div class="image-count-overlay">
-                                            <i class="bi bi-camera-fill"></i> @hinhAnh.Count
-                                        </div>
+                                    <div class="image-count-overlay">
+                                        <i class="bi bi-camera-fill"></i> @hinhAnh.Count
+                                    </div>
                                 </div>
 
                                 <!-- PHẢI: 1 ẢNH TRÊN -->
@@ -95,13 +131,13 @@
                                 <span>@(item.Khu_Vuc != null ? item.Khu_Vuc.Ten_KV : "...")</span>
                             </p>
                             <p class="card-text text-muted post-description">
-                                @item.Mo_Ta
+                                @item.Mo_Ta.Replace("**##split##", " ").Replace("##split##", " ")
                             </p>
                         </div>
 
-                        <div class="card-footer bg-white d-flex justify-content-between align-items-center border-top-0 pt-0">
+                        <div class="card-footer bg-white d-flex justify-content-between align-items-center border-top-0 pt-3">
                             <div class="d-flex align-items-center">
-                                <img style="height:30px;width:30px" src="@Url.Content(avatarNguoiDang)" class="rounded-circle" alt="Avatar">
+                                <img style="height:40px;width:40px" src="@Url.Content(avatarNguoiDang)" class="rounded-circle" alt="Avatar">
                                 <div class="ms-2">
                                     <span class="fw-bold d-block" style="font-size: 0.9rem;">@(item.Tai_Khoan != null ? item.Tai_Khoan.Name : "...")</span>
                                     <small class="text-muted">@(item.Ngay_Dang.HasValue ? item.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")</small>
@@ -119,7 +155,7 @@
                         </div>
                     </div>
                 }
-                else if (item.ID_LoaiTin == 2)
+                else if (item.ID_LoaiTin == 2 && !useSimpleLayout)
                 {
                     <div class="card shadow-sm mb-4 border-0">
                         <div class="row g-0">
@@ -172,7 +208,7 @@
                                             <i class="bi bi-geo-alt-fill me-1"></i>@(item.Khu_Vuc != null ? item.Khu_Vuc.Ten_KV : "...")
                                         </p>
                                         <p class="card-text text-muted post-description">
-                                            @item.Mo_Ta
+                                            @item.Mo_Ta.Replace("**##split##", " ").Replace("##split##", " ")
                                         </p>
                                     </div>
                                     <div class="mt-auto">
@@ -199,7 +235,7 @@
                         </div>
                     </div>
                 }
-                else if (item.ID_LoaiTin == 3)
+                else if (item.ID_LoaiTin == 3 || useSimpleLayout)
                 {
                     <div class="card shadow-sm mb-4 border-0">
                         <div class="row g-0 align-items-start">
@@ -220,9 +256,11 @@
                                         <i class="bi bi-star-fill text-warning"></i>
                                         <i class="bi bi-star-fill text-warning"></i>
                                     </div>
-                                    <h5 class="pt-title--orange"><a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-title-link">
-    @item.Ten_Phong
-</a></h5>
+                                    <h5 class="pt-title--orange">
+                                        <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="post-title-link">
+                                            @item.Ten_Phong
+                                        </a>
+                                    </h5>
 
                                     <p class="mb-1">
                                         <span class="pt-price">
@@ -235,7 +273,7 @@
                                         <i class="bi bi-geo-alt-fill me-1"></i>@(item.Khu_Vuc?.Ten_KV ?? "...")
                                     </p>
 
-                                    <p class="pt-desc post-description">@item.Mo_Ta</p>
+                                    <p class="pt-desc post-description">@item.Mo_Ta.Replace("**##split##", " ").Replace("##split##", " ")</p>
                                 </div>
 
                                 <div class="pt-footer d-flex justify-content-between align-items-center px-3 pb-3">
@@ -292,8 +330,7 @@
                                         </p>
                                     </div>
 
-                                    <p class="lc-desc post-description">@item.Mo_Ta</p>
-                                    <div class="lc-footer">
+                                    <p class="pt-desc post-description">@item.Mo_Ta.Replace("**##split##", " ").Replace("##split##", " ")</p>                                    <div class="lc-footer">
                                         <div class="lc-author">
                                             <img src="@Url.Content(avatarNguoiDang)" class="lc-avatar" alt="Avatar">
                                             <div>
@@ -340,7 +377,7 @@
                                         </p>
                                     </div>
 
-                                    <p class="lc-desc post-description">@item.Mo_Ta</p>
+                                    <p class="pt-desc post-description">@item.Mo_Ta.Replace("**##split##", " ").Replace("##split##", " ")</p>
                                     <div class="lc-footer">
                                         <div class="lc-time">@(item.Ngay_Dang.HasValue ? item.Ngay_Dang.Value.ToString("H' giờ trước'") : "Hôm nay")</div>
                                         <a href="#" class="btn-favorite @activeClass" data-post-id="@item.ID_Phong_Tro">
@@ -353,35 +390,36 @@
                     </div>
                 }
             }
-        <div class="pagination-container d-flex justify-content-center">
-            @Html.PagedListPager(
-                Model,
-                page => Url.Action("Index", new
-                {
-                    page = page,
-                    minPrice = ViewBag.CurrentMinPrice,
-                    maxPrice = ViewBag.CurrentMaxPrice,
-                    minArea = ViewBag.CurrentMinArea,
-                    maxArea = ViewBag.CurrentMaxArea
-                }),
-                new PagedListRenderOptions
-                {
-                    UlElementClasses = new[] { "pagination", "pt-custom-pagination" },
-                    LiElementClasses = new[] { "page-item" },
+            <div class="pagination-container d-flex justify-content-center">
+                @Html.PagedListPager(
+                    Model,
+                    page => Url.Action("Index", new
+                    {
+                        page = page,
+                        filterBy = ViewBag.CurrentFilter,
+                        minPrice = ViewBag.CurrentMinPrice,
+                        maxPrice = ViewBag.CurrentMaxPrice,
+                        minArea = ViewBag.CurrentMinArea,
+                        maxArea = ViewBag.CurrentMaxArea
+                    }),
+                    new PagedListRenderOptions
+                    {
+                        UlElementClasses = new[] { "pagination", "pt-custom-pagination" },
+                        LiElementClasses = new[] { "page-item" },
 
-                    DisplayLinkToFirstPage = PagedList.Mvc.PagedListDisplayMode.Always,
-                    DisplayLinkToLastPage = PagedList.Mvc.PagedListDisplayMode.Always,
-                    DisplayLinkToPreviousPage = PagedList.Mvc.PagedListDisplayMode.Always,
-                    DisplayLinkToNextPage = PagedList.Mvc.PagedListDisplayMode.Always,
-                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
-                    MaximumPageNumbersToDisplay = 5,
+                        DisplayLinkToFirstPage = PagedList.Mvc.PagedListDisplayMode.Always,
+                        DisplayLinkToLastPage = PagedList.Mvc.PagedListDisplayMode.Always,
+                        DisplayLinkToPreviousPage = PagedList.Mvc.PagedListDisplayMode.Always,
+                        DisplayLinkToNextPage = PagedList.Mvc.PagedListDisplayMode.Always,
+                        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                        MaximumPageNumbersToDisplay = 5,
 
-                    LinkToPreviousPageFormat = "« Trang trước",
-                    LinkToNextPageFormat = "Trang sau »",
-                    LinkToFirstPageFormat = "««",
-                    LinkToLastPageFormat = "»»"
-                })
-        </div>
+                        LinkToPreviousPageFormat = "« Trang trước",
+                        LinkToNextPageFormat = "Trang sau »",
+                        LinkToFirstPageFormat = "««",
+                        LinkToLastPageFormat = "»»"
+                    })
+            </div>
         </div>
 
 
@@ -448,38 +486,59 @@
 
                 </div>
             </div>
-
             <div class="card mb-3">
                 <div class="card-header fw-bold">Tin mới đăng</div>
                 <div class="list-group list-group-flush">
 
                     @{
-                        // Lấy danh sách từ ViewBag
-                        var newestPosts = ViewBag.NewestPosts as List<QuanLyPhongTro.Models.Phong_Tro>;
+                        // Lấy danh sách Top 10 từ ViewBag
+                        var newestPostsFromViewBag = ViewBag.NewestPosts as List<QuanLyPhongTro.Models.Phong_Tro>;
                     }
 
-                    @if (newestPosts != null && newestPosts.Any())
+                    @if (newestPostsFromViewBag != null && newestPostsFromViewBag.Any())
                     {
-                        foreach (var item in newestPosts) // Lặp qua danh sách 10 tin mới
+                        // Lặp qua danh sách 10 tin mới này
+                        foreach (var post in newestPostsFromViewBag)
                         {
-                            var hinhAnhDauTien = item.Hinh_Anh.Any()
-                                ? Url.Content("~/Kho/Img/" + item.Hinh_Anh.First().Url_Anh)
+                            var hinhAnhDauTien = post.Hinh_Anh.Any()
+                                ? Url.Content("~/Kho/Img/" + post.Hinh_Anh.First().Url_Anh)
                                 : Url.Content("~/Kho/Img/placeholder.jpg");
 
-                            <a href="@Url.Action("ChiTiet", "Home", new { id = item.ID_Phong_Tro })" class="list-group-item list-group-item-action">
+                            // Kiểm tra xem tin có banner "CHO THUÊ NHANH" không
+                            var itemClass = (post.ID_LoaiTin == 1 || post.ID_LoaiTin == 2) ? "has-banner" : "";
+
+                            // Thêm icon video nếu có (giống ảnh mẫu)
+                            var hasVideo = post.Videos.Any();
+                            <a href="@Url.Action("ChiTiet", "User", new { id = post.ID_Phong_Tro })" class="list-group-item list-group-item-action">
                                 <div class="row g-2 align-items-center">
-                                    <div class="col-4">
-                                        <img src="@hinhAnhDauTien" class="img-fluid rounded" alt="@item.Ten_Phong">
+                                    <!-- Cột ảnh (có banner và icon video) -->
+                                    <div class="col-4 @itemClass" style="position: relative;">
+
+                                        <!-- Banner (chỉ hiển thị nếu là tin VIP) -->
+                                        <div class="featured-post-banner"></div>
+
+                                        <!-- Icon Play Video (nếu có) -->
+                                        @if (hasVideo)
+                                        {
+                                            <div class="video-play-icon">
+                                                <i class="bi bi-play-circle-fill"></i>
+                                            </div>
+                                        }
+
+                                        <img src="@hinhAnhDauTien" class="sidebar-post-image" alt="@post.Ten_Phong">
                                     </div>
+
+                                    <!-- Cột nội dung -->
                                     <div class="col-8">
                                         <h6 class="mb-1 text-primary title-clamp-2">
-                                            @item.Ten_Phong
+                                            @post.Ten_Phong
                                         </h6>
                                         <strong class="text-success d-block fw-bold">
-                                            @(item.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)item.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")
+                                            @(post.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)post.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")
                                         </strong>
                                         <small class="text-muted">
-                                            @(item.Ngay_Dang.HasValue ? item.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")
+                                            <!-- Hiển thị thời gian (X giờ trước / X ngày trước) -->
+                                            @(post.Ngay_Dang.HasValue ? Helper_GetTimeAgo(post.Ngay_Dang.Value) : "...")
                                         </small>
                                     </div>
                                 </div>
@@ -490,9 +549,36 @@
                     {
                         <div class="list-group-item">Chưa có tin đăng nào.</div>
                     }
+
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header fw-bold">Bài viết mới</div>
+                <div class="card-body" style="padding: 0.5rem 1rem;">
+                    <!--
+                (Lưu ý: Bạn cần có class 'sidebar-filter-link'
+                trong file Index.css để hiển thị mũi tên cam)
+            -->
+                    <a href="#" class="sidebar-filter-link">Phòng trọ giá rẻ đang dần biến mất tại các khu trung tâm?</a>
+                    <a href="#" class="sidebar-filter-link">Năm 2025: Người đi làm sẽ ưa chuộng loại phòng trọ nào?</a>
+                    <a href="#" class="sidebar-filter-link">Giá phòng trọ TPHCM tháng 8/2025: Tăng hay giảm?</a>
+                    <a href="#" class="sidebar-filter-link">Sáp nhập tỉnh thành có ảnh hưởng gì đến thị trường cho thuê?</a>
+                    <a href="#" class="sidebar-filter-link">5 dấu hiệu cho thấy bạn đang thuê nhầm "phòng trọ ác mộng"</a>
+                    <a href="#" class="sidebar-filter-link">Hướng dẫn cách xem và tính tiền điện nước phòng trọ chuẩn</a>
                 </div>
             </div>
 
+            <!-- ================================== -->
+            <!-- 4. WIDGET MỚI: CÓ THỂ BẠN QUAN TÂM -->
+            <!-- ================================== -->
+            <div class="card mb-3">
+                <div class="card-header fw-bold">Có thể bạn quan tâm</div>
+                <div class="card-body" style="padding: 0.5rem 1rem;">
+                    <a href="#" class="sidebar-filter-link">Mẫu hợp đồng cho thuê phòng trọ</a>
+                    <a href="#" class="sidebar-filter-link">Cẩn thận các kiểu lừa đảo khi thuê phòng trọ</a>
+                    <a href="#" class="sidebar-filter-link">Kinh nghiệm thuê phòng trọ Sinh Viên</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -500,40 +586,41 @@
     <script>
         $(document).ready(function () {
 
-            // Lắng nghe sự kiện click trên TẤT CẢ các nút có class .btn-favorite
+            // 1. Đọc Token từ thẻ input mà @Html.AntiForgeryToken() vừa tạo
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
             $('.btn-favorite').on('click', function (e) {
-                e.preventDefault(); // Ngăn trình duyệt nhảy lên đầu trang
+                e.preventDefault();
+                var $this = $(this);
+                var postId = $this.data('post-id');
 
-                var $this = $(this); // Nút trái tim vừa được click
-                var postId = $this.data('post-id'); // Lấy ID của phòng trọ
-
-                // Gửi yêu cầu AJAX đến Controller
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("ToggleFavorite", "Home")", // Sửa "Home" thành tên Controller của bạn
                     data: { id: postId },
+
+                    // 2. Gửi Token này trong header của request
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+
                     success: function (data) {
-                        // Khi Controller trả về kết quả thành công
                         if (data.success) {
                             if (data.isFavorited) {
-                                // 1. ĐỔI SANG ĐÃ THÍCH
                                 $this.addClass('active');
                                 $this.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
                             } else {
-                                // 2. ĐỔI SANG BỎ THÍCH
                                 $this.removeClass('active');
                                 $this.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
                             }
                         }
                     },
                     error: function (xhr, status, error) {
-                        // Khi Controller trả về lỗi (như 401 - chưa đăng nhập)
-                        if (xhr.status == 401 || (xhr.responseJSON && !xhr.responseJSON.success)) {
+                        if (xhr.status == 401) {
                             alert("Bạn cần đăng nhập để thực hiện việc này.");
-                            // Tùy chọn: Chuyển hướng đến trang đăng nhập
-                            // window.location.href = "@Url.Action("Login", "Account")";
                         } else {
-                            alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+                            // Lỗi 500 (Internal Server Error) hoặc lỗi khác sẽ hiển thị ở đây
+                            alert("Đã xảy ra lỗi. Vui lòng thử lại. (Lỗi: " + error + ")");
                         }
                     }
                 });
@@ -680,3 +767,24 @@
     </div>
 
 </section>
+@helper Helper_GetTimeAgo(DateTime postDate)
+{
+    TimeSpan diff = DateTime.Now - postDate;
+    if (diff.TotalDays >= 1)
+    {
+        @(((int)diff.TotalDays).ToString("N0") + " ngày trước")
+    }
+    else if (diff.TotalHours >= 1)
+    {
+        @(((int)diff.TotalHours).ToString("N0") + " giờ trước")
+    }
+    else if (diff.TotalMinutes >= 1)
+    {
+        @(((int)diff.TotalMinutes).ToString("N0") + " phút trước")
+    }
+    else
+    {
+        @("Vừa xong")
+    }
+}
+
