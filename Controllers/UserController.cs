@@ -9,6 +9,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+
+
 namespace QuanLyPhongTro.Controllers
 {
     public class UserController : Controller
@@ -30,7 +32,7 @@ namespace QuanLyPhongTro.Controllers
             base.OnActionExecuting(filterContext);
         }
 
-        public ActionResult Index(int? page,int? minPrice, int? maxPrice, int? minArea, int? maxArea)
+        public ActionResult Index(int? page,int? minPrice, int? maxPrice, int? minArea, int? maxArea, string filterBy = "de-xuat")
         {
             int? currentUserId = null;
             if (Session["ID_TK"] != null)
@@ -52,6 +54,7 @@ namespace QuanLyPhongTro.Controllers
             ViewBag.CurrentMaxPrice = maxPrice;
             ViewBag.CurrentMinArea = minArea;
             ViewBag.CurrentMaxArea = maxArea;
+            ViewBag.CurrentFilter = filterBy; // <-- THÊM MỚI: Lưu filter hiện tại
             // ----- PHÂN TRANG -----
             int pageSize = 10; // Số item mỗi trang
             int pageNumber = (page ?? 1); // Trang hiện tại, nếu không có thì là trang 1
@@ -62,6 +65,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
+                          .Include(p => p.Videos)
                           .Where(p => p.ID_CD == 4); // Lọc theo ID_CD = 4
             if (minPrice.HasValue)
             {
@@ -79,12 +83,42 @@ namespace QuanLyPhongTro.Controllers
             {
                 query = query.Where(p => p.Dien_Tich <= maxArea.Value);
             }
+
+
             // SẮP XẾP: Ưu tiên theo Loại Tin (1 -> 5), sau đó mới tới Ngày Đăng
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
                                    .ThenByDescending(p => p.Ngay_Dang);
+            IQueryable<Phong_Tro> sortedQuerys;
+            switch (filterBy)
+            {
+                case "moi-dang": // Nếu là tab "Mới đăng"
+                    sortedQuerys = query.OrderByDescending(p => p.Ngay_Dang);
+                    break;
 
+                case "co-video": // Nếu là tab "Có video"
+                    sortedQuerys = query.Where(p => p.Videos.Any()) // Lọc những tin có video
+                                         .OrderByDescending(p => p.Ngay_Dang); // Sắp xếp mới nhất
+                    break;
+
+                case "de-xuat": // Nếu là tab "Đề xuất" (Mặc định)
+                default:
+                    sortedQuerys = query.OrderBy(p => p.ID_LoaiTin) // Ưu tiên Loại tin (VIP)
+                                         .ThenByDescending(p => p.Ngay_Dang); // Sau đó mới nhất
+                    break;
+            }
+            var paginatedPosts = sortedQuery.ToPagedList(pageNumber, pageSize);
+
+            // 2. LẤY TOP 10 TIN MỚI NHẤT (CHO SIDEBAR)
+            var newestPosts = db.Phong_Tro
+                                .Include(p => p.Hinh_Anh) // Chỉ cần include ảnh
+                                .OrderByDescending(p => p.Ngay_Dang)
+                                .Take(10)
+                                .ToList();
+
+            // 3. TẠO VIEWMODEL VÀ GÁN DỮ LIỆU
             // 4. GỌI ToPagedList() THAY VÌ ToList()
             // Gửi Model phân trang qua View
+            ViewBag.NewestPosts = newestPosts; 
             return View(sortedQuery.ToPagedList(pageNumber, pageSize));
         }
         private List<int> GetUserFavorites()
@@ -100,34 +134,32 @@ namespace QuanLyPhongTro.Controllers
             return new List<int>(); // Trả về danh sách rỗng nếu chưa đăng nhập
         }
         [HttpPost]
-        public JsonResult ToggleFavorite(int id) // id này là ID_Phong_Tro
+        [ValidateAntiForgeryToken]
+        public JsonResult ToggleFavorite(int id)
         {
-            // 1. Kiểm tra xem người dùng đã đăng nhập chưa
+            // 1. Kiểm tra đăng nhập
             if (Session["ID_TK"] == null)
             {
-                // Trả về lỗi 401 (Chưa xác thực)
-                return Json(new { success = false, message = "Bạn cần đăng nhập." }, JsonRequestBehavior.AllowGet);
-                // Hoặc bạn có thể trả về lỗi 401
-                // Response.StatusCode = 401gi;
-                // return Json(new { success = false, message = "Bạn cần đăng nhập." });
+                Response.StatusCode = 401; // Lỗi 401 (Chưa xác thực)
+                return Json(new { success = false, message = "Bạn cần đăng nhập." });
             }
 
             int currentUserId = (int)Session["ID_TK"];
             bool isFavorited = false;
 
-            // 2. Kiểm tra xem tin này đã được yêu thích chưa
+            // 2. Kiểm tra
             var existingFavorite = db.Yeu_Thich
                                      .FirstOrDefault(yt => yt.ID_Phong_Tro == id && yt.ID_TK == currentUserId);
 
             if (existingFavorite != null)
             {
-                // 3a. ĐÃ CÓ -> Bỏ yêu thích (Xóa khỏi DB)
+                // 3a. Bỏ thích
                 db.Yeu_Thich.Remove(existingFavorite);
                 isFavorited = false;
             }
             else
             {
-                // 3b. CHƯA CÓ -> Thêm yêu thích (Thêm vào DB)
+                // 3b. Thêm thích
                 var newFavorite = new Yeu_Thich
                 {
                     ID_Phong_Tro = id,
@@ -139,7 +171,6 @@ namespace QuanLyPhongTro.Controllers
 
             db.SaveChanges();
 
-            // 4. Trả về kết quả (dạng JSON)
             return Json(new { success = true, isFavorited = isFavorited });
         }
 
@@ -159,6 +190,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
+                          .Include(p => p.Videos)
                           .Where(p => p.ID_CD == 6); // <-- LỌC THEO ID_CD = 6
 
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
@@ -192,6 +224,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
+                          .Include(p => p.Videos)
                           .Where(p => p.ID_CD == 5); // <-- LỌC THEO ID_CD = 5
 
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
@@ -209,6 +242,7 @@ namespace QuanLyPhongTro.Controllers
                              .Include(p => p.Hinh_Anh)
                              .Include(p => p.Loai_Tin)
                              .Include(p => p.Noi_Bat)
+                             .Include(p => p.Videos)
                              .FirstOrDefault(p => p.ID_Phong_Tro == id);
 
             // Nếu không tìm thấy phòng trọ, trả về lỗi
@@ -227,8 +261,43 @@ namespace QuanLyPhongTro.Controllers
                                   .Select(yt => yt.ID_Phong_Tro)
                                   .ToList();
             }
+            if (phongTro.ID_KV.HasValue)
+            {
+                var relatedPosts = db.Phong_Tro
+                    .Include(p => p.Hinh_Anh)
+                    .Include(p => p.Khu_Vuc)
+                    .Include(p => p.Loai_Tin) // Cần để hiển thị banner
+                    .Include(p => p.Videos)
+                    .Where(p => p.ID_KV == phongTro.ID_KV.Value && p.ID_Phong_Tro != id) // Lọc cùng KV, trừ tin này
+                    .OrderBy(p => p.ID_LoaiTin) // Sắp xếp theo ưu tiên
+                    .ThenByDescending(p => p.Ngay_Dang)
+                    .Take(8)
+                    .ToList();
+
+                ViewBag.RelatedPosts = relatedPosts;
+            }
+
+            // 2. Lấy Tin Đăng Mới Cập Nhật (Lấy 8 tin)
+            var latestPosts = db.Phong_Tro
+                .Include(p => p.Hinh_Anh)
+                .Include(p => p.Khu_Vuc)
+                .Include(p => p.Loai_Tin) // Cần để hiển thị banner
+                .Include(p => p.Videos)
+                .Where(p => p.ID_Phong_Tro != id) // Trừ tin này
+                .OrderByDescending(p => p.Ngay_Dang) // Mới nhất
+                .Take(8)
+                .ToList();
+
+            ViewBag.LatestPosts = latestPosts;
             ViewBag.UserFavorites = userFavorites;
 
+                var featuredPosts = db.Phong_Tro
+            .Where(p => (p.ID_LoaiTin == 1 || p.ID_LoaiTin == 2) && p.ID_Phong_Tro != id)
+            .OrderByDescending(p => p.Ngay_Dang)
+            .Take(5)
+            .ToList();
+
+                ViewBag.FeaturedPosts = featuredPosts;
             // Gửi 1 đối tượng phòng trọ duy nhất qua View
             return View(phongTro);
         }
@@ -258,9 +327,53 @@ namespace QuanLyPhongTro.Controllers
         {
             return View();
         }
-        public ActionResult TinDaLuu()
+        public ActionResult TinDaLuu(int? page)
         {
-            return View();
+            // --- Cấu hình phân trang (luôn cần) ---
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            // 1. Kiểm tra xem người dùng đã đăng nhập chưa
+            if (Session["ID_TK"] == null)
+            {
+                // === SỬA LỖI NULL TẠI ĐÂY ===
+                // Nếu chưa đăng nhập, tạo một danh sách rỗng
+                // và gửi nó sang View để tránh lỗi Null.
+                var emptyList = new List<Phong_Tro>().ToPagedList(pageNumber, pageSize);
+                ViewBag.UserFavorites = new List<int>(); // Cũng gửi danh sách yêu thích rỗng
+
+                // Trả về View với Model là danh sách rỗng
+                return View(emptyList);
+            }
+
+            // --- Nếu đã đăng nhập, code cũ của bạn sẽ chạy ---
+            int currentUserId = (int)Session["ID_TK"];
+
+            // 2. Lấy danh sách ID các phòng trọ mà người này đã thích
+            var favoritedIds = db.Yeu_Thich
+                                 .Where(yt => yt.ID_TK == currentUserId)
+                                 .Select(yt => yt.ID_Phong_Tro)
+                                 .ToList();
+
+            // 3. Lấy thông tin chi tiết của các phòng trọ đó
+            var favoritedPostsQuery = db.Phong_Tro // Đổi tên biến để tránh nhầm lẫn
+                                   .Include(p => p.Tai_Khoan)
+                                   .Include(p => p.Khu_Vuc)
+                                   .Include(p => p.Hinh_Anh)
+                                   .Include(p => p.Loai_Tin)
+                                   .Include(p => p.Videos)
+                                   .Where(p => favoritedIds.Contains(p.ID_Phong_Tro)) // Lọc theo danh sách ID đã lấy
+                                   .OrderByDescending(p => p.Ngay_Dang); // Sắp xếp mới nhất
+
+            // 4. Phân trang
+            var pagedFavoritedPosts = favoritedPostsQuery.ToPagedList(pageNumber, pageSize);
+
+            // 5. Gửi danh sách ID yêu thích sang View
+            // (Việc này rất quan trọng để các nút trái tim hiển thị 'active' - màu đỏ)
+            ViewBag.UserFavorites = favoritedIds;
+
+            // 6. Gửi model đã phân trang sang View
+            return View(pagedFavoritedPosts);
         }
         [HttpGet]
         public ActionResult DangKy()

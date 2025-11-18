@@ -4,6 +4,7 @@
 }
 @model QuanLyPhongTro.Models.Phong_Tro
 
+<link href="~/Assets/Css/ChiTiet.css" rel="stylesheet" />
 @{
     ViewBag.Title = Model.Ten_Phong; // Lấy tiêu đề từ tên phòng
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,8 +18,28 @@
     var isFavorited = userFavorites.Contains(Model.ID_Phong_Tro);
     var heartIconClass = isFavorited ? "bi-heart-fill" : "bi-heart";
     var activeClass = isFavorited ? "active" : "";
-}
+    // Lấy 2 danh sách tin liên quan từ ViewBag
+    var relatedPosts = ViewBag.RelatedPosts as List<QuanLyPhongTro.Models.Phong_Tro>;
+    var latestPosts = ViewBag.LatestPosts as List<QuanLyPhongTro.Models.Phong_Tro>;
 
+    // 1. Lấy địa chỉ từ Model. Nếu không có thì dùng địa chỉ mặc định.
+    var diaChi = Model.Dia_Chi ?? "Việt Nam";
+
+    // 2. Mã hóa địa chỉ này để Google hiểu (ví dụ: đổi dấu cách thành %20)
+    var diaChiEncoded = Url.Encode(diaChi);
+
+    // 3. Tạo link embed động cho iframe
+    // (z=16 là mức zoom, bạn có thể thay đổi)
+    var mapEmbedUrl = string.Format("https://maps.google.com/maps?q={0}&output=embed&t=m&z=16", diaChiEncoded);
+
+    // 4. Tạo link "Xem bản đồ lớn" (dùng để mở tab mới)
+    var mapSearchUrl = string.Format("https://www.google.com/maps/search/?api=1&query={0}", diaChiEncoded);
+
+    var avatarNguoiDang = (Model.Tai_Khoan != null && !string.IsNullOrEmpty(Model.Tai_Khoan.Avata))
+        ? "~/Assets/Images/Avatar/" + Model.Tai_Khoan.Avata
+        : "~/Assets/Images/Avatar/avatar-mac-dinh.jpg";
+}
+@Html.AntiForgeryToken()
 <div class="container mt-4">
     <div class="row">
 
@@ -110,10 +131,11 @@
                 </li>
             </ul>
 
+            <!-- Thông tin mô tả -->
             <div class="mb-4">
                 <h3 class="h5 fw-bold mb-3">Thông tin mô tả</h3>
                 <div class="text-muted" style="line-height: 1.7;">
-                    @Html.Raw(Model.Mo_Ta.Replace("\n", "<br />"))
+                    @Html.Raw(Model.Mo_Ta.Replace("**##split##", "<br />").Replace("##split##", "<br />"))
                 </div>
             </div>
 
@@ -122,36 +144,61 @@
                 @if (noiBat != null)
                 {
                     <div class="row">
-                        <div class="col-md-6">
+
+                        <!-- CỘT 1 (Đổi col-md-6 thành col-md-4) -->
+                        <div class="col-md-4">
                             <ul class="list-unstyled">
-                                <li class="mb-2 @(noiBat.Day_du_noi_that == true ? "text-success" : "text-muted")">
-                                    <i class="bi @(noiBat.Day_du_noi_that == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Đầy đủ nội thất
+                                <!--
+                                    SỬA LOGIC:
+                                    - Đổi icon "bi-x-circle" thành "bi-check-circle-fill"
+                                    - Đổi class "text-muted" thành "text-muted opacity-75"
+                                -->
+                                <li class="mb-2 @(noiBat.Day_du_noi_that == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Đầy đủ nội thất
                                 </li>
-                                <li class="mb-2 @(noiBat.Co_gac == true ? "text-success" : "text-muted")">
-                                    <i class="bi @(noiBat.Co_gac == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Có gác
+                                <li class="mb-2 @(noiBat.Co_may_giat == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Có máy giặt
                                 </li>
-                                <li class="mb-2 @(noiBat.Ke_bep == true ? "text-success" : "text-muted")">
-                                    <i class="bi @(noiBat.Ke_bep == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Kệ bếp
+                                <li class="mb-2 @(noiBat.Gio_giac_tu_do == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Giờ giấc tự do
                                 </li>
-                                <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted")">
-                                    <i class="bi @(noiBat.Co_may_lanh == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Có điều hòa
+                                <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Có điều hòa
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-6">
+
+                        <!-- CỘT 2 (Đổi col-md-6 thành col-md-4) -->
+                        <div class="col-md-4">
                             <ul class="list-unstyled">
-                                <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted")">
-                                    <i class="bi @(noiBat.Co_may_lanh == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Có máy lạnh
+                                <li class="mb-2 @(noiBat.Co_gac == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Có gác
                                 </li>
-                                <li class="mb-2 @(noiBat.Co_tu_lanh == true ? "text-success" : "text-muted")">
-                                    <i class="bi @(noiBat.Co_tu_lanh == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Có tủ lạnh
+                                <li class="mb-2 @(noiBat.Co_tu_lanh == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Có tủ lạnh
                                 </li>
-                                <li class="mb-2 @(noiBat.Khong_chung_chu == true ? "text-success" : "text-muted")">
-                                    <i class="bi @(noiBat.Khong_chung_chu == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Không chung chủ
+                                <li class="mb-2 @(noiBat.Co_bao_ve_24_24 == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Bảo vệ 24/24
                                 </li>
-                                <li class="mb-2 @(noiBat.Co_bao_ve_24_24 == true ? "text-success" : "text-muted")">
-                                    <i class="bi @(noiBat.Co_bao_ve_24_24 == true ? "bi-check-circle-fill" : "bi-x-circle") me-2"></i>Bảo vệ 24/24
+                                <li class="mb-2 @(noiBat.Co_thang_may == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Có thang máy
                                 </li>
+                            </ul>
+                        </div>
+
+                        <!-- THÊM MỚI CỘT 3 (col-md-4) -->
+                        <div class="col-md-4">
+                            <ul class="list-unstyled">
+                                <li class="mb-2 @(noiBat.Ke_bep == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Kệ bếp
+                                </li>
+                                <li class="mb-2 @(noiBat.Co_may_lanh == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Có máy lạnh
+                                </li>
+                                <li class="mb-2 @(noiBat.Khong_chung_chu == true ? "text-success" : "text-muted opacity-75")">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Không chung chủ
+                                </li>
+
                             </ul>
                         </div>
                     </div>
@@ -164,105 +211,269 @@
 
             <div class="mb-4">
                 <h3 class="h5 fw-bold mb-3">Vị trí & bản đồ</h3>
-                <p class="text-muted">Địa chỉ: @Model.Dia_Chi</p>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.653991314644!2d106.699774!3d10.761066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f6b86219c79%3A0x640b6188e443a61!2s296%20Nguy%E1%BB%85n%20T%E1%BA%A5t%20Th%C3%A0nh%2C%20Ph%C6%B0%E1%BB%9Dng%2013%2C%20Qu%E1%BA%ADn%204%2C%20Th%C3%A0nh%20ph%E1%BB%91%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam!5e0!3m2!1sen!2s!4v1678888888888!5m2!1sen!2s"
-                        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
 
-            <div class="alert alert-warning" role="alert">
-                <h6 class="fw-bold">Lưu ý:</h6>
-                <p class="mb-1">Chỉ đặt cọc khi xác định được chủ nhà và có thỏa thuận biên nhận rõ ràng. Kiểm tra mọi điều khoản và yêu cầu liệt kê tất cả chi phí hàng tháng vào hợp đồng. <a href="#">Xem thêm</a></p>
-                <p class="mb-0">Mọi thông tin liên quan đến tin đăng này chỉ mang tính chất tham khảo. Nếu bạn thấy rằng tin đăng này không đúng hoặc có dấu hiệu lừa đảo, <a href="#">hãy phản ánh với chúng tôi</a>.</p>
-            </div>
-
-        </div> <div class="col-lg-4">
-
-            <div class="card mb-3" style="position: sticky; top: 1rem;">
-                <div class="card-body text-center">
-                    <img src="@Url.Content(Model.Tai_Khoan != null && !string.IsNullOrEmpty(Model.Tai_Khoan.Avata) ? Model.Tai_Khoan.Avata : "~/Assets/Images/Avatar/avatar-mac-dinh.jpg")"
-                         class="rounded-circle mb-3" alt="Avatar" style="width: 100px; height: 100px; object-fit: cover;">
-                    <h5 class="card-title fw-bold">@(Model.Tai_Khoan != null ? Model.Tai_Khoan.Name : "...")</h5>
-                    <p class="text-muted small">Đang hoạt động</p>
-
-                    <a href="tel:@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "#")" class="btn btn-success btn-lg d-block w-100 mb-2 fw-bold">
-                        <i class="bi bi-telephone-fill me-2"></i>@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "...")
+                <!-- Hiển thị địa chỉ và link "Xem bản đồ lớn" (giống ảnh mẫu) -->
+                <p class="text-muted d-flex justify-content-between align-items-center">
+                    <span>
+                        <i class="bi bi-geo-alt-fill me-1"></i>
+                        Địa chỉ: @Model.Dia_Chi
+                    </span>
+                    <a href="@mapSearchUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                        Xem bản đồ lớn
                     </a>
-                    <a href="#" class="btn btn-primary btn-lg d-block w-100 mb-3 fw-bold">
-                        <i class="bi bi-chat-dots-fill me-2"></i> Nhắn Zalo
-                    </a>
+                </p>
 
-                    <div class="d-flex justify-content-around">
-                        <a href="#" class="btn-favorite @activeClass" data-post-id="@Model.ID_Phong_Tro" style="font-size: 1rem; color: #6c757d;">
-                            <i class="bi @heartIconClass me-1"></i> Lưu tin
-                        </a>
-                        <a href="#" class="text-muted" style="text-decoration: none;">
-                            <i class="bi bi-share-fill me-1"></i> Chia sẻ
-                        </a>
-                        <a href="#" class="text-muted" style="text-decoration: none;">
-                            <i class="bi bi-flag-fill me-1"></i> Báo xấu
-                        </a>
+                <!--
+                    SỬA Ở ĐÂY:
+                    Thay thế src cố định bằng @mapEmbedUrl động
+                -->
+                <iframe src="@mapEmbedUrl"
+                        width="100%"
+                        height="400"
+                        style="border:0; border-radius: 8px;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <!-- ============================================== -->
+            <!-- KẾT THÚC PHẦN VỊ TRÍ & BẢN ĐỒ -->
+            <!-- ============================================== -->
+
+            <div class="mb-4">
+                <h3 class="h5 fw-bold mb-3">Thông tin liên hệ</h3>
+                <div class="card p-3 post-contact-box-bottom">
+                    <div class="row g-3 align-items-center">
+                        <!-- Avatar -->
+                        <div class="col-md-2 col-3 text-center">
+                            <img src="@Url.Content(avatarNguoiDang)" class="rounded-circle" alt="Avatar"
+                                 style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #eee;">
+                        </div>
+                        <!-- Info -->
+                        <div class="col-md-5 col-9">
+                            <h6 class="fw-bold mb-0">@(Model.Tai_Khoan != null ? Model.Tai_Khoan.Name : "...")</h6>
+                            <p class="text-muted small mb-1">
+                                <span class="text-success me-1" style="font-size: 0.7rem; vertical-align: middle;">●</span> Đang hoạt động
+                            </p>
+                            <p class="text-muted small mb-0">
+                                @Model.Tai_Khoan.Phong_Tro.Count() tin đăng • Tham gia từ: @(Model.Tai_Khoan != null && Model.Tai_Khoan.Ngay_Tao.HasValue ? Model.Tai_Khoan.Ngay_Tao.Value.ToString("dd/MM/yyyy") : "...")
+                            </p>
+                        </div>
+                        <!-- Buttons -->
+                        <div class="col-md-5">
+                            <a href="tel:@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "#")" class="btn btn-success d-block w-100 mb-2 fw-bold">
+                                <i class="bi bi-telephone-fill me-2"></i>@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "...")
+                            </a>
+                            <a href="#" class="btn btn-primary d-block w-100 fw-bold">
+                                <i class="bi bi-chat-dots-fill me-2"></i> Nhắn Zalo
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card mb-3">
-                <div class="card-header fw-bold">Tin đăng nổi bật</div>
-                <div class="list-group list-group-flush">
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-4">
-                                <img src="@Url.Content("~/Kho/Img/placeholder.jpg")" class="img-fluid rounded" alt="Tin mới">
-                            </div>
-                            <div class="col-8">
-                                <h6 class="mb-1 text-primary title-clamp-2">CHO THUÊ PHÒNG TRỌ DẠNG CHUNG CƯ MINI</h6>
-                                <strong class="text-success d-block fw-bold">1.9 triệu/tháng</strong>
-                                <small class="text-muted">2 ngày trước</small>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-4">
-                                <img src="@Url.Content("~/Kho/Img/placeholder.jpg")" class="img-fluid rounded" alt="Tin mới">
-                            </div>
-                            <div class="col-8">
-                                <h6 class="mb-1 text-primary title-clamp-2">CHO THUÊ PHÒNG TRỌ CAO CẤP TẠI 64 TRƯƠNG VĂN</h6>
-                                <strong class="text-success d-block fw-bold">3.3 triệu/tháng</strong>
-                                <small class="text-muted">2 ngày trước</small>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+            <!-- ============================================== -->
+            <!-- LƯU Ý (GIỐNG ẢNH MẪU) -->
+            <!-- ============================================== -->
+            <div class="post-note-box">
+                <span class="note-title">Lưu ý:</span>
+                <p>Chỉ đặt cọc khi xác định được chủ nhà và có thỏa thuận biên nhận rõ ràng. Kiểm tra mọi điều khoản và yêu cầu liệt kê tất cả chi phí hàng tháng vào hợp đồng. <a href="#">Xem thêm</a></p>
+                <p>Mọi thông tin liên quan đến tin đăng này chỉ mang tính chất tham khảo. Nếu bạn thấy rằng tin đăng này không đúng hoặc có dấu hiệu lừa đảo, <a href="#">hãy phản ánh với chúng tôi</a>.</p>
             </div>
+            <!-- KHỐI MỚI: TIN ĐĂNG CÙNG KHU VỰC -->
+            @if (relatedPosts != null && relatedPosts.Any())
+            {
+                <div class="related-posts-section" id="related-posts">
+                    <div class="section-header">
+                        <h3 class="fw-bold">Tin đăng cùng khu vực</h3>
+                        <div class="scroll-buttons">
+                            <button class="btn btn-light scroll-prev" type="button"><i class="bi bi-chevron-left"></i></button>
+                            <button class="btn btn-light scroll-next" type="button"><i class="bi bi-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="related-posts-container">
+                        @foreach (var post in relatedPosts)
+                        {
+                            var hinhAnhDauTien = post.Hinh_Anh.Any() ? Url.Content("~/Kho/Img/" + post.Hinh_Anh.First().Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg");
+                            var itemClass = (post.ID_LoaiTin == 1 || post.ID_LoaiTin == 2) ? "has-banner" : "";
 
+                            <div class="related-post-card @itemClass">
+                                <a href="@Url.Action("ChiTiet", "User", new { id = post.ID_Phong_Tro })">
+                                    <div class="card-image">
+                                        <div class="featured-post-banner"></div>
+                                        <img src="@hinhAnhDauTien" alt="@post.Ten_Phong" />
+                                        <div class="image-count-overlay-small"><i class="bi bi-camera-fill me-1"></i>@post.Hinh_Anh.Count</div>
+                                    </div>
+                                    <div class="card-content">
+                                        <h6 class="title">@post.Ten_Phong</h6>
+                                        <span class="price">@(post.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)post.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")</span>
+                                        <span class="location">@(post.Khu_Vuc?.Ten_KV ?? "...")</span>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- KHỐI MỚI: TIN ĐĂNG MỚI CẬP NHẬT -->
+            @if (latestPosts != null && latestPosts.Any())
+            {
+                <div class="related-posts-section" id="latest-posts">
+                    <div class="section-header">
+                        <h3 class="fw-bold">Tin đăng mới cập nhật</h3>
+                        <div class="scroll-buttons">
+                            <button class="btn btn-light scroll-prev" type="button"><i class="bi bi-chevron-left"></i></button>
+                            <button class="btn btn-light scroll-next" type="button"><i class="bi bi-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="related-posts-container">
+                        @foreach (var post in latestPosts)
+                        {
+                            var hinhAnhDauTien = post.Hinh_Anh.Any() ? Url.Content("~/Kho/Img/" + post.Hinh_Anh.First().Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg");
+                            var itemClass = (post.ID_LoaiTin == 1 || post.ID_LoaiTin == 2) ? "has-banner" : "";
+
+                            <div class="related-post-card @itemClass">
+                                <a href="@Url.Action("ChiTiet", "User", new { id = post.ID_Phong_Tro })">
+                                    <div class="card-image">
+                                        <div class="featured-post-banner"></div>
+                                        <img src="@hinhAnhDauTien" alt="@post.Ten_Phong" />
+                                        <div class="image-count-overlay-small"><i class="bi bi-camera-fill me-1"></i>@post.Hinh_Anh.Count</div>
+                                    </div>
+                                    <div class="card-content">
+                                        <h6 class="title">@post.Ten_Phong</h6>
+                                        <span class="price">@(post.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)post.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")</span>
+                                        <span class="location">@(post.Khu_Vuc?.Ten_KV ?? "...")</span>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+        </div> <div class="col-lg-4">
+            <div class="sticky-sidebar-wrapper" style="position: sticky; top: 1rem;">
+                <div class="card mb-3">
+                    <div class="card-body text-center">
+                        <img src="@Url.Content(Model.Tai_Khoan != null && !string.IsNullOrEmpty(Model.Tai_Khoan.Avata) ? "~/Assets/Images/Avatar/" + Model.Tai_Khoan.Avata : "~/Assets/Images/Avatar/avatar-mac-dinh.jpg")"
+                             class="rounded-circle mb-3" alt="Avatar" style="width: 100px; height: 100px; object-fit: cover;">
+                        <h5 class="card-title fw-bold">@(Model.Tai_Khoan != null ? Model.Tai_Khoan.Name : "...")</h5>
+                        <p class="text-muted small">Đang hoạt động</p>
+
+                        <a href="tel:@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "#")" class="btn btn-success btn-lg d-block w-100 mb-2 fw-bold">
+                            <i class="bi bi-telephone-fill me-2"></i>@(Model.Tai_Khoan != null ? Model.Tai_Khoan.SDT : "...")
+                        </a>
+                        <a href="#" class="btn btn-primary btn-lg d-block w-100 mb-3 fw-bold">
+                            <i class="bi bi-chat-dots-fill me-2"></i> Nhắn Zalo
+                        </a>
+
+                        <div class="d-flex justify-content-around">
+                            <a href="#" class="btn-favorite @activeClass" data-post-id="@Model.ID_Phong_Tro" style="font-size: 1rem; color: #6c757d;">
+                                <i class="bi @heartIconClass me-1"></i> Lưu tin
+                            </a>
+                            <a href="#" class="text-muted" style="text-decoration: none;">
+                                <i class="bi bi-share-fill me-1"></i> Chia sẻ
+                            </a>
+                            <a href="#" class="text-muted" style="text-decoration: none;">
+                                <i class="bi bi-flag-fill me-1"></i> Báo xấu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== BẮT ĐẦU WIDGET TIN NỔI BẬT (ĐÃ SỬA) ========== -->
+                <div class="featured-posts-widget">
+                    <h5 class="fw-bold mb-3">Tin đăng nổi bật</h5>
+
+                    @{
+                        // Lấy danh sách tin nổi bật từ ViewBag
+                        var featuredPosts = ViewBag.FeaturedPosts as List<QuanLyPhongTro.Models.Phong_Tro>;
+                    }
+
+                    @if (featuredPosts != null && featuredPosts.Any())
+                    {
+                        // Lặp qua từng tin
+                        foreach (var post in featuredPosts)
+                        {
+                            var hinhAnhDauTien = post.Hinh_Anh.Any()
+                                ? Url.Content("~/Kho/Img/" + post.Hinh_Anh.First().Url_Anh)
+                                : Url.Content("~/Kho/Img/placeholder.jpg");
+
+                            // Thêm class 'has-banner' nếu tin là loại 1 hoặc 2
+                            var itemClass = (post.ID_LoaiTin == 1 || post.ID_LoaiTin == 2) ? "has-banner" : "";
+
+                            <div class="featured-post-item @itemClass">
+                                <a href="@Url.Action("ChiTiet", "User", new { id = post.ID_Phong_Tro })" class="row g-2">
+
+                                    <!-- Cột ảnh (có banner) -->
+                                    <div class="col-4" style="position: relative;">
+                                        <!-- Banner (chỉ hiển thị nếu có class 'has-banner') -->
+                                        <div class="featured-post-banner">
+                                        </div>
+                                        <img src="@hinhAnhDauTien" class="img-fluid rounded" alt="@post.Ten_Phong">
+                                    </div>
+
+                                    <!-- Cột nội dung -->
+                                    <div class="col-8">
+                                        <h6 class="mb-1 text-pink title-clamp-2">
+                                            @post.Ten_Phong
+                                        </h6>
+                                        <strong class="text-success d-block fw-bold">
+                                            @(post.Gia_Ca.HasValue ? string.Format("{0:0.#} triệu/tháng",(decimal)post.Gia_Ca.Value/1_000_000M) : "Thỏa thuận")
+                                        </strong>
+                                        <small class="text-muted">
+                                            @(post.Ngay_Dang.HasValue ? post.Ngay_Dang.Value.ToString("dd/MM/yyyy") : "...")
+                                        </small>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Không có tin nổi bật nào.</p>
+                    }
+
+                </div>
+
+            </div>
         </div>
     </div>
 </div> @section Scripts {
     <script>
         $(document).ready(function () {
 
+          var token = $('input[name="__RequestVerificationToken"]').val();
+
             $('.btn-favorite').on('click', function (e) {
                 e.preventDefault();
-
                 var $this = $(this);
                 var postId = $this.data('post-id');
 
                 $.ajax({
                     type: "POST",
-                    url: "@Url.Action("ToggleFavorite", "Home")", // Sửa "Home" thành tên Controller của bạn
+                    url: "@Url.Action("ToggleFavorite", "Home")", // Sửa "Home" nếu cần
                     data: { id: postId },
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
                     success: function (data) {
                         if (data.success) {
                             if (data.isFavorited) {
-                                // 1. ĐỔI SANG ĐÃ THÍCH
+                                // (Không nên xảy ra, vì đây là trang Tin Đã Lưu)
                                 $this.addClass('active');
                                 $this.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
-                                $this.contents().last().replaceWith(" Đã lưu"); // Cập nhật text
                             } else {
-                                // 2. ĐỔI SANG BỎ THÍCH
-                                $this.removeClass('active');
-                                $this.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
-                                $this.contents().last().replaceWith(" Lưu tin"); // Cập nhật text
+                                // CẢI TIẾN: Bỏ thích thì tin sẽ biến mất
+                                $this.closest('.card, .listing-card').fadeOut(400, function () {
+                                    $(this).remove();
+                                    // Kiểm tra xem còn tin nào không
+                                    if ($('.listing-card, .card.shadow-sm').length === 0) {
+                                        $('.col-lg-8.offset-lg-2').append('<div class="alert alert-info mt-4">Bạn không còn tin nào đã lưu.</div>');
+                                        // Ẩn phân trang nếu hết tin
+                                        $('.pagination-container').hide();
+                                    }
+                                });
                             }
                         }
                     },
@@ -275,6 +486,27 @@
                     }
                 });
             });
+            function setupCarouselScroll(sectionId) {
+                const container = $('#' + sectionId + ' .related-posts-container');
+                const scrollAmount = 286; // (width 270 + gap 16)
+
+                $('#' + sectionId + ' .scroll-prev').on('click', function () {
+                    container.animate({
+                        scrollLeft: '-=' + scrollAmount
+                    }, 300);
+                });
+
+                $('#' + sectionId + ' .scroll-next').on('click', function () {
+                    container.animate({
+                        scrollLeft: '+=' + scrollAmount
+                    }, 300);
+                });
+            }
+
+            // Kích hoạt cho cả 2 carousel
+            setupCarouselScroll('related-posts');
+            setupCarouselScroll('latest-posts');
         });
+
     </script>
 }

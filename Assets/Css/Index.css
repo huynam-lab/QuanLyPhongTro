@@ -1,4 +1,6 @@
 ﻿
+
+
 :root {
     --color-orange-500: #f56c00;
 }
@@ -9,7 +11,7 @@
 
     .post-title-link:hover {
         color: inherit;
-        text-decoration: underline;
+       
     }
 .post-image-link {
     display: block;
@@ -210,6 +212,7 @@ a.btn-favorite.active i {
 
 
 .gallery-3-leftBig {
+    
     display: grid;
     grid-template-columns: 7fr 5fr; /* tỉ lệ giống ảnh mẫu */
     grid-template-rows: 1fr 1fr;
@@ -217,7 +220,7 @@ a.btn-favorite.active i {
         "big r1"
         "big r2";
     gap: .25rem;
-    height: 230px; /* chỉnh 200–280 tùy card */
+    height: 100%; /* chỉnh 200–280 tùy card */
     border-radius: .5rem;
     overflow: hidden;
     position: relative; /* để đặt overlay */
@@ -389,7 +392,7 @@ a.btn-favorite.active i {
 }
 .pt-img {
     position: relative;
-    aspect-ratio: 4 / 3; /* Giữ tỉ lệ chuẩn như mẫu */
+    aspect-ratio: 3 / 3; /* Giữ tỉ lệ chuẩn như mẫu */
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
@@ -468,7 +471,7 @@ a.btn-favorite.active i {
 /* ===== ẢNH ===== */
 .pt-img {
     position: relative;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 3;
     border-radius: 8px;
     overflow: hidden;
     background: #f5f5f5;
@@ -549,7 +552,7 @@ a.btn-favorite.active i {
 /* ===== ẢNH ===== */
 .lc-thumb {
     position: relative;
-    aspect-ratio: 4/3;
+    aspect-ratio: 3/3;
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
@@ -716,31 +719,63 @@ a.btn-favorite.active i {
 }
 
 /* Định nghĩa các biến màu */
-.pagination {
-    --pagination-bg: #fff; /* Nền trắng cho nút */
-    --pagination-color: #495057; /* Màu chữ xám đậm */
-    --pagination-border-radius: 8px; /* Bo góc 8px */
-    --pagination-shadow: 0 3px 6px rgba(0,0,0,0.08); /* Đổ bóng nhẹ */
-    /* Màu cam cho nút active (lấy từ các ảnh trước) */
-    --pagination-active-bg: #f86c3a;
-    --pagination-active-color: #fff;
-    --pagination-hover-bg: #f8f9fa; /* Màu nền xám nhạt khi hover */
+/* Nền cam nhạt phía sau thanh phân trang */
+.pagination-container {
+    background-color: #fff4ec;
+    padding: 12px 0;
 }
 
-/* Tùy chỉnh các nút (<a> và <span>)
-  Xóa bỏ style border và background mặc định của Bootstrap 
-*/
-.pagination-container .page-item .page-link,
-.pagination-container .page-item span.page-link {
-    background-color: var(--pagination-bg);
-    border: none; /* Bỏ border mặc định */
-    box-shadow: var(--pagination-shadow);
-    border-radius: var(--pagination-border-radius);
-    color: var(--pagination-color);
-    padding: 0.6rem 1rem; /* Tăng padding cho nút to hơn */
-    font-weight: 500;
-    transition: all 0.2s ease;
+/* Reset UL */
+.pt-custom-pagination {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
+
+    /* Các ô trang */
+    .pt-custom-pagination li.page-item {
+        display: inline-block;
+        margin: 0 3px;
+    }
+
+    /* Link / span bên trong ô */
+    .pt-custom-pagination li a,
+    .pt-custom-pagination li span {
+        display: block;
+        min-width: 40px;
+        padding: 6px 12px;
+        text-align: center;
+        font-size: 14px;
+        background-color: #ffffff;
+        border: 1px solid #f0e0d5;
+        border-radius: 6px;
+        color: #444;
+        text-decoration: none;
+    }
+
+    /* Trang hiện tại – giống ô cam trong ảnh */
+    .pt-custom-pagination li.active span,
+    .pt-custom-pagination li.active a {
+        background-color: #ff5b2e;
+        border-color: #ff5b2e;
+        color: #ffffff;
+    }
+
+    /* Hover các ô khác */
+    .pt-custom-pagination li:not(.active):not(.disabled) a:hover {
+        background-color: #ffe5d6;
+        border-color: #ffb79a;
+        color: #333;
+    }
+
+    /* Nút disabled */
+    .pt-custom-pagination li.disabled span,
+    .pt-custom-pagination li.disabled a {
+        background-color: #ffffff;
+        color: #bbbbbb;
+        border-color: #f0e0d5;
+        cursor: default;
+    }
 
 /* Khoảng cách giữa các nút */
 .pagination-container {
@@ -775,7 +810,13 @@ a.btn-favorite.active i {
             background-color: #f8f9fa; /* Màu nền xám nhạt khi hover */
             transform: translateY(-2px); /* Hiệu ứng nhấc lên */
         }
-
+/* Trang hiện tại – tô đỏ nền, chữ trắng */
+.pt-custom-pagination li.active a,
+.pt-custom-pagination li.active span {
+    background-color: #ff5b2e !important;
+    border-color: #ff5b2e !important;
+    color: #ffffff !important;
+}
         /* Style cho NÚT HIỆN TẠI (thẻ <span> với class 'active')
   Thư viện PagedList (kể cả bản cũ) sẽ tạo ra thẻ:
   <span class="active">6</span> 
@@ -942,4 +983,85 @@ body.page-banggia .pt-container {
     margin-right: auto !important;
     padding-left: 16px;
     padding-right: 16px;
+}
+
+/* Thêm vào Index.css */
+.video-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem; /* Kích thước icon */
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 8px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.sidebar-post-image {
+    width: 100%;
+    height: 80px; /* <-- CỐ ĐỊNH CHIỀU CAO */
+    object-fit: cover; /* <-- CHỐNG MÉO/PHÌNH ẢNH */
+    border-radius: 0.25rem; /* (Giữ bo tròn góc) */
+}
+.col-md-5 .post-image-link {
+    display: block; /* Thẻ <a> mặc định là inline, cần đổi sang block */
+    height: 100%; /* <-- Dòng CSS quan trọng số 1 */
+    text-decoration: none;
+}
+
+/* BƯỚC 2: Ép 'div.gallery-3-leftBig'
+  phải dãn 100% chiều cao của thẻ <a>
+*/
+.gallery-3-leftBig {
+    height: 100%; /* <-- Dòng CSS quan trọng số 2 */
+    /* (Phần CSS Grid của bạn. 
+       Hãy đảm bảo CSS của bạn giống như này
+       để tạo bố cục 1 lớn - 2 nhỏ) 
+    */
+    display: grid;
+    grid-template-columns: 55% auto; /* Cột trái 55%, cột phải tự động */
+    grid-template-rows: 50% 50%; /* 2 hàng cao 50% */
+    grid-template-areas:
+        "big right1"
+        "big right2";
+    gap: 6px; /* Khoảng cách giữa các ảnh */
+    padding: 6px; /* Khoảng đệm nhỏ bên trong (nếu bạn muốn) */
+    box-sizing: border-box; /* Đảm bảo padding không làm vỡ layout */
+}
+
+/* (Các class con của gallery) */
+.g3-big {
+    grid-area: big;
+    position: relative; /* Cần cho nút đếm ảnh */
+}
+
+.g3-right1 {
+    grid-area: right1;
+}
+
+.g3-right2 {
+    grid-area: right2;
+}
+
+/* BƯỚC 3: Đảm bảo ảnh bên trong
+  luôn lấp đầy mà không bị méo 
+*/
+.gallery-3-leftBig img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Chống phình/méo ảnh */
+    border-radius: 8px; /* Bo tròn góc (giống ảnh mẫu) */
+}
+
+/* (Class đếm ảnh của bạn, giữ nguyên) */
+.image-count-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    z-index: 2; /* Nằm trên ảnh */
 }
