@@ -13,30 +13,6 @@ const filterModalElement = document.getElementById('filterModal');
 const locationModal = new bootstrap.Modal(locationModalElement);
 const filterModal = new bootstrap.Modal(filterModalElement);
 
-// Dữ liệu mẫu 20 khu vực
-//const locationsData = [
-//    { id: 'all', name: 'Toàn quốc', isSelected: true },
-//    { id: 'hcm', name: 'Hồ Chí Minh', isSelected: false },
-//    { id: 'hn', name: 'Hà Nội', isSelected: false },
-//    { id: 'dn', name: 'Đà Nẵng', isSelected: false },
-//    { id: 'bd', name: 'Bình Dương', isSelected: false },
-//    { id: 'dnai', name: 'Đồng Nai', isSelected: false },
-//    { id: 'bvt', name: 'Bà Rịa - Vũng Tàu', isSelected: false },
-//    { id: 'ct', name: 'Cần Thơ', isSelected: false },
-//    { id: 'kh', name: 'Khánh Hòa', isSelected: false },
-//    { id: 'hp', name: 'Hải Phòng', isSelected: false },
-//    { id: 'ag', name: 'An Giang', isSelected: false },
-//    { id: 'gl', name: 'Gia Lai', isSelected: false },
-//    { id: 'kg', name: 'Kiên Giang', isSelected: false },
-//    { id: 'lca', name: 'Lào Cai', isSelected: false },
-//    { id: 'nt', name: 'Ninh Thuận', isSelected: false },
-//    { id: 'py', name: 'Phú Yên', isSelected: false },
-//    { id: 'qn', name: 'Quảng Ninh', isSelected: false },
-//    { id: 'tg', name: 'Tiền Giang', isSelected: false },
-//    { id: 'vt', name: 'Vĩnh Phúc', isSelected: false },
-//    { id: 'la', name: 'Long An', isSelected: false }
-//];
-
 
 // --- Dữ liệu Bộ lọc (Modal 2) ---
 let currentFilters = {
@@ -54,38 +30,6 @@ function showLocationModal() {
     locationModal.show();
 }
 
-//function renderLocationList() {
-//    locationListContainer.innerHTML = '';
-//    locationsData.forEach(loc => {
-//        const isChecked = loc.isSelected ? 'checked' : '';
-//        const itemDiv = document.createElement('div');
-//        itemDiv.className = 'location-item';
-//        itemDiv.innerHTML = `
-//                    <label class="d-flex align-items-center w-100">
-//                        <input type="checkbox" 
-//                                class="form-check-input flex-shrink-0" 
-//                                data-id="${loc.id}" 
-//                                ${isChecked}>
-//                        <span class="ms-3 text-dark">${loc.name}</span>
-//                    </label>
-//                    <i class="bi bi-chevron-right location-arrow"></i>
-//                `;
-
-//        itemDiv.addEventListener('click', function (e) {
-//            const checkbox = itemDiv.querySelector('input[type="checkbox"]');
-//            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SPAN') {
-//                checkbox.checked = !checkbox.checked;
-//            }
-//            handleLocationCheckboxChange(checkbox.dataset.id, checkbox.checked);
-//        });
-
-//        itemDiv.querySelector('input[type="checkbox"]').addEventListener('change', function (e) {
-//            handleLocationCheckboxChange(e.target.dataset.id, e.target.checked);
-//        });
-
-//        locationListContainer.appendChild(itemDiv);
-//    });
-//}
 let locationsState = [];
 function initializeLocationState() {
     locationsState = [];

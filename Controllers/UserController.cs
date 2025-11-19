@@ -487,6 +487,7 @@ namespace QuanLyPhongTro.Controllers
                 Session["UserName"] = account.Name;
                 Session["SDT"] = account.SDT;
                 Session["Avatar"] = account.Avata;
+                Session["PhanQuyen"] = account.ID_Phan_Quyen;
                 ViewBag.ID_Phan_Quyen = account.ID_Phan_Quyen;
                 ViewBag.LoginSuccess = true;
 
@@ -528,6 +529,7 @@ namespace QuanLyPhongTro.Controllers
             Session.Remove("UserName");
             Session.Remove("SDT");
             Session.Remove("Avatar");
+            Session.Remove("PhanQuyen");
             // Session.Remove("ID_PhanQuyen"); // Nếu có
 
             // 2. Chuyển hướng người dùng về trang chủ (hoặc trang đăng nhập)
@@ -559,6 +561,10 @@ namespace QuanLyPhongTro.Controllers
         public ActionResult ChiTietMauHopDong(int id)
         {
             ViewBag.Id = id;
+            return View();
+        }
+        public ActionResult TimKiem()
+        {
             return View();
         }
 
