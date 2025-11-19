@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
 
 
@@ -91,9 +92,11 @@ namespace QuanLyPhongTro.Controllers
             IQueryable<Phong_Tro> sortedQuerys;
             switch (filterBy)
             {
-                case "moi-dang": // Nếu là tab "Mới đăng"
-                    sortedQuerys = query.OrderByDescending(p => p.Ngay_Dang);
-                    break;
+                case "moi-dang": // Tab "Mới đăng"
+                    // SỬA: Chỉ sắp xếp theo Ngày Đăng giảm dần (Mới nhất lên đầu)
+                    // Không quan tâm ID_LoaiTin (VIP hay thường đều như nhau)
+                    sortedQuery = query.OrderByDescending(p => p.Ngay_Dang);
+                        break;
 
                 case "co-video": // Nếu là tab "Có video"
                     sortedQuery = db.Phong_Tro
