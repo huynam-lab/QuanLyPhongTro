@@ -277,7 +277,7 @@
 
             <div class="offcanvas-body p-0">
                 @* Khối Trang Quản lý và Đăng tin mới *@
-                if (roleID == 3)
+                @if(roleID == 3)
                 {
                     <div class="p-3">
                         <a href="@Url.Action("Index", "Admin", new { Area = "Host" })" class="btn btn-outline-secondary w-100 p-2 mb-2">
