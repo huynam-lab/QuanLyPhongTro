@@ -1,275 +1,237 @@
-﻿
-// =======================================================
-// LOGIC CHUNG CHO 2 MODAL
+﻿// =======================================================
+// CÁC BIẾN DOM
 // =======================================================
 
 const locationDisplay = document.getElementById('locationDisplay');
 const selectedLocationsInput = document.getElementById('selectedLocationsInput');
 const locationListContainer = document.getElementById('locationListContainer');
+
 const locationModalElement = document.getElementById('locationModal');
 const filterModalElement = document.getElementById('filterModal');
 
-// Khởi tạo Modal instances
 const locationModal = new bootstrap.Modal(locationModalElement);
 const filterModal = new bootstrap.Modal(filterModalElement);
 
-
-// --- Dữ liệu Bộ lọc (Modal 2) ---
-let currentFilters = {
-    category: 'phongtro',
-    price: 'all',
-    area: ['all'], // Diện tích cho phép chọn nhiều
-    utilities: []
-};
-
 // =======================================================
-// LOGIC MODAL TÌM KIẾM KHU VỰC (VẪN GIỮ NGUYÊN)
+// STATE KHU VỰC
 // =======================================================
 
+let locationsState = []; // {id, name, isSelected}
+
+// Hàm mở modal nơi
 function showLocationModal() {
     locationModal.show();
 }
 
-let locationsState = [];
+// Khởi tạo state từ checkbox
 function initializeLocationState() {
     locationsState = [];
-    // Lấy tất cả các checkbox trong modal
+
     const checkboxes = document.querySelectorAll('#locationListContainer input[type="checkbox"]');
+
     checkboxes.forEach(cb => {
         locationsState.push({
             id: cb.dataset.id,
-            name: cb.dataset.name || (cb.dataset.id === 'all' ? 'Toàn quốc' : 'Tên không xác định'),
+            name: cb.dataset.name || 'Không tên',
             isSelected: cb.checked
         });
 
-        // Thêm Event Listener cho từng checkbox
-        cb.addEventListener('change', function (e) {
-            handleLocationCheckboxChange(e.target.dataset.id, e.target.checked);
+        // Lắng nghe thay đổi
+        cb.addEventListener('change', function () {
+            handleLocationCheckboxChange(cb.dataset.id, cb.checked);
         });
     });
 
-    // Cần phải khởi tạo lại Event Listener cho các div cha (location-item)
-    document.querySelectorAll('.location-item').forEach(itemDiv => {
-        itemDiv.addEventListener('click', function (e) {
-            const checkbox = itemDiv.querySelector('input[type="checkbox"]');
-            // Đảm bảo không xử lý khi click trực tiếp vào checkbox/label text
+    // Click vào dòng ngoài checkbox cũng chọn
+    document.querySelectorAll('.location-item').forEach(div => {
+        div.addEventListener('click', function (e) {
+            const cb = div.querySelector('input[type="checkbox"]');
             if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SPAN') {
-                checkbox.checked = !checkbox.checked;
-                handleLocationCheckboxChange(checkbox.dataset.id, checkbox.checked);
+                cb.checked = !cb.checked;
+                handleLocationCheckboxChange(cb.dataset.id, cb.checked);
             }
         });
     });
 }
-function handleLocationCheckboxChange(locationId, isChecked) {
-    // 1. Cập nhật trạng thái trong mảng JS
-    const locationItem = locationsState.find(loc => loc.id === locationId);
-    if (locationItem) {
-        locationItem.isSelected = isChecked;
+
+function handleLocationCheckboxChange(id, isChecked) {
+
+    // Cập nhật state
+    const item = locationsState.find(x => x.id === id);
+    if (item) item.isSelected = isChecked;
+
+    // Nếu chọn "all"
+    if (id === "all" && isChecked) {
+        locationsState.forEach(loc => {
+            if (loc.id !== 'all') loc.isSelected = false;
+        });
     }
 
-    // 2. Xử lý logic Toàn quốc/Khu vực cụ thể (giống logic cũ)
-    if (locationId === 'all') {
-        if (isChecked) {
-            locationsState.forEach(loc => {
-                if (loc.id !== 'all') {
-                    loc.isSelected = false;
-                }
-            });
-        }
-    } else {
-        if (isChecked) {
-            const allItem = locationsState.find(loc => loc.id === 'all');
-            if (allItem) allItem.isSelected = false;
-        }
+    // Nếu tick khu vực -> bỏ "all"
+    if (id !== "all" && isChecked) {
+        const allItem = locationsState.find(x => x.id === 'all');
+        if (allItem) allItem.isSelected = false;
     }
 
-    // 3. Đảm bảo ít nhất một mục được chọn (nếu không thì chọn 'all')
-    const checkedCount = locationsState.filter(loc => loc.isSelected).length;
-    if (checkedCount === 0) {
-        const allItem = locationsState.find(loc => loc.id === 'all');
-        if (allItem) allItem.isSelected = true;
+    // Không chọn gì -> auto chọn all
+    if (!locationsState.some(x => x.isSelected)) {
+        const all = locationsState.find(x => x.id === 'all');
+        if (all) all.isSelected = true;
     }
 
-    // 4. Đồng bộ lại trạng thái từ mảng JS ra DOM (rất quan trọng)
+    // Đồng bộ checkbox lại theo state
     locationsState.forEach(loc => {
-        const checkbox = document.querySelector(`#locationListContainer input[data-id="${loc.id}"]`);
-        if (checkbox) {
-            // Chỉ đồng bộ nếu trạng thái trong JS khác trạng thái DOM, 
-            // tránh lặp vô tận nếu có logic phức tạp
-            if (checkbox.checked !== loc.isSelected) {
-                checkbox.checked = loc.isSelected;
-            }
-        }
+        const dom = document.querySelector(`#locationListContainer input[data-id="${loc.id}"]`);
+        if (dom) dom.checked = loc.isSelected;
     });
 }
 
+// Cập nhật ô hiển thị
 function updateLocationDisplayField() {
-    const activeLocations = locationsState
-        .filter(loc => loc.isSelected && loc.id !== 'all')
-        .map(loc => loc.name);
+    const list = locationsState
+        .filter(l => l.isSelected && l.id !== "all")
+        .map(l => l.name);
 
-    // ... (phần còn lại của hàm giữ nguyên logic sử dụng activeLocations) ...
-
-    if (activeLocations.length === 0) {
-        locationDisplay.value = 'Tìm theo khu vực';
-        selectedLocationsInput.value = '';
-        // Đảm bảo 'all' được chọn lại trong state
-        const allItem = locationsState.find(loc => loc.id === 'all');
-        if (allItem) {
-            allItem.isSelected = true;
-            document.querySelector('#locationListContainer input[data-id="all"]').checked = true;
-        }
-    } else {
-        const displayNames = activeLocations.slice(0, 3).join(', ');
-        // ... (giữ nguyên phần tính toán display text)
-        const remainingCount = activeLocations.length - 3;
-
-        let displayText = displayNames;
-        if (remainingCount > 0) {
-            displayText += ` +${remainingCount} khu vực khác`;
-        }
-
-        locationDisplay.value = displayText;
-        selectedLocationsInput.value = activeLocations.join(',');
+    if (list.length === 0) {
+        locationDisplay.value = "Tìm theo khu vực";
+        selectedLocationsInput.value = "";
+        return;
     }
+
+    const display = list.slice(0, 3).join(", ");
+    const more = list.length - 3;
+
+    locationDisplay.value = more > 0 ? `${display} +${more} khu vực khác` : display;
+    selectedLocationsInput.value = list.join(",");
 }
 
-// Lắng nghe sự kiện Modal Khu vực đóng
-locationModalElement.addEventListener('hidden.bs.modal', function () {
-    updateLocationDisplayField();
-});
-document.addEventListener('DOMContentLoaded', function () {
-    initializeLocationState(); // Thay thế renderLocationList()
-    updateLocationDisplayField();
-
-    document.getElementById('applyLocationFilter').addEventListener('click', function () {
-        updateLocationDisplayField();
-    });
-});
+// Modal đóng → cập nhật hiển thị
+locationModalElement.addEventListener('hidden.bs.modal', updateLocationDisplayField);
 
 
 // =======================================================
-// LOGIC MODAL BỘ LỌC (FILTER MODAL) - MỚI
+// NÚT ÁP DỤNG KHU VỰC
 // =======================================================
+
+function applyLocationFilter() {
+
+    const selected = locationsState
+        .filter(l => l.isSelected && l.id !== "all")
+        .map(l => l.id);
+
+    let query = "";
+
+    if (selected.length > 0) {
+        query = selected.map(id => `kvIds=${id}`).join("&");
+    }
+
+    locationModal.hide();
+
+    window.location.href = "/User/TimKiem?" + query;
+}
+
+
+// =======================================================
+// FILTER MODAL
+// =======================================================
+
+let currentFilters = {
+    category: "phongtro",
+    price: "all",
+    area: ["all"],
+    utilities: []
+};
 
 function showFilterModal() {
-    // Khi mở Modal, đảm bảo giao diện Modal đồng bộ với state hiện tại
     syncFilterModalUI();
     filterModal.show();
 }
 
 function syncFilterModalUI() {
-    // 1. Đồng bộ Danh mục
+
     document.querySelectorAll('.category-item').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.category === currentFilters.category) {
-            btn.classList.add('active');
-        }
+        btn.classList.toggle("active", btn.dataset.category === currentFilters.category);
     });
 
-    // 2. Đồng bộ Khoảng giá (Radio style - chỉ chọn 1)
-    document.querySelectorAll('.tag-group button[data-price-range]').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.priceRange === currentFilters.price) {
-            btn.classList.add('active');
-        }
+    document.querySelectorAll('button[data-price-range]').forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.priceRange === currentFilters.price);
     });
 
-    // 3. Đồng bộ Khoảng diện tích (Checkbox style - có thể chọn nhiều)
-    document.querySelectorAll('.tag-group button[data-area-range]').forEach(btn => {
-        if (currentFilters.area.includes(btn.dataset.areaRange)) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+    document.querySelectorAll('button[data-area-range]').forEach(btn => {
+        btn.classList.toggle("active", currentFilters.area.includes(btn.dataset.areaRange));
     });
 
-    // 4. Đồng bộ Đặc điểm nổi bật (Checkbox style - có thể chọn nhiều)
-    document.querySelectorAll('.tag-group button[data-utility]').forEach(btn => {
-        if (currentFilters.utilities.includes(btn.dataset.utility)) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+    document.querySelectorAll('button[data-utility]').forEach(btn => {
+        btn.classList.toggle("active", currentFilters.utilities.includes(btn.dataset.utility));
     });
 }
 
-// --- Event Listeners cho các nhóm lọc ---
-
-// 1. Danh mục cho thuê
-document.querySelectorAll('.category-item').forEach(item => {
-    item.addEventListener('click', function () {
-        // Đặt lại state và cập nhật UI
-        currentFilters.category = item.dataset.category;
+// Danh mục
+document.querySelectorAll('.category-item').forEach(btn => {
+    btn.addEventListener("click", () => {
+        currentFilters.category = btn.dataset.category;
         syncFilterModalUI();
     });
 });
 
-// 2. Khoảng giá (Radio logic)
-document.querySelectorAll('.tag-group button[data-price-range]').forEach(btn => {
-    btn.addEventListener('click', function () {
-        // Đặt lại state và cập nhật UI
+// Giá
+document.querySelectorAll('button[data-price-range]').forEach(btn => {
+    btn.addEventListener("click", () => {
         currentFilters.price = btn.dataset.priceRange;
         syncFilterModalUI();
     });
 });
 
-// 3. Khoảng diện tích (Checkbox logic)
-document.querySelectorAll('.tag-group button[data-area-range]').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const range = btn.dataset.areaRange;
+// Diện tích
+document.querySelectorAll('button[data-area-range]').forEach(btn => {
+    btn.addEventListener("click", () => {
+        const val = btn.dataset.areaRange;
 
-        if (range === 'all') {
-            // Nếu click "Tất cả", đặt lại chỉ còn 'all'
-            currentFilters.area = ['all'];
-        } else {
-            // Nếu click range cụ thể, loại bỏ 'all' nếu nó đang có
-            currentFilters.area = currentFilters.area.filter(a => a !== 'all');
+        if (val === "all") currentFilters.area = ["all"];
+        else {
+            currentFilters.area = currentFilters.area.filter(a => a !== "all");
 
-            const index = currentFilters.area.indexOf(range);
-            if (index > -1) {
-                currentFilters.area.splice(index, 1); // Bỏ chọn
-            } else {
-                currentFilters.area.push(range); // Chọn
-            }
+            if (currentFilters.area.includes(val))
+                currentFilters.area = currentFilters.area.filter(a => a !== val);
+            else
+                currentFilters.area.push(val);
 
-            // Nếu không còn gì được chọn, tự động chọn lại 'all'
-            if (currentFilters.area.length === 0) {
-                currentFilters.area.push('all');
-            }
+            if (currentFilters.area.length === 0)
+                currentFilters.area = ["all"];
         }
+
         syncFilterModalUI();
     });
 });
 
-// 4. Đặc điểm nổi bật (Checkbox logic)
-document.querySelectorAll('.tag-group button[data-utility]').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const utility = btn.dataset.utility;
-        const index = currentFilters.utilities.indexOf(utility);
+// Tiện ích
+document.querySelectorAll('button[data-utility]').forEach(btn => {
+    btn.addEventListener("click", () => {
+        const ut = btn.dataset.utility;
 
-        if (index > -1) {
-            currentFilters.utilities.splice(index, 1); // Bỏ chọn
-        } else {
-            currentFilters.utilities.push(utility); // Chọn
-        }
+        if (currentFilters.utilities.includes(ut))
+            currentFilters.utilities = currentFilters.utilities.filter(x => x !== ut);
+        else
+            currentFilters.utilities.push(ut);
+
         syncFilterModalUI();
     });
 });
 
-// Hàm Áp dụng Bộ lọc (gọi khi bấm nút Áp dụng)
 function applyFilterAndClose() {
-    console.log("Filters đã áp dụng:", currentFilters);
-    // Ở đây bạn có thể thêm logic gửi API/reload trang với các filter
+    console.log("Filters:", currentFilters);
     filterModal.hide();
 }
 
-// --- Khởi tạo khi DOM sẵn sàng ---
-document.addEventListener('DOMContentLoaded', function () {
-    renderLocationList();
+
+// =======================================================
+// KHỞI TẠO
+// =======================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    initializeLocationState();
     updateLocationDisplayField();
 
-    document.getElementById('applyLocationFilter').addEventListener('click', function () {
-        updateLocationDisplayField();
-    });
+    document.getElementById("applyLocationFilter")
+        .addEventListener("click", applyLocationFilter);
 });
