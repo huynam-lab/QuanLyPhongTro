@@ -563,10 +563,42 @@ namespace QuanLyPhongTro.Controllers
             ViewBag.Id = id;
             return View();
         }
-        public ActionResult TimKiem()
+        public ActionResult TimKiem(List<int> kvIds, int? page)
         {
-            return View();
+            var userFavorites = GetUserFavorites();
+            ViewBag.UserFavorites = userFavorites;
+
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
+
+            var query = db.Phong_Tro
+                          .Include(p => p.Tai_Khoan)
+                          .Include(p => p.Khu_Vuc)
+                          .Include(p => p.Hinh_Anh)
+                          .Include(p => p.Loai_Tin)
+                          .Include(p => p.Videos);
+
+            // Nếu có danh sách khu vực → lọc
+            if (kvIds != null && kvIds.Any())
+            {
+                query = query.Where(p => p.ID_KV.HasValue && kvIds.Contains(p.ID_KV.Value));
+            }
+
+            var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
+                                   .ThenByDescending(p => p.Ngay_Dang);
+
+            var newestPosts = db.Phong_Tro
+                                .Include(p => p.Hinh_Anh)
+                                .OrderByDescending(p => p.Ngay_Dang)
+                                .Take(10)
+                                .ToList();
+
+            ViewBag.NewestPosts = newestPosts;
+
+            // Render lại View Index
+            return View("Index", sortedQuery.ToPagedList(pageNumber, pageSize));
         }
+
 
         //  =============== end chi tiet tin
         protected override void Dispose(bool disposing)
