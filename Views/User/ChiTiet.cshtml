@@ -1,8 +1,4 @@
-﻿
-@{
-    ViewBag.Title = "ChiTiet";
-}
-@model QuanLyPhongTro.Models.Phong_Tro
+﻿@model QuanLyPhongTro.Models.Phong_Tro
 
 <link href="~/Assets/Css/ChiTiet.css" rel="stylesheet" />
 @{
@@ -38,6 +34,30 @@
     var avatarNguoiDang = (Model.Tai_Khoan != null && !string.IsNullOrEmpty(Model.Tai_Khoan.Avata))
         ? "~/Assets/Images/Avatar/" + Model.Tai_Khoan.Avata
         : "~/Assets/Images/Avatar/avatar-mac-dinh.jpg";
+
+    string linkDanhMuc = "#";
+    string tenDanhMuc = "...";
+
+    if (Model.Chu_De != null)
+    {
+        switch (Model.Chu_De.ID_CD)
+        {
+            case 4:
+                linkDanhMuc = Url.Action("Index", "User");
+                tenDanhMuc = "Cho thuê phòng trọ";
+                break;
+
+            case 5:
+                linkDanhMuc = Url.Action("CanHoMini", "User");
+                tenDanhMuc = "Cho thuê nhà ở mini";
+                break;
+
+            case 6:
+                linkDanhMuc = Url.Action("CanHoChungCu", "User");
+                tenDanhMuc = "Cho thuê căn hộ chung cư";
+                break;
+        }
+    }
 }
 @Html.AntiForgeryToken()
 <div class="container mt-4">
@@ -47,8 +67,14 @@
 
             <nav aria-label="breadcrumb" class="mb-2">
                 <ol class="breadcrumb" style="background-color: #f8f9fa; padding: 0.5rem 1rem; border-radius: 0.25rem;">
-                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Cho thuê phòng trọ</a></li>
-                    <li class="breadcrumb-item"><a href="#">@(Model.Khu_Vuc != null ? Model.Khu_Vuc.Ten_KV : "...")</a></li>
+                    <li class="breadcrumb-item">
+                        <a href="@linkDanhMuc">@tenDanhMuc</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("TimKiem", "User", new { kvIds = Model.Khu_Vuc?.ID_KV })">
+                            @(Model.Khu_Vuc != null ? Model.Khu_Vuc.Ten_KV : "...")
+                        </a>
+                    </li>
                     <li class="breadcrumb-item active" aria-current="page">@Model.Ten_Phong</li>
                 </ol>
             </nav>

@@ -4,7 +4,7 @@
 @model IPagedList<QuanLyPhongTro.Models.Phong_Tro>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = ViewBag.PageTitle;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var currentFilter = ViewBag.CurrentFilter as string ?? "de-xuat";
 }
@@ -16,7 +16,7 @@
 
         <div class="col-lg-8">
 
-            <h2 class="h4">Kênh thông tin Phòng Trọ số 1 Việt Nam</h2>
+            <h2 class="h4">@ViewBag.PageTitle</h2>
             <p class="text-muted">Có @Model.TotalItemCount.ToString("N0") tin đang cho thuê</p>
 
 
@@ -92,7 +92,7 @@
 
                                         // HIỂN THỊ VIDEO
                                         // (Giả sử Url_Video là tên file mp4 nằm trong thư mục ~/Kho/Video/)
-                                        <video controls style="width: 100%; height: 100%; object-fit: cover;">
+                                        <video controls style="width: 100%; height: 100%; padding-bottom:15px">
                                             <source src="@Url.Content("~/Kho/Video/" + firstVideo.Url_Video)" type="video/mp4">
                                             Trình duyệt của bạn không hỗ trợ thẻ video.
                                         </video>
@@ -105,7 +105,7 @@
                                     else
                                     {
                                         // KHÔNG CÓ VIDEO -> HIỂN THỊ ẢNH NHƯ CŨ
-                                        <a href="@Url.Action("ChiTiet", "Home", new { id = item.ID_Phong_Tro })">
+                                        <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })">
                                             <img src="@(hinhAnh.Count > 0 ? Url.Content("~/Kho/Img/" + hinhAnh[0].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
                                                  alt="@item.Ten_Phong" loading="lazy" />
                                         </a>
@@ -116,18 +116,18 @@
                                 </div>
 
                                 <!-- PHẢI: 1 ẢNH TRÊN -->
-                                <div class="media-rtop">
+                                <a href="@Url.Action("ChiTiet", "User", new { id = item.ID_Phong_Tro })" class="media-rtop">
                                     <img src="@(hinhAnh.Count > 1 ? Url.Content("~/Kho/Img/" + hinhAnh[1].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
                                          alt="Ảnh phụ 1" loading="lazy" />
-                                </div>
+                                </a>
 
                                 <!-- PHẢI: 2 ẢNH DƯỚI -->
-                                <div class="media-rb">
+                                <a href="@Url.Action("ChiTiet", "User   ", new { id = item.ID_Phong_Tro })" class="media-rb">
                                     <img src="@(hinhAnh.Count > 2 ? Url.Content("~/Kho/Img/" + hinhAnh[2].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
                                          alt="Ảnh phụ 2" loading="lazy" />
                                     <img src="@(hinhAnh.Count > 3 ? Url.Content("~/Kho/Img/" + hinhAnh[3].Url_Anh) : Url.Content("~/Kho/Img/placeholder.jpg"))"
                                          alt="Ảnh phụ 3" loading="lazy" />
-                                </div>
+                                </a>
                             </div>
                         </div>
                         <div class="card-body pt-2">
@@ -605,7 +605,7 @@
 </div>
 
 @section Scripts {
-<script>
+    <script>
        $(document).ready(function () {
 
     // 1. Lấy thẻ input chứa Token
@@ -669,7 +669,7 @@
         });
     });
 });
-</script>
+    </script>
 
 }
 <section class="mt-4">

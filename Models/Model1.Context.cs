@@ -13,10 +13,10 @@ namespace QuanLyPhongTro.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class DaTa_Phong_TroEntities5 : DbContext
+    public partial class DaTa_Phong_TroEntities6 : DbContext
     {
-        public DaTa_Phong_TroEntities5()
-            : base("name=DaTa_Phong_TroEntities5")
+        public DaTa_Phong_TroEntities6()
+            : base("name=DaTa_Phong_TroEntities6")
         {
         }
     

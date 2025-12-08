@@ -17,7 +17,7 @@ namespace QuanLyPhongTro.Controllers
     public class UserController : Controller
     {
         // Khởi tạo DbContext. Sử dụng DaTa_Phong_TroEntities1 dựa trên connection string bạn cung cấp
-        private DaTa_Phong_TroEntities5 db = new DaTa_Phong_TroEntities5();
+        private DaTa_Phong_TroEntities6 db = new DaTa_Phong_TroEntities6();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             // Lấy danh sách Khu_Vuc có Trang_Thai = true (hoặc logic lọc phù hợp)
@@ -127,7 +127,8 @@ namespace QuanLyPhongTro.Controllers
             // 3. TẠO VIEWMODEL VÀ GÁN DỮ LIỆU
             // 4. GỌI ToPagedList() THAY VÌ ToList()
             // Gửi Model phân trang qua View
-            ViewBag.NewestPosts = newestPosts; 
+            ViewBag.NewestPosts = newestPosts;
+            ViewBag.PageTitle = "Kênh thông tin Phòng Trọ số 1 Việt Nam";
             return View(sortedQuery.ToPagedList(pageNumber, pageSize));
         }
         private List<int> GetUserFavorites()
@@ -213,7 +214,7 @@ namespace QuanLyPhongTro.Controllers
             // 3. ĐƯA DANH SÁCH SIDEBAR VÀO VIEWBAG
             ViewBag.NewestPosts = newestPosts;
             // QUAN TRỌNG: Render ra View tên là "Index"
-
+            ViewBag.PageTitle = "Cho Thuê Căn Hộ Chung Cư, Giá Rẻ, View Đẹp, Mới Nhất 2025";
             return View("Index", sortedQuery.ToPagedList(pageNumber, pageSize));
         }
 
@@ -240,6 +241,7 @@ namespace QuanLyPhongTro.Controllers
                                    .ThenByDescending(p => p.Ngay_Dang);
 
             // QUAN TRỌNG: Render ra View tên là "Index"
+            ViewBag.PageTitle = "Cho Thuê Căn Hộ Mini + Chung Cư Mini Giá Rẻ, Mới Nhất 2025";
             return View("Index", sortedQuery.ToPagedList(pageNumber, pageSize));
         }
         public ActionResult ChiTiet(int id) // <-- SỬA LỖI: Thêm tham số (int id)
@@ -583,7 +585,26 @@ namespace QuanLyPhongTro.Controllers
             {
                 query = query.Where(p => p.ID_KV.HasValue && kvIds.Contains(p.ID_KV.Value));
             }
+            // Lấy tên khu vực đã chọn để hiển thị
+            List<string> khuVucNames = new List<string>();
 
+            if (kvIds != null && kvIds.Any())
+            {
+                khuVucNames = db.Khu_Vuc
+                                .Where(kv => kvIds.Contains(kv.ID_KV))
+                                .Select(kv => kv.Ten_KV)
+                                .ToList();
+            }
+
+            // Gán tiêu đề trang
+            if (khuVucNames.Any())
+            {
+                ViewBag.PageTitle = "Kết quả tìm kiếm tại : " + string.Join(", ", khuVucNames);
+            }
+            else
+            {
+                ViewBag.PageTitle = "Kết quả tìm kiếm";
+            }
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
                                    .ThenByDescending(p => p.Ngay_Dang);
 
@@ -598,6 +619,85 @@ namespace QuanLyPhongTro.Controllers
             // Render lại View Index
             return View("Index", sortedQuery.ToPagedList(pageNumber, pageSize));
         }
+
+        public ActionResult BoLoc(
+            int? ID_CD,
+            int? ID_KV,
+            int? minPrice,
+            int? maxPrice,
+            int? minArea,
+            int? maxArea,
+            int? page
+        )
+        {
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
+
+            var query = db.Phong_Tro
+                          .Include(p => p.Tai_Khoan)
+                          .Include(p => p.Khu_Vuc)
+                          .Include(p => p.Hinh_Anh)
+                          .Include(p => p.Loai_Tin)
+                          .Include(p => p.Videos)
+                          .AsQueryable();
+
+            // Danh mục
+            if (ID_CD.HasValue)
+                query = query.Where(p => p.ID_CD == ID_CD.Value);
+
+            // Khu vực
+            if (ID_KV.HasValue)
+                query = query.Where(p => p.ID_KV == ID_KV.Value);
+
+            // Giá
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Gia_Ca >= minPrice.Value);
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Gia_Ca < maxPrice.Value);
+
+            // Diện tích
+            if (minArea.HasValue)
+                query = query.Where(p => p.Dien_Tich >= minArea.Value);
+            if (maxArea.HasValue)
+                query = query.Where(p => p.Dien_Tich <= maxArea.Value);
+
+            // Sắp xếp
+            query = query.OrderBy(p => p.ID_LoaiTin)
+                         .ThenByDescending(p => p.Ngay_Dang);
+
+            var result = query.ToPagedList(pageNumber, pageSize);
+
+            // Set title theo danh mục
+            if (ID_CD == 4) ViewBag.PageTitle = "Cho thuê Phòng trọ";
+            else if (ID_CD == 5) ViewBag.PageTitle = "Cho thuê Nhà ở Mini";
+            else if (ID_CD == 6) ViewBag.PageTitle = "Cho thuê Căn hộ Chung cư";
+            else ViewBag.PageTitle = "Kết quả lọc";
+
+            // Gán ViewBag để phục hồi state UI
+            ViewBag.SelectedKV = ID_KV;           // int? hoặc null
+
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
+            ViewBag.MinArea = minArea;
+            ViewBag.MaxArea = maxArea;
+
+            if (ID_CD == 4) ViewBag.SelectedCategory = "phongtro";
+            else if (ID_CD == 6) ViewBag.SelectedCategory = "canhochungcu";
+            else if (ID_CD == 5) ViewBag.SelectedCategory = "canhomini";
+            else ViewBag.SelectedCategory = "";
+
+
+            // Lấy newest posts nếu cần (như Index)
+            var newestPosts = db.Phong_Tro
+                                .Include(p => p.Hinh_Anh)
+                                .OrderByDescending(p => p.Ngay_Dang)
+                                .Take(10)
+                                .ToList();
+            ViewBag.NewestPosts = newestPosts;
+
+            return View("Index", result);
+        }
+
 
 
         //  =============== end chi tiet tin
