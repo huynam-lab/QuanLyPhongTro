@@ -9,7 +9,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
 {
     public class AdminBaseController : Controller
     {
-        protected DaTa_Phong_TroEntities6 db = new DaTa_Phong_TroEntities6();
+        protected DaTa_Phong_TroEntities8 db = new DaTa_Phong_TroEntities8();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
             {
             // Nếu chưa đăng nhập → 404

@@ -1,0 +1,132 @@
+﻿@model QuanLyPhongTro.Models.Phong_Tro
+@using System.Linq
+
+<div class="paneltin-wrap">
+
+    <!-- ===== Header ===== -->
+    <div class="mb-2">
+        <h5 class="fw-bold mb-1">@Model.Ten_Phong</h5>
+        <div class="text-muted small">
+            Mã tin: <b>#@Model.ID_Phong_Tro</b> |
+            Người đăng: <b>@(Model.Tai_Khoan?.Name ?? "")</b> |
+            SĐT: <b>@(Model.Tai_Khoan?.SDT ?? "")</b> |
+            Ngày đăng: <b>@(Model.Ngay_Dang?.ToString("dd/MM/yyyy") ?? "")</b>
+        </div>
+    </div>
+
+    <hr class="my-2" />
+
+    <!-- ===== Thông tin chính ===== -->
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div><b>Giá thuê:</b> @((Model.Gia_Ca ?? 0).ToString("#,##0")) ₫/tháng</div>
+            <div><b>Diện tích:</b> @Model.Dien_Tich m²</div>
+            <div><b>Địa chỉ:</b> @Model.Dia_Chi</div>
+            <div><b>Khu vực:</b> @(Model.Khu_Vuc?.Ten_KV ?? "")</div>
+        </div>
+
+        <div class="col-md-6">
+            <div><b>Loại tin:</b> @(Model.Loai_Tin?.Ten_LoaiTin ?? "")</div>
+            <div><b>Ngày hết hạn:</b> @(Model.Ngay_Het_Han?.ToString("dd/MM/yyyy") ?? "")</div>
+            <div><b>Giá duyệt:</b> @((Model.Gia_Duyet ?? 0).ToString("#,##0")) ₫</div>
+            <div>
+                <b>Trạng thái:</b>
+                @if (Model.Trang_Thai == true)
+                    {
+                    <span class="badge bg-success">Hiển thị</span>
+                    }
+                else
+                    {
+                    <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                    }
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Mô tả ===== -->
+    <div class="mt-3">
+        <b>Mô tả:</b>
+        <div class="border rounded p-2 mt-1 bg-light" style="white-space:pre-line;">
+            @Model.Mo_Ta
+        </div>
+    </div>
+    @{
+        var nb = Model.Noi_Bat?.FirstOrDefault();  // lấy 1 dòng Noi_Bat của phòng
+    }
+    @if (nb != null)
+        {
+        <div class="mt-3">
+            <b>Đặc điểm nổi bật:</b>
+            <div class="row mt-1">
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Đầy đủ nội thất: @(nb.Day_du_noi_that == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Máy lạnh: @(nb.Co_may_lanh == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Thang máy: @(nb.Co_thang_may == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Bảo vệ 24/24: @(nb.Co_bao_ve_24_24 == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Có gác: @(nb.Co_gac == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Máy giặt: @(nb.Co_may_giat == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Không chung chủ: @(nb.Khong_chung_chu == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Kệ bếp: @(nb.Ke_bep == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Tủ lạnh: @(nb.Co_tu_lanh == true ? "Có" : "Không")</div>
+                <div class="col-md-4"><i class="bi bi-check2 text-success"></i> Giờ giấc tự do: @(nb.Gio_giac_tu_do == true ? "Có" : "Không")</div>
+            </div>
+        </div>
+        }
+    else
+        {
+        <div class="mt-3 text-muted">
+            <b>Đặc điểm nổi bật:</b> Không có dữ liệu
+        </div>
+        }
+
+
+    <!-- ===== Hình ảnh ===== -->
+    <b>Hình ảnh:</b>
+    <div class="d-flex flex-wrap gap-2 mt-2">
+        @if (Model.Hinh_Anh != null && Model.Hinh_Anh.Any())
+            {
+            foreach (var img in Model.Hinh_Anh)
+                {
+                var src = Url.Content("~/Kho/Img/" + img.Url_Anh);
+
+                <a href="@src" target="_blank" title="Xem ảnh lớn">
+                    <img src="@src"
+                         style="width:120px;height:120px;object-fit:cover;
+                            border-radius:10px;border:1px solid #ddd;
+                            cursor:pointer;transition:.15s;"
+                         onmouseover="this.style.transform='scale(1.03)';this.style.boxShadow='0 6px 16px rgba(0,0,0,.15)';"
+                         onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none';" />
+                </a>
+                }
+            }
+        else
+            {
+            <div class="text-muted">Không có ảnh</div>
+            }
+    </div>
+
+    <small class="text-muted d-block mt-1">Bấm vào ảnh để xem lớn</small>
+
+
+    <!-- ===== Video ===== -->
+    <div class="mt-3">
+        <b>Video:</b>
+        <div class="d-flex flex-wrap gap-2 mt-2">
+            @if (Model.Video != null && Model.Video.Any())
+                {
+                foreach (var v in Model.Video)
+                    {
+                    <video src="~/Kho/Video/@v.Url_Video"
+                           controls
+                           style="width:220px;height:140px;border-radius:10px;border:1px solid #ddd;background:#000;">
+                    </video>
+                    }
+                }
+            else
+                {
+                <div class="text-muted">Không có video</div>
+                }
+        </div>
+    </div>
+
+</div>
+

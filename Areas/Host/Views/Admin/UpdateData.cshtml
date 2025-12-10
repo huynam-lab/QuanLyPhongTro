@@ -125,10 +125,8 @@
                             <label class="form-label">Giá cho thuê<span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="number" name="GiaThue" class="form-control" value="@(Model.GiaThue ?? 0)" />
-
                                 <select class="form-select" style="max-width: 160px;">
                                     <option>đồng/tháng</option>
-
                                 </select>
                             </div>
                             <div class="text-muted mt-1">Nhập đầy đủ số, ví dụ 1 triệu thì nhập 1000000</div>
@@ -273,7 +271,7 @@
                 <!-- ===== NÚT ĐĂNG ===== -->
                 <div class="text-center mt-4 mb-5" style="padding-top:50px">
                     <button class="btn btn-primary px-5 py-2 fw-semibold rounded-pill">
-                        <i class="bi bi-check-circle me-2"></i> Đăng tin ngay
+                        <i class="bi bi-check-circle me-2"></i> Lưu
                     </button>
                 </div>
             </div>
@@ -288,6 +286,13 @@
 <div>
     @Html.Partial("_Footer")
 </div>
+<script>
+    window.isEdit = @(Model.ID_Phong_Tro > 0 ? "true" : "false");
+
+    window.initialLoaiTin = "@Model.ID_LoaiTin";
+    window.initialBangGia = "@Model.BangGia";
+    window.initialNgay    = "@Model.Ngay";
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -299,15 +304,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const imageInput = document.getElementById("imageInput");
     const imagePreview = document.getElementById("imagePreview");
 
+    //  bộ nhớ giữ tất cả ảnh đã chọn qua nhiều lần
+    const dt = new DataTransfer();
+
     if (imageBox && imageInput && imagePreview) {
         imageBox.addEventListener("click", () => imageInput.click());
 
         imageInput.addEventListener("change", () => {
             const files = Array.from(imageInput.files);
 
-            // đếm tổng: ảnh cũ + ảnh mới đang chọn
+            // đếm tổng: ảnh cũ (nếu có) + ảnh mới đang GIỮ + ảnh mới vừa chọn
             const oldCount = imagePreview.querySelectorAll("input[name='OldImages']").length;
-            if (oldCount + files.length > 20) {
+            const newCount = dt.files.length;
+
+            if (oldCount + newCount + files.length > 20) {
                 alert("⚠️ Tối đa 20 ảnh (gồm cả ảnh cũ và ảnh mới).");
                 imageInput.value = "";
                 return;
@@ -319,9 +329,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
+                // cộng dồn file thật vào dt
+                dt.items.add(file);
+
                 const reader = new FileReader();
                 reader.onload = e => {
-                    // tạo wrapper giống ảnh cũ
                     const wrap = document.createElement("div");
                     wrap.style.position = "relative";
                     wrap.style.display = "inline-block";
@@ -334,6 +346,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     img.style.objectFit = "cover";
                     img.style.borderRadius = "10px";
                     img.style.border = "1px solid #ddd";
+                    img.classList.add("new-upload-img");
 
                     const btn = document.createElement("button");
                     btn.type = "button";
@@ -343,19 +356,24 @@ document.addEventListener("DOMContentLoaded", function () {
                     btn.style.right = "3px";
                     btn.innerHTML = '<i class="bi bi-x"></i>';
 
-                    // xoá ảnh mới
+                    // xoá ảnh mới: xoá preview + xoá luôn trong dt
                     btn.addEventListener("click", () => {
+                        // tìm index của wrap trong danh sách ảnh mới
+                        const wraps = Array.from(imagePreview.querySelectorAll(".new-upload-img"))
+                            .map(x => x.closest("div"));
+                        const idx = wraps.indexOf(wrap);
+
+                        if (idx >= 0) {
+                            dt.items.remove(idx);
+                            imageInput.files = dt.files; // gán lại để submit đúng
+                        }
+
                         wrap.remove();
 
-                        // nếu bạn muốn reset input khi xoá hết ảnh mới:
-                        const stillNew = imagePreview.querySelectorAll(".new-upload-img").length;
-                        if (stillNew === 0) {
+                        if (dt.files.length === 0) {
                             imageInput.value = "";
                         }
                     });
-
-                    // đánh dấu đây là ảnh mới (để đếm / xử lý sau)
-                    img.classList.add("new-upload-img");
 
                     wrap.appendChild(img);
                     wrap.appendChild(btn);
@@ -363,9 +381,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 };
                 reader.readAsDataURL(file);
             });
+            //  quan trọng: gán lại FileList để form gửi hết ảnh đã chọn
+            imageInput.files = dt.files;
         });
     }
-
     /* =====================================================
        🎥 2. UPLOAD VIDEO
     ===================================================== */
@@ -373,57 +392,84 @@ document.addEventListener("DOMContentLoaded", function () {
     const videoInput = document.getElementById("videoInput");
     const videoPreview = document.getElementById("videoPreview");
 
+    //  bộ nhớ giữ toàn bộ video đã chọn
+    const dtVideo = new DataTransfer();
+
     if (videoBox && videoInput && videoPreview) {
         videoBox.addEventListener("click", () => videoInput.click());
 
         videoInput.addEventListener("change", () => {
-            const file = videoInput.files[0];
-            if (!file) return;
+            const files = Array.from(videoInput.files);
+            if (files.length === 0) return;
 
-            if (file.size > 50 * 1024 * 1024) {
-                alert("⚠️ Dung lượng video vượt quá 50MB, vui lòng chọn video nhỏ hơn.");
+            // ví dụ: tối đa 3 video (bạn đổi số tuỳ ý)
+            const maxVideos = 3;
+            if (dtVideo.files.length + files.length > maxVideos) {
+                alert(`⚠️ Tối đa ${maxVideos} video cho 1 bài đăng.`);
                 videoInput.value = "";
                 return;
             }
 
-            // tạo wrapper giống ảnh cũ
-            const wrap = document.createElement("div");
-            wrap.style.position = "relative";
-            wrap.style.display = "inline-block";
-            wrap.style.marginRight = "10px";
+            files.forEach(file => {
+                if (file.size > 50 * 1024 * 1024) {
+                    alert(`⚠️ Video "${file.name}" vượt quá 50MB.`);
+                    return;
+                }
 
-            const url = URL.createObjectURL(file);
-            const video = document.createElement("video");
-            video.src = url;
-            video.controls = true;
-            video.width = 200;
-            video.height = 130;
-            video.style.borderRadius = "10px";
-            video.style.border = "1px solid #ddd";
-            // đánh dấu là video mới
-            video.classList.add("new-upload-video");
+                //  cộng dồn video thật
+                dtVideo.items.add(file);
 
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "btn btn-sm btn-danger";
-            btn.style.position = "absolute";
-            btn.style.top = "3px";
-            btn.style.right = "3px";
-            btn.innerHTML = '<i class="bi bi-x"></i>';
+                // tạo wrapper preview
+                const wrap = document.createElement("div");
+                wrap.style.position = "relative";
+                wrap.style.display = "inline-block";
+                wrap.style.marginRight = "10px";
 
-            btn.addEventListener("click", () => {
-                wrap.remove();
-                // nếu muốn reset input khi xoá video mới
-                videoInput.value = "";
+                const url = URL.createObjectURL(file);
+                const video = document.createElement("video");
+                video.src = url;
+                video.controls = true;
+                video.width = 200;
+                video.height = 130;
+                video.style.borderRadius = "10px";
+                video.style.border = "1px solid #ddd";
+                video.classList.add("new-upload-video");
+
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "btn btn-sm btn-danger";
+                btn.style.position = "absolute";
+                btn.style.top = "3px";
+                btn.style.right = "3px";
+                btn.innerHTML = '<i class="bi bi-x"></i>';
+
+                //  xoá preview + xoá luôn file trong dtVideo
+                btn.addEventListener("click", () => {
+                    const wraps = Array.from(videoPreview.querySelectorAll(".new-upload-video"))
+                        .map(v => v.closest("div"));
+                    const idx = wraps.indexOf(wrap);
+
+                    if (idx >= 0) {
+                        dtVideo.items.remove(idx);
+                        videoInput.files = dtVideo.files;
+                    }
+
+                    wrap.remove();
+
+                    if (dtVideo.files.length === 0) {
+                        videoInput.value = "";
+                    }
+                });
+
+                wrap.appendChild(video);
+                wrap.appendChild(btn);
+                videoPreview.appendChild(wrap);
             });
 
-            wrap.appendChild(video);
-            wrap.appendChild(btn);
-            videoPreview.appendChild(wrap);
+            // quan trọng: gán lại FileList để submit gửi hết video đã chọn
+            videoInput.files = dtVideo.files;
         });
     }
-
-
 
 
     /* =====================================================
@@ -574,40 +620,78 @@ document.addEventListener("DOMContentLoaded", function () {
     /* =====================================================
        6. LOẠI TIN → THỜI GIAN → NGÀY + BẢNG GIÁ
     ===================================================== */
+    const isEdit = window.isEdit || false;
 
-    // khi đổi LOẠI TIN
+    // cần truyền từ Razor ở trang Update
+    const initialLoaiTin = window.initialLoaiTin || "";   // Model.ID_LoaiTin
+    const initialGiaId = window.initialGiaId || "";   // Model.ID_Gia (nếu có)
+    const initialBangGia = window.initialBangGia || "";   // Model.BangGia
+    const initialNgay = window.initialNgay || "";   // Model.Ngay
+
+    let firstLoad = true;
+
+    function fillThoiGianByLoaiTin(idLoaiTin) {
+        // reset dropdown thời gian
+        thoiGianSelect.innerHTML = '<option selected disabled>-- Chọn thời gian --</option>';
+
+        // lọc list theo loại tin
+        var list = bangGiaTin.filter(x => x.ID_LoaiTin == idLoaiTin);
+
+        list.forEach(item => {
+            var opt = document.createElement("option");
+            opt.value = item.ID_Gia;
+            opt.textContent = item.Thoi_Gian;
+            opt.dataset.ghichu = item.Ghi_Chu || '';
+            opt.dataset.giagiam = item.Gia_Giam || 0;
+            thoiGianSelect.appendChild(opt);
+        });
+
+        // ====== nếu là edit & load lần đầu: chọn lại đúng thời gian cũ ======
+        if (isEdit && firstLoad) {
+            if (initialGiaId) {
+                thoiGianSelect.value = initialGiaId;  // chọn đúng ID_Gia cũ
+            }
+
+            // trigger change để set ghi chú, currentGiaGiam, khóa ngày...
+            if (initialGiaId) {
+                thoiGianSelect.value = initialGiaId;
+                thoiGianSelect.dispatchEvent(new Event("change"));
+            }
+
+
+            // giữ lại banggia/ngày cũ
+            if (bangGiaInput && initialBangGia) bangGiaInput.value = initialBangGia;
+            if (ngayInput && initialNgay) ngayInput.value = initialNgay;
+
+            firstLoad = false;
+        }
+    }
+
     if (loaiTinSelect) {
         loaiTinSelect.addEventListener("change", function () {
             var idLoaiTin = this.value;
 
-            // reset
-            thoiGianSelect.innerHTML = '<option selected disabled>-- Chọn thời gian --</option>';
-            if (ghiChuSpan) ghiChuSpan.textContent = '';
-            if (ngayInput) {
-                ngayInput.value = '';
-                ngayInput.readOnly = false;
-                delete ngayInput.dataset.min;
+            // luôn fill lại thời gian theo loại tin
+            fillThoiGianByLoaiTin(idLoaiTin);
+            if (!(isEdit && firstLoad)) {
+                if (ghiChuSpan) ghiChuSpan.textContent = '';
+                if (ngayInput) {
+                    ngayInput.value = '';
+                    ngayInput.readOnly = false;
+                    delete ngayInput.dataset.min;
+                }
+                if (ngayWarning) ngayWarning.style.display = 'none';
+                if (bangGiaInput) bangGiaInput.value = '';
+                currentGiaGiam = 0;
+                currentTimeType = "ngay";
             }
-            if (ngayWarning) ngayWarning.style.display = 'none';
-            if (bangGiaInput) bangGiaInput.value = '';
-            currentGiaGiam  = 0;
-            currentTimeType = "ngay";
-
-            // lọc và đổ
-            var list = bangGiaTin.filter(function (x) {
-                return x.ID_LoaiTin == idLoaiTin;
-            });
-
-            list.forEach(function (item) {
-                var opt = document.createElement("option");
-                opt.value = item.ID_Gia;
-                opt.textContent = item.Thoi_Gian;
-                opt.dataset.ghichu  = item.Ghi_Chu  || '';
-                opt.dataset.giagiam = item.Gia_Giam || 0;
-                thoiGianSelect.appendChild(opt);
-            });
         });
+        if (isEdit && initialLoaiTin) {
+            loaiTinSelect.value = initialLoaiTin;
+            fillThoiGianByLoaiTin(initialLoaiTin);
+        }
     }
+
 
     // khi chọn THỜI GIAN
     if (thoiGianSelect) {
@@ -622,7 +706,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (ghiChuSpan) ghiChuSpan.textContent = ghichu;
 
             currentGiaGiam = giaGiam;
-
+            if (isEdit && firstLoad) {
+                return;
+            }
             if (ngayWarning) ngayWarning.style.display = 'none';
             if (ngayInput) {
                 ngayInput.value = '';

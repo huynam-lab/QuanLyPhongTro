@@ -441,10 +441,10 @@
           <NavigationProperty Name="Loai_Tin" Relationship="Self.FK_Phong_Tro_Loai_Tin" FromRole="Phong_Tro" ToRole="Loai_Tin" />
           <NavigationProperty Name="Noi_Bat" Relationship="Self.FK_NoiBat_PhongTro" FromRole="Phong_Tro" ToRole="Noi_Bat" />
           <NavigationProperty Name="Tai_Khoan" Relationship="Self.FK_Phong_Tro_Tai_Khoan" FromRole="Phong_Tro" ToRole="Tai_Khoan" />
-          <NavigationProperty Name="Videos" Relationship="Self.FK_Video_PhongTro" FromRole="Phong_Tro" ToRole="Video" />
+          <NavigationProperty Name="Video" Relationship="Self.FK_Video_PhongTro" FromRole="Phong_Tro" ToRole="Video" />
           <NavigationProperty Name="Yeu_Thich" Relationship="Self.FK_Yeu_Thich_Phong_Tro" FromRole="Phong_Tro" ToRole="Yeu_Thich" />
         </EntityType>
-        <EntityType Name="sysdiagram">
+        <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
           </Key>
@@ -628,7 +628,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="DaTa_Phong_TroEntities6" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="DaTa_Phong_TroEntities8" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Bang_Gia_Tin" EntityType="Self.Bang_Gia_Tin" />
           <EntitySet Name="Chu_De" EntityType="Self.Chu_De" />
           <EntitySet Name="Hinh_Anh" EntityType="Self.Hinh_Anh" />
@@ -637,9 +637,9 @@
           <EntitySet Name="Noi_Bat" EntityType="Self.Noi_Bat" />
           <EntitySet Name="Phan_Quyen" EntityType="Self.Phan_Quyen" />
           <EntitySet Name="Phong_Tro" EntityType="Self.Phong_Tro" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="Tai_Khoan" EntityType="Self.Tai_Khoan" />
-          <EntitySet Name="Videos" EntityType="Self.Video" />
+          <EntitySet Name="Video" EntityType="Self.Video" />
           <EntitySet Name="Yeu_Thich" EntityType="Self.Yeu_Thich" />
           <AssociationSet Name="FK_Bang_Gia_Tin_Loai_Tin" Association="Self.FK_Bang_Gia_Tin_Loai_Tin">
             <End Role="Loai_Tin" EntitySet="Loai_Tin" />
@@ -675,7 +675,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_Video_PhongTro" Association="Self.FK_Video_PhongTro">
             <End Role="Phong_Tro" EntitySet="Phong_Tro" />
-            <End Role="Video" EntitySet="Videos" />
+            <End Role="Video" EntitySet="Video" />
           </AssociationSet>
           <AssociationSet Name="FK_Yeu_Thich_Phong_Tro" Association="Self.FK_Yeu_Thich_Phong_Tro">
             <End Role="Phong_Tro" EntitySet="Phong_Tro" />
@@ -691,7 +691,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="DaTa_Phong_TroModelStoreContainer" CdmEntityContainer="DaTa_Phong_TroEntities6">
+        <EntityContainerMapping StorageEntityContainer="DaTa_Phong_TroModelStoreContainer" CdmEntityContainer="DaTa_Phong_TroEntities8">
           <EntitySetMapping Name="Bang_Gia_Tin">
             <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Bang_Gia_Tin">
               <MappingFragment StoreEntitySet="Bang_Gia_Tin">
@@ -792,7 +792,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="DaTa_Phong_TroModel.sysdiagram">
+            <EntityTypeMapping TypeName="DaTa_Phong_TroModel.sysdiagrams">
               <MappingFragment StoreEntitySet="sysdiagrams">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -818,7 +818,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Videos">
+          <EntitySetMapping Name="Video">
             <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Video">
               <MappingFragment StoreEntitySet="Video">
                 <ScalarProperty Name="ID_Video" ColumnName="ID_Video" />
@@ -851,7 +851,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

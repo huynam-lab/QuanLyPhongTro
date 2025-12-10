@@ -17,7 +17,7 @@ namespace QuanLyPhongTro.Controllers
     public class UserController : Controller
     {
         // Khởi tạo DbContext. Sử dụng DaTa_Phong_TroEntities1 dựa trên connection string bạn cung cấp
-        private DaTa_Phong_TroEntities6 db = new DaTa_Phong_TroEntities6();
+        private DaTa_Phong_TroEntities8 db = new DaTa_Phong_TroEntities8();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             // Lấy danh sách Khu_Vuc có Trang_Thai = true (hoặc logic lọc phù hợp)
@@ -66,7 +66,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
-                          .Include(p => p.Videos)
+                          .Include(p => p.Video)
                           .Where(p => p.ID_CD == 4); // Lọc theo ID_CD = 4
             if (minPrice.HasValue)
             {
@@ -104,8 +104,8 @@ namespace QuanLyPhongTro.Controllers
                      .Include(p => p.Khu_Vuc)
                      .Include(p => p.Hinh_Anh)
                      .Include(p => p.Loai_Tin)
-                     .Include(p => p.Videos)
-                     .Where(p => p.Videos.Any())
+                     .Include(p => p.Video)
+                     .Where(p => p.Video.Any())
                      .OrderByDescending(p => p.Ngay_Dang);
                     break;
 
@@ -200,7 +200,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
-                          .Include(p => p.Videos)
+                          .Include(p => p.Video)
                           .Where(p => p.ID_CD == 6); // <-- LỌC THEO ID_CD = 6
 
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
@@ -234,7 +234,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
-                          .Include(p => p.Videos)
+                          .Include(p => p.Video)
                           .Where(p => p.ID_CD == 5); // <-- LỌC THEO ID_CD = 5
 
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
@@ -253,7 +253,7 @@ namespace QuanLyPhongTro.Controllers
                              .Include(p => p.Hinh_Anh)
                              .Include(p => p.Loai_Tin)
                              .Include(p => p.Noi_Bat)
-                             .Include(p => p.Videos)
+                             .Include(p => p.Video)
                              .FirstOrDefault(p => p.ID_Phong_Tro == id);
 
             // Nếu không tìm thấy phòng trọ, trả về lỗi
@@ -278,7 +278,7 @@ namespace QuanLyPhongTro.Controllers
                     .Include(p => p.Hinh_Anh)
                     .Include(p => p.Khu_Vuc)
                     .Include(p => p.Loai_Tin) // Cần để hiển thị banner
-                    .Include(p => p.Videos)
+                    .Include(p => p.Video)
                     .Where(p => p.ID_KV == phongTro.ID_KV.Value && p.ID_Phong_Tro != id) // Lọc cùng KV, trừ tin này
                     .OrderBy(p => p.ID_LoaiTin) // Sắp xếp theo ưu tiên
                     .ThenByDescending(p => p.Ngay_Dang)
@@ -293,7 +293,7 @@ namespace QuanLyPhongTro.Controllers
                 .Include(p => p.Hinh_Anh)
                 .Include(p => p.Khu_Vuc)
                 .Include(p => p.Loai_Tin) // Cần để hiển thị banner
-                .Include(p => p.Videos)
+                .Include(p => p.Video)
                 .Where(p => p.ID_Phong_Tro != id) // Trừ tin này
                 .OrderByDescending(p => p.Ngay_Dang) // Mới nhất
                 .Take(8)
@@ -372,7 +372,7 @@ namespace QuanLyPhongTro.Controllers
                                    .Include(p => p.Khu_Vuc)
                                    .Include(p => p.Hinh_Anh)
                                    .Include(p => p.Loai_Tin)
-                                   .Include(p => p.Videos)
+                                   .Include(p => p.Video)
                                    .Where(p => favoritedIds.Contains(p.ID_Phong_Tro)) // Lọc theo danh sách ID đã lấy
                                    .OrderByDescending(p => p.Ngay_Dang); // Sắp xếp mới nhất
 
@@ -537,10 +537,6 @@ namespace QuanLyPhongTro.Controllers
             // 2. Chuyển hướng người dùng về trang chủ (hoặc trang đăng nhập)
             return RedirectToAction("Index", "User"); // Chuyển về trang Index của Home Controller
         }
-        public ActionResult DangTin()
-        {
-            return View();
-        }
         //  =============== start chi tiet tin
         public ActionResult ChiTietTinTuc(int id)
         {
@@ -578,7 +574,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
-                          .Include(p => p.Videos);
+                          .Include(p => p.Video);
 
             // Nếu có danh sách khu vực → lọc
             if (kvIds != null && kvIds.Any())
@@ -638,7 +634,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
-                          .Include(p => p.Videos)
+                          .Include(p => p.Video)
                           .AsQueryable();
 
             // Danh mục

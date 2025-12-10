@@ -85,10 +85,10 @@
                             <div class="media-grid4">
                                 <!-- ẢNH LỚN BÊN TRÁI -->
                                 <div class="media-left">
-                                    @if (item.Videos != null && item.Videos.Any())
+                                    @if (item.Video != null && item.Video.Any())
                                     {
                                         // Lấy video đầu tiên
-                                        var firstVideo = item.Videos.First();
+                                        var firstVideo = item.Video.First();
 
                                         // HIỂN THỊ VIDEO
                                         // (Giả sử Url_Video là tên file mp4 nằm trong thư mục ~/Kho/Video/)
@@ -529,7 +529,7 @@
                             var itemClass = (post.ID_LoaiTin == 1 || post.ID_LoaiTin == 2) ? "has-banner" : "";
 
                             // Thêm icon video nếu có (giống ảnh mẫu)
-                            var hasVideo = post.Videos.Any();
+                            var hasVideo = post.Video.Any();
                             <a href="@Url.Action("ChiTiet", "User", new { id = post.ID_Phong_Tro })" class="list-group-item list-group-item-action">
                                 <div class="row g-2 align-items-center">
                                     <!-- Cột ảnh (có banner và icon video) -->
@@ -754,7 +754,7 @@
 
         <div class="text-center mt-4">
             <div class="small text-muted mb-2">Chi phí thấp, hiệu quả tối đa</div>
-            <a href="@Url.Action("DangTin","User")" class="btn btn-warning fw-semibold px-4">
+            <a href="@Url.Action("Index","Admin")" class="btn btn-warning fw-semibold px-4">
                 <i class="bi bi-pencil-square me-1"></i> Đăng tin ngay
             </a>
         </div>

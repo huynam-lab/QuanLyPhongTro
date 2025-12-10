@@ -154,10 +154,11 @@
                         </div>
                         if (roleID == 3)
                         {
-                            <a href="@Url.Action("DangTin", "User")" class="btn btn-danger ms-2 post-btn d-none d-lg-block" style="min-width:120px">
+                            <a href="@Url.Action("Index", "Admin", new { Area = "Host" })" class="btn btn-danger ms-2 post-btn d-none d-lg-block" style="min-width:120px">
                                 <i class="bi bi-pencil-square me-1"></i> Đăng tin
                             </a>
                         }
+
                     }
                     else
                     {
@@ -173,7 +174,7 @@
                             <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                         </a>
 
-                        <a href="@Url.Action("DangTin", "User")" class="btn btn-danger ms-2 post-btn d-none d-lg-block" style="min-width:120px">
+                        <a href="@Url.Action("DangNhap", "User")" class="btn btn-danger ms-2 post-btn d-none d-lg-block" style="min-width:120px">
                             <i class="bi bi-pencil-square me-1"></i> Đăng tin
                         </a>
                     }
@@ -229,7 +230,7 @@
             <div class="offcanvas-body p-0">
                 @* Khối Đăng tin và Đăng nhập/Đăng ký *@
                 <div class="p-3 bg-light border-bottom">
-                    <a href="@Url.Action("DangTin", "User")" class="btn btn-danger w-100 p-2"><i class="bi bi-pencil-square me-2"></i> Đăng tin mới</a>
+                    <a href="@Url.Action("DangNhap", "User")" class="btn btn-danger w-100 p-2"><i class="bi bi-pencil-square me-2"></i> Đăng tin mới</a>
                 </div>
                 <div class="d-flex p-3 border-bottom">
                     <a href="@Url.Action("DangNhap", "User")" class="btn btn-danger w-50 me-2">Đăng nhập</a>
@@ -278,16 +279,17 @@
             <div class="offcanvas-body p-0">
                 @* Khối Trang Quản lý và Đăng tin mới *@
                 @if (roleID == 3)
-                {
+                    {
                     <div class="p-3">
-                        <a href="@Url.Action("Index", "Admin", new { Area = "Host" })" class="btn btn-outline-secondary w-100 p-2 mb-2">
+                        <a href="@Url.Action("DSTinDang", "Admin"), new { Area = "Host" })" class="btn btn-outline-secondary w-100 p-2 mb-2">
                             <i class="bi bi-folder-open me-2"></i> Trang quản lý
                         </a>
-                        <a href="@Url.Action("DangTin", "User")" class="btn btn-danger w-100 p-2">
+                        <a href="@Url.Action("Index", "Admin"), new { Area = "Host" })" class="btn btn-danger w-100 p-2">
                             <i class="bi bi-pencil-square me-2"></i> Đăng tin mới
                         </a>
                     </div>
-                }
+                    }
+               
 
 
                 @* Menu Chính (Đã đăng nhập) *@
@@ -600,7 +602,7 @@
                     </div>
 
                     <!-- 5. Đặc điểm nổi bật (Checkbox tags) -->
-                    <div class="mb-4 border-top pt-4">
+                    <!--<div class="mb-4 border-top pt-4">
                         <h6 class="filter-section-title">Đặc điểm nổi bật</h6>
                         <div class="tag-group d-flex flex-wrap justify-content-start gap-2" id="utilityTags">
                             <button type="button" class="btn" data-utility="full-furniture">Đầy đủ nội thất</button>
@@ -613,10 +615,10 @@
                             <button type="button" class="btn" data-utility="khong-chung-chu">Không chung chủ</button>
                             <button type="button" class="btn" data-utility="gio-giac-tu-do">Giờ giấc tự do</button>
                             <button type="button" class="btn" data-utility="bao-ve">Có bảo vệ 24/24</button>
-                            <button type="button" class="btn" data-utility="ham-xe">Có hầm để xe</button>
+                            <button type="button" class="btn" data-utility="ham-xe">Có hầm để xe</button>-->
                             <!-- Thêm các đặc điểm khác ở đây -->
-                        </div>
-                    </div>
+                        <!--</div>
+                    </div>-->
 
                 </div>
 

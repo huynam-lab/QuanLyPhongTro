@@ -495,6 +495,22 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             // quay lại tab 'chude' trong trang Catalogs
             return RedirectToAction("Catalogs", new { tab = "chude" });
             }
+        [HttpGet]
+        public ActionResult ViewTin(int id)
+            {
+            var phong = db.Phong_Tro
+                .Include("Hinh_Anh")
+                .Include("Video")
+                .Include("Tai_Khoan")
+                .Include("Loai_Tin")
+                .Include("Khu_Vuc")
+                .FirstOrDefault(x => x.ID_Phong_Tro == id);
+
+            if (phong == null) return HttpNotFound();
+
+            return PartialView("_ViewTinModal", phong);
+            }
+
 
         }
     }

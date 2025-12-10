@@ -69,7 +69,7 @@
                     </td>
 
                     <td class="d-flex justify-content-end align-items-center gap-2">
-                        @* ✅ Cho phép DUYỆT nếu chưa duyệt hoặc đã hết hạn *@
+                        @*  Cho phép DUYỆT nếu chưa duyệt hoặc đã hết hạn *@
                         @if (p.Trang_Thai == false || daHetHan)
                             {
                             using (Html.BeginForm("DuyetTin", "Quantrivien", FormMethod.Post, new { area = "Admin" }))
@@ -81,7 +81,7 @@
                                 </button>
                                 }
 
-                            @* ✅ Nút XÓA chỉ xuất hiện nếu chưa duyệt *@
+                            @*  Nút XÓA chỉ xuất hiện nếu chưa duyệt *@
                             if (p.Trang_Thai == false)
                                 {
                                 using (Html.BeginForm("XoaTin", "Quantrivien", FormMethod.Post, new { area = "Admin" }))
@@ -95,7 +95,7 @@
                                 }
                             }
 
-                        @* ✅ Nút GIA HẠN chỉ hiển thị nếu tin đang hoạt động *@
+                        @* Nút GIA HẠN chỉ hiển thị nếu tin đang hoạt động *@
                         @if (p.Trang_Thai == true)
                             {
                             <button type="button"
@@ -107,6 +107,18 @@
                                     title="Gia hạn tin">
                                 <i class="bi bi-clock-history"></i>
                             </button>
+                            }
+                        @if (p.Trang_Thai == false)
+                            {
+                            <button type="button"
+                                    class="btn-action btn-view"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalViewTin"
+                                    data-id="@p.ID_Phong_Tro"
+                                    title="Xem tin">
+                                <i class="bi bi-eye-fill"></i>
+                            </button>
+
                             }
                     </td>
                 </tr>
@@ -152,8 +164,29 @@
         </div>
     </div>
 </div>
+<!--  Modal View Tin -->
+<div class="modal fade" id="modalViewTin" tabindex="-1" aria-labelledby="modalViewTinLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="modalViewTinLabel">Chi tiết tin đăng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-<!-- ✅ Thông báo SweetAlert -->
+            <div class="modal-body" id="modalViewTinBody">
+                <div class="text-center text-muted py-4">
+                    Đang tải dữ liệu...
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Thông báo SweetAlert -->
 @if (TempData["Message"] != null)
     {
     <script>
@@ -170,7 +203,7 @@
     </script>
     }
 
-<!-- ✅ Script xử lý modal gia hạn -->
+<!--  Script xử lý modal gia hạn -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var modalGiaHan = document.getElementById('modalGiaHan');
@@ -183,7 +216,32 @@
         });
     });
 </script>
+@* view *@
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
+    var modalView = document.getElementById('modalViewTin');
+
+    modalView.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var id = button.getAttribute('data-id');
+
+        var body = document.getElementById('modalViewTinBody');
+        body.innerHTML = `<div class="text-center text-muted py-4">Đang tải dữ liệu...</div>`;
+
+        //  gọi action trả về PartialView
+        fetch('@Url.Action("ViewTin", "Quantrivien", new { area="Admin" })' + '?id=' + id)
+            .then(res => res.text())
+            .then(html => {
+                body.innerHTML = html;
+            })
+            .catch(err => {
+                body.innerHTML = `<div class="alert alert-danger">Không tải được dữ liệu.</div>`;
+            });
+    });
+
+});
+</script>
 
 @section styles{
     <style>
@@ -245,6 +303,65 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+        /* nút icon nhỏ gọn, tròn, hover nổi */
+        .btn-action {
+            height: 34px;
+            width: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+            background: #fff;
+            transition: all .18s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            font-size: 16px;
+        }
+
+        /* VIEW - xanh info */
+        .btn-view {
+            color: #0dcaf0;
+            border-color: rgba(13,202,240,.35);
+            background: rgba(13,202,240,.06);
+        }
+
+            .btn-view:hover {
+                color: #fff;
+                background: #0dcaf0;
+                border-color: #0dcaf0;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 14px rgba(13,202,240,.35);
+            }
+
+        /* nếu muốn đồng bộ hover cho nút duyệt / xóa */
+        .btn-approve {
+            color: #198754;
+            border-color: rgba(25,135,84,.35);
+            background: rgba(25,135,84,.06);
+        }
+
+            .btn-approve:hover {
+                color: #fff;
+                background: #198754;
+                border-color: #198754;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 14px rgba(25,135,84,.35);
+            }
+
+        .btn-delete {
+            color: #dc3545;
+            border-color: rgba(220,53,69,.35);
+            background: rgba(220,53,69,.06);
+        }
+
+            .btn-delete:hover {
+                color: #fff;
+                background: #dc3545;
+                border-color: #dc3545;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 14px rgba(220,53,69,.35);
+            }
+
     </style>
 }
 

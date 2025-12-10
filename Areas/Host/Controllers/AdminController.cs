@@ -64,7 +64,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                     .Replace("\r", "##split##");
                 }
 
-            // 🏠 Tạo phòng trọ mới
+            //  Tạo phòng trọ mới
             var pt = new Phong_Tro
                 {
                 ID_KV = ID_KV,
@@ -84,10 +84,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
 
             db.Phong_Tro.Add(pt);
             db.SaveChanges(); // 🔹 Lưu để sinh ID_Phong_Tro tự động
-
-            System.Diagnostics.Debug.WriteLine($"🆕 Phòng mới ID = {pt.ID_Phong_Tro}, Tiêu đề = {pt.Ten_Phong}");
-
-            // 🧩 Lưu đặc điểm nổi bật
+            //  Lưu đặc điểm nổi bật
             var noiBat = new Noi_Bat
                 {
                 ID_Phong_Tro = pt.ID_Phong_Tro,
@@ -105,14 +102,13 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             db.Noi_Bat.Add(noiBat);
 
 
-            /* 🖼️ LƯU NHIỀU ẢNH */
+            /*  LƯU NHIỀU ẢNH */
             if (imageInput != null && imageInput.Length > 0)
                 {
                 string imgFolder = Server.MapPath("~/Kho/Img/");
                 Directory.CreateDirectory(imgFolder);
 
                 var rnd = new Random();
-
                 foreach (var file in imageInput)
                     {
                     if (file == null || file.ContentLength == 0) continue;
@@ -138,7 +134,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                         }
                     }
                 }
-            /* 🎥 LƯU NHIỀU VIDEO */
+            /*  LƯU NHIỀU VIDEO */
             if (videoInput != null && videoInput.Length > 0)
                 {
                 string videoFolder = Server.MapPath("~/Kho/Video/");
@@ -150,35 +146,22 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                     {
                     if (file == null || file.ContentLength == 0) continue;
 
-                    try
-                        {
                         string ext = Path.GetExtension(file.FileName);
                         string videoName = $"{pt.ID_Phong_Tro}_{rnd.Next(1000, 9999)}{ext}";
                         string videoPath = Path.Combine(videoFolder, videoName);
-
                         System.Diagnostics.Debug.WriteLine("👉 Save video to: " + videoPath);
                         file.SaveAs(videoPath);
-
                         db.Videos.Add(new Video
                             {
                             ID_Phong_Tro = pt.ID_Phong_Tro,
                             Url_Video = videoName
                             });
-
-                        System.Diagnostics.Debug.WriteLine($"✅ Lưu video: {file.FileName} → {videoName}");
-                        }
-                    catch (Exception ex)
-                        {
-                        System.Diagnostics.Debug.WriteLine("❌ Lỗi lưu video: " + ex.ToString());
-                        }
                     }
                 }
             db.SaveChanges();
             TempData["SuccessMessage"] = "Vui lòng liên hệ quản trị viên để duyệt";
             return RedirectToAction("DSTinDang");
-
             }
-
         public ActionResult DSTinDang()
             {
             int maTK = 0;
