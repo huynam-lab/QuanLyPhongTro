@@ -10,7 +10,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
     public class BaseController : Controller
     {
 
-        protected DaTa_Phong_TroEntities8 db = new DaTa_Phong_TroEntities8();
+        protected DaTa_Phong_TroEntities db = new DaTa_Phong_TroEntities();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
             {
       

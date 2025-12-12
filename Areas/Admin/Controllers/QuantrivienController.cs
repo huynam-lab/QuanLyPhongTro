@@ -162,7 +162,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
 
             // xóa phụ thuộc
             db.Hinh_Anh.RemoveRange(db.Hinh_Anh.Where(x => x.ID_Phong_Tro == id));
-            db.Videos.RemoveRange(db.Videos.Where(x => x.ID_Phong_Tro == id));
+            db.Video.RemoveRange(db.Video.Where(x => x.ID_Phong_Tro == id));
             db.Noi_Bat.RemoveRange(db.Noi_Bat.Where(x => x.ID_Phong_Tro == id));
             db.Yeu_Thich.RemoveRange(db.Yeu_Thich.Where(x => x.ID_Phong_Tro == id));
 

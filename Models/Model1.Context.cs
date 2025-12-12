@@ -13,10 +13,10 @@ namespace QuanLyPhongTro.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class DaTa_Phong_TroEntities8 : DbContext
+    public partial class DaTa_Phong_TroEntities : DbContext
     {
-        public DaTa_Phong_TroEntities8()
-            : base("name=DaTa_Phong_TroEntities8")
+        public DaTa_Phong_TroEntities()
+            : base("name=DaTa_Phong_TroEntities")
         {
         }
     
@@ -35,7 +35,7 @@ namespace QuanLyPhongTro.Models
         public virtual DbSet<Phong_Tro> Phong_Tro { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Tai_Khoan> Tai_Khoan { get; set; }
-        public virtual DbSet<Video> Videos { get; set; }
+        public virtual DbSet<Video> Video { get; set; }
         public virtual DbSet<Yeu_Thich> Yeu_Thich { get; set; }
     }
 }

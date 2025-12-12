@@ -628,7 +628,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="DaTa_Phong_TroEntities8" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="DaTa_Phong_TroEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Bang_Gia_Tin" EntityType="Self.Bang_Gia_Tin" />
           <EntitySet Name="Chu_De" EntityType="Self.Chu_De" />
           <EntitySet Name="Hinh_Anh" EntityType="Self.Hinh_Anh" />
@@ -691,7 +691,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="DaTa_Phong_TroModelStoreContainer" CdmEntityContainer="DaTa_Phong_TroEntities8">
+        <EntityContainerMapping StorageEntityContainer="DaTa_Phong_TroModelStoreContainer" CdmEntityContainer="DaTa_Phong_TroEntities">
           <EntitySetMapping Name="Bang_Gia_Tin">
             <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Bang_Gia_Tin">
               <MappingFragment StoreEntitySet="Bang_Gia_Tin">

@@ -47,11 +47,12 @@
     <div class="mt-3">
         <b>Mô tả:</b>
         <div class="border rounded p-2 mt-1 bg-light" style="white-space:pre-line;">
-            @Model.Mo_Ta
+            @Html.Raw(Model.Mo_Ta.Replace("##split##", "<br />"))
         </div>
     </div>
+
     @{
-        var nb = Model.Noi_Bat?.FirstOrDefault();  // lấy 1 dòng Noi_Bat của phòng
+        var nb = Model.Noi_Bat?.FirstOrDefault(); 
     }
     @if (nb != null)
         {

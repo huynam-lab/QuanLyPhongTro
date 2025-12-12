@@ -6,43 +6,61 @@
 <link href="~/Assets/Css/DangNhap.css" rel="stylesheet" />
 <link href="~/Assets/Css/ToastDangKy.css" rel="stylesheet" />
 
+<!-- Font Awesome để dùng icon mắt (chỉ cần thêm 1 lần trong toàn site) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 <div class="pt-main-content-wrapper">
     <div class="login-container">
 
-        <!-- Tab Switcher (Đăng nhập / Tạo tài khoản mới) -->
+        <!-- Tab Switcher -->
         <div class="login-tabs" id="loginTabs">
-            <a href="@Url.Action("DangNhap", "User")" class="active-tab text-decoration-none" data-tab="login">Đăng nhập</a>
-            <a href="@Url.Action("DangKy", "User")" class="text-decoration-none" data-tab="register">Tạo tài khoản mới</a>
+            <a href="@Url.Action("DangNhap", "User")" class="active-tab text-decoration-none">Đăng nhập</a>
+            <a href="@Url.Action("DangKy", "User")" class="text-decoration-none">Tạo tài khoản mới</a>
         </div>
 
-        <!-- Nội dung Tab Đăng Nhập -->
-        <div id="login-tab-content" class="tab-content-item active">
-            <form id="loginForm" method="post" action="@Url.Action("DangNhap", "User")">
+        <!-- Form Đăng Nhập -->
+        <form id="loginForm" method="post" action="@Url.Action("DangNhap", "User")">
+            <div class="input-group">
+                <input type="text"
+                       class="form-control-custom"
+                       id="phoneNumber"
+                       name="SDT"
+                       placeholder="Số điện thoại"
+                       value="@ViewBag.AttemptedUserName"
+                       required
+                       autocomplete="username">
+            </div>
 
-                <input type="text" class="form-control-custom" id="phoneNumber" name="SDT"
-                       placeholder="Số điện thoại" value="@ViewBag.AttemptedUserName" required>
+            <div class="input-group password-wrapper">
+                <input type="password"
+                       class="form-control-custom"
+                       id="password"
+                       name="Pass"
+                       placeholder="Mật khẩu"
+                       required
+                       autocomplete="current-password">
 
-                <input type="password" class="form-control-custom" id="password" name="Pass"
-                       placeholder="Mật khẩu" required>
+                <!-- Icon mắt xem/ẩn mật khẩu -->
+                <span class="toggle-password" id="togglePassword" title="Hiển thị mật khẩu">
+                    <i class="fa fa-eye-slash" id="eyeIcon"></i>
+                </span>
+            </div>
 
-                <button type="submit" class="btn-primary-custom">Đăng nhập</button>
+            <button type="submit" class="btn-primary-custom">Đăng nhập</button>
+            <a href="@Url.Action("QuenMatKhau", "User")" class="forgot-link">Bạn quên mật khẩu?</a>
+        </form>
 
-                <a href="@Url.Action("QuenMatKhau", "User")" class="forgot-link">Bạn quên mật khẩu?</a>
-            </form>
-        </div>
-
-
-
-        <!-- Thông báo và bản quyền -->
+        <!-- Điều khoản -->
         <p class="legal-text text-center">
             Qua việc đăng nhập hoặc tạo tài khoản, bạn đồng ý với các
             <a href="@Url.Action("QuyDinhSuDung", "User")">quy định sử dụng</a>
             cũng như <a href="@Url.Action("ChinhSachBaoMat", "User")">chính sách bảo mật</a> của chúng tôi.
         </p>
-        <p class="legal-text text-center">Bản quyền &copy; 2015 - 2025 Phongtro123.com</p>
-
+        <p class="legal-text text-center">Bản quyền © 2015 - 2025 Phongtro123.com</p>
     </div>
-    <!-- Thông báo toast thành công-->
+
+    <!-- Modal Thành công -->
     <div id="successModal" class="custom-modal-backdrop">
         <div class="custom-modal">
             <div class="modal-content">
@@ -51,13 +69,13 @@
                         <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                     </svg>
                 </div>
-                
-                <p class="modal-text success-text">Thông báo</p>
+                <p class="modal-text success-text">Bạn đã đăng nhập thành công</p>
                 <button id="modalOkButtonSuccess" class="btn-ok btn-red">OK</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal Lỗi -->
     <div id="errorModal" class="custom-modal-backdrop">
         <div class="custom-modal">
             <div class="modal-content">
@@ -66,107 +84,114 @@
                         <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
                     </svg>
                 </div>
-                <h3 class="modal-title">Lỗi</h3>
-                
+                <h3 class="modal-title">Lỗi Đăng Nhập</h3>
                 <p class="modal-subtext">Thông báo lỗi</p>
                 <button id="modalOkButtonError" class="btn-ok btn-blue">OK</button>
             </div>
         </div>
     </div>
+
 </div>
 
+<!-- Scripts -->
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-
 <script>
-    // Script để xử lý chuyển đổi giữa Đăng nhập và Đăng ký (Tab Switcher)
-    $(document).ready(function() {
-        $('#registerTabs a[data-tab="login"]').on('click', function (e) {
-            // Ngăn chặn hành vi mặc định (tránh trường hợp tab switcher có logic khác)
-            e.preventDefault();
+    $(document).ready(function () {
 
-            // Chuyển hướng trình duyệt đến URL trong thuộc tính href
-            window.location.href = $(this).attr('href');
+        // ==================== ICON MẮT XEM/ẨN MẬT KHẨU ====================
+        $('#togglePassword').on('click', function () {
+            const passwordInput = $('#password');
+            const icon = $('#eye');
+
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            }
         });
-    });
 
-    // Gộp logic xử lý đăng nhập vào khối document ready thứ hai
-    $(document).ready(function() {
+        // ==================== XỬ LÝ ĐĂNG NHẬP THÀNH CÔNG / THẤT BẠI ====================
+        const loginSuccess = '@ViewBag.LoginSuccess' === 'True';
+        const hasError = '@ViewBag.HasError' === 'True';
+        const errorType = '@ViewBag.ErrorType';
+        const errorMessage = '@ViewBag.Error';
+        const roleId = parseInt('@ViewBag.ID_Phan_Quyen') || 0;
 
-        // --- Logic Xử lý Đăng Nhập ---
-        const loginSuccessFlag = '@(ViewBag.LoginSuccess)';
-        const loginErrorFlag = '@(ViewBag.HasError)';
-        const errorType = '@(ViewBag.ErrorType)';
-        const errorMessage = '@(ViewBag.Error)';
-        // THÊM: Lấy ID_Phan_Quyen từ ViewBag
-        const roleId = parseInt('@(ViewBag.ID_Phan_Quyen)');
+        if (loginSuccess) {
+            $('#successModal').css('display', 'flex');
 
-        // 1. Xử lý Đăng Nhập THÀNH CÔNG
-        if (loginSuccessFlag === 'True') {
-            const successModal = $('#successModal');
+            $('#modalOkButtonSuccess').on('click', function () {
+                $('#successModal').css('display', 'none');
 
-            // Cập nhật nội dung modal để hiển thị "Đăng nhập thành công"
-            successModal.find('.modal-text').text('Bạn đã đăng nhập thành công');
-            successModal.css('display', 'flex');
-
-            // Xử lý khi click nút OK (Chuyển về trang Index)
-            $('#modalOkButtonSuccess').on('click', function() {
-                // Đóng modal trước khi chuyển hướng
-                successModal.css('display', 'none');
-
-                // *** LOGIC PHÂN QUYỀN MỚI ***
-                let redirectUrl;
-
-                if (roleId === 1) {
-                    // Quyền Admin: Chuyển hướng đến Dashboard trong Area Admin
-                    // Điều chỉnh URL này nếu cấu hình Area Route của bạn khác
-                    redirectUrl = '@Url.Action("Dashboard", "Quantrivien", new { Area = "Admin" })';
-                } else {
-                    // Quyền người dùng thường: Chuyển hướng về trang chủ User
-                    redirectUrl = '@Url.Action("Index", "User")';
+                let redirectUrl = '@Url.Action("Index", "User")'; // mặc định người dùng thường
+                if (roleId === 1) { // Admin
+                    redirectUrl = '@Url.Action("Dashboard", "Quantrivien", new { area = "Admin" })';
                 }
-
-                // Chuyển hướng
                 window.location.href = redirectUrl;
-                // ******************************
             });
         }
-
-        // 2. Xử lý Đăng Nhập THẤT BẠI (Giữ nguyên logic)
-        else if (loginErrorFlag === 'True') {
+        else if (hasError) {
             const phoneInput = $('#phoneNumber');
             const passwordInput = $('#password');
 
-            // Ẩn/hiện input lỗi
+            // Xóa viền đỏ cũ
             $('.form-control-custom').removeClass('input-error');
 
             const errorModal = $('#errorModal');
+            let msg = errorMessage;
 
-            // Cập nhật nội dung lỗi
-            errorModal.find('.modal-title').text('Lỗi Đăng Nhập');
-            // Thêm logic để xử lý lỗi trống (EmptyFields)
-            let displayMessage = errorMessage;
             if (errorType !== 'EmptyFields') {
-                displayMessage += '<br>Vui lòng thử lại.';
+                msg += '<br>Vui lòng thử lại.';
             }
-            errorModal.find('.modal-subtext').html(displayMessage);
 
+            errorModal.find('.modal-subtext').html(msg);
             errorModal.css('display', 'flex');
 
-            // Lắng nghe sự kiện click nút OK trên Modal lỗi
-            $('#modalOkButtonError').on('click', function() {
+            $('#modalOkButtonError').on('click', function () {
                 errorModal.css('display', 'none');
 
-                // Focus và tô đỏ input tương ứng
                 if (errorType === 'UserNotFound' || errorType === 'EmptyFields') {
-                    // Số điện thoại không tồn tại hoặc trường trống
-                    phoneInput.addClass('input-error');
-                    phoneInput.focus();
+                    phoneInput.addClass('input-error').focus();
                 } else if (errorType === 'WrongPassword') {
-                    // Mật khẩu sai
-                    passwordInput.addClass('input-error');
-                    passwordInput.focus();
+                    passwordInput.addClass('input-error').focus();
                 }
             });
         }
     });
 </script>
+
+<!-- CSS bổ sung cho icon mắt (thêm vào DangNhap.css hoặc inline) -->
+<style>
+    .password-wrapper {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #888;
+        font-size: 18px;
+        z-index: 5;
+        transition: color 0.2s;
+    }
+
+        .toggle-password:hover {
+            color: #333;
+        }
+
+    /* Đảm bảo input có chỗ cho icon */
+    #password {
+        padding-right: 50px !important;
+    }
+
+    /* Viền đỏ khi lỗi (nếu bạn đã có class input-error trong CSS) */
+    .input-error {
+        border-color: #e74c3c !important;
+        box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+    }
+</style>

@@ -17,14 +17,14 @@ namespace QuanLyPhongTro.Controllers
     public class UserController : Controller
     {
         // Khởi tạo DbContext. Sử dụng DaTa_Phong_TroEntities1 dựa trên connection string bạn cung cấp
-        private DaTa_Phong_TroEntities8 db = new DaTa_Phong_TroEntities8();
+        private DaTa_Phong_TroEntities db = new DaTa_Phong_TroEntities();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             // Lấy danh sách Khu_Vuc có Trang_Thai = true (hoặc logic lọc phù hợp)
             // và sắp xếp theo thứ tự mong muốn
             var khuVucList = db.Khu_Vuc
-                               .Where(kv => kv.Trang_Thai == true) // Giả sử Trang_Thai là bool hoặc phù hợp
-                               .OrderBy(kv => kv.Ten_KV) // Sắp xếp theo tên khu vực
+                               .Where(kv => kv.Trang_Thai == true) 
+                               .OrderBy(kv => kv.Ten_KV) 
                                .ToList();
 
             // Gửi dữ liệu qua ViewBag để Layout có thể truy cập
