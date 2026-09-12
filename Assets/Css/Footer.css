@@ -1,49 +1,56 @@
-﻿/* ===== FOOTER STYLES ===== */
+/* ===== FOOTER STYLES (Modern Dark Slate Theme) ===== */
 
 .pt-footer {
-    background-color: #fee39a; /* Màu nền vàng nhạt */
-    color: #333; /* Màu chữ mặc định */
+    background-color: #0f172a; /* Nền Slate 900 siêu sang trọng, hiện đại thay cho màu vàng cũ */
+    color: #94a3b8; /* Chữ Slate xám bạc dịu mắt */
     font-size: 0.9rem;
+    padding-top: 48px;
+    padding-bottom: 24px;
+    border-top: 1px solid #1e293b;
 }
 
     .pt-footer .footer-content {
-        max-width: 1400px; /* Căn giữa và giới hạn chiều rộng */
+        max-width: 1400px;
         margin-left: auto;
         margin-right: auto;
     }
 
     .pt-footer .footer-title {
-        font-size: 1rem;
-        color: #333;
-        margin-bottom: 1rem;
-        font-weight: 700; /* Đậm */
+        font-size: 1.05rem;
+        color: #f8fafc; /* Tiêu đề trắng sáng */
+        margin-bottom: 1.25rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
     }
 
     /* Style cho các link trong cột */
     .pt-footer .footer-links li {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.65rem;
     }
 
     .pt-footer .footer-links a {
-        color: #555;
+        color: #94a3b8;
         text-decoration: none;
-        transition: color 0.2s;
+        transition: all 0.2s ease;
+        display: inline-block;
     }
 
         .pt-footer .footer-links a:hover {
-            color: #e04135; /* Màu đỏ khi hover */
-            text-decoration: underline;
+            color: #f43f5e; /* Hồng đỏ hiện đại khi hover */
+            transform: translateX(3px);
+            text-decoration: none;
         }
 
     /* Icon Phương thức Thanh toán */
     .pt-footer .payment-icon {
-        width: 60px; /* Chiều rộng cố định cho mỗi logo */
+        width: 60px;
         height: 35px;
         object-fit: contain;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 2px;
-        background-color: white;
+        border: 1px solid #334155;
+        border-radius: 6px;
+        padding: 3px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
     /* Icon Mạng Xã hội */
@@ -51,34 +58,37 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 35px;
-        height: 35px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         color: white;
         font-size: 1.1rem;
         text-decoration: none;
-        transition: opacity 0.2s;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
         .pt-footer .social-icons .social-icon:hover {
-            opacity: 0.8;
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
 
     .pt-footer .social-icon.facebook {
-        background-color: #4267B2;
+        background-color: #1877f2;
     }
 
     .pt-footer .social-icon.youtube {
-        background-color: #FF0000;
+        background-color: #ff0000;
     }
 
     .pt-footer .social-icon.tiktok {
-        background-color: #000000;
+        background-color: #010101;
+        border: 1px solid #334155;
     }
 
     .pt-footer .social-icon.zalo {
-        background-color: #008FFC;
-        padding: 5px; /* Điều chỉnh cho icon Zalo */
+        background-color: #0084ff;
+        padding: 6px;
     }
 
         .pt-footer .social-icon.zalo img {
@@ -89,20 +99,23 @@
 
     /* Thông tin Công ty và Chứng nhận */
     .pt-footer .company-info {
-        border-color: #e0e0e0 !important;
+        border-color: #1e293b !important;
+        padding-top: 24px;
+        margin-top: 32px;
     }
 
         .pt-footer .company-info h5 {
-            color: #000;
+            color: #f8fafc;
+            font-weight: 700;
         }
 
         .pt-footer .company-info p {
-            color: #555;
-            line-height: 1.6;
+            color: #94a3b8;
+            line-height: 1.65;
         }
 
     .pt-footer .certification-icon {
-        width: 130px; /* Chiều rộng cho logo chứng nhận */
+        width: 130px;
         height: auto;
         object-fit: contain;
     }

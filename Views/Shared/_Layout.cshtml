@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -6,10 +6,11 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
-    <link href="~/Assets/Css/Header.css" rel="stylesheet" type="text/css" />
-    <link href="~/Assets/Css/Main.css" rel="stylesheet" type="text/css" />
-    <link href="~/Assets/Css/Footer.css" rel="stylesheet" type="text/css" />
-    <link href="~/Assets/Css/ModalMain.css" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/Css/Header.css?v=2.1" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/Css/Main.css?v=2.1" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/Css/Footer.css?v=2.1" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/Css/ModalMain.css?v=2.1" rel="stylesheet" type="text/css" />
+    <link href="~/Assets/Css/Chatbot.css?v=3.3" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/png" href="~/Assets/Images/icon_logo1.png" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -360,17 +361,19 @@
     <!-- ===== Floating Action Buttons ===== -->
     <div class="pt-floating-buttons">
 
-        <!-- Nút Chat -->
-        <!-- Thêm class để dễ dàng xử lý sự kiện trong JS -->
-        <button id="chatButton" class="pt-floating-btn pt-chat-btn" aria-label="Nút chat">
-            <!-- Icon tin nhắn (Sử dụng Bootstrap Icon: bi bi-chat-dots) -->
-            <i class="bi bi-chat-dots"></i>
+        <!-- Nút Trợ lý AI Tư Vấn -->
+        <button id="aiChatLauncher" class="pt-floating-btn pt-ai-btn" type="button" aria-label="Trợ lý AI tư vấn phòng trọ" title="Trợ lý AI tư vấn">
+            <span class="badge-pulse">AI</span>
+            <i class="bi bi-robot"></i>
+        </button>
+
+        <!-- Nút Chat Hotline / Hỗ trợ -->
+        <button id="chatButton" class="pt-floating-btn pt-chat-btn" aria-label="Nút hỗ trợ hotline" title="Hỗ trợ hotline / Zalo">
+            <i class="bi bi-headset"></i>
         </button>
 
         <!-- Nút Quay lên đầu trang -->
-        <!-- Thêm class để dễ dàng xử lý sự kiện trong JS -->
-        <button id="scrollToTopButton" class="pt-floating-btn pt-scroll-top-btn" aria-label="Quay lên đầu trang">
-            <!-- Icon mũi tên lên (Sử dụng Bootstrap Icon: bi bi-arrow-up) -->
+        <button id="scrollToTopButton" class="pt-floating-btn pt-scroll-top-btn" aria-label="Quay lên đầu trang" title="Quay lên đầu trang">
             <i class="bi bi-arrow-up"></i>
         </button>
 
@@ -1105,5 +1108,8 @@
     </script>
 
     @RenderSection("scripts", required: false)
+
+    @Html.Partial("_ChatbotWidget")
+    <script src="~/Scripts/chatbot.js?v=3.2"></script>
 </body>
 </html>

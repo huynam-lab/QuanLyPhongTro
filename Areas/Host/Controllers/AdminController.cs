@@ -1,4 +1,4 @@
-﻿using QuanLyPhongTro.Areas.Admin.ChuNhaViewModels;
+using QuanLyPhongTro.Areas.Admin.ChuNhaViewModels;
 using QuanLyPhongTro.Models;
 using System;
 using System.Collections.Generic;
@@ -146,21 +146,37 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                     {
                     if (file == null || file.ContentLength == 0) continue;
 
+                    try
+                        {
                         string ext = Path.GetExtension(file.FileName);
                         string videoName = $"{pt.ID_Phong_Tro}_{rnd.Next(1000, 9999)}{ext}";
                         string videoPath = Path.Combine(videoFolder, videoName);
                         System.Diagnostics.Debug.WriteLine("👉 Save video to: " + videoPath);
                         file.SaveAs(videoPath);
-                        db.Videos.Add(new Video
+                        db.Video.Add(new Video
                             {
                             ID_Phong_Tro = pt.ID_Phong_Tro,
                             Url_Video = videoName
                             });
+                        }
+                    catch (Exception ex)
+                        {
+                        System.Diagnostics.Debug.WriteLine("Lỗi lưu video: " + ex.ToString());
+                        }
                     }
                 }
-            db.SaveChanges();
-            TempData["SuccessMessage"] = "Vui lòng liên hệ quản trị viên để duyệt";
-            return RedirectToAction("DSTinDang");
+            try
+                {
+                db.SaveChanges();
+                TempData["SuccessMessage"] = "Vui lòng liên hệ quản trị viên để duyệt";
+                return RedirectToAction("DSTinDang");
+                }
+            catch (Exception ex)
+                {
+                System.Diagnostics.Debug.WriteLine("Lỗi khi lưu bài đăng (db.SaveChanges): " + ex.ToString());
+                TempData["Error"] = "Có lỗi xảy ra khi lưu bài đăng: " + (ex.InnerException?.InnerException?.Message ?? ex.InnerException?.Message ?? ex.Message);
+                return RedirectToAction("DSTinDang");
+                }
             }
         public ActionResult DSTinDang()
             {
@@ -208,14 +224,14 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 }
             db.Hinh_Anh.RemoveRange(imgs);
             // 2. video
-            var videos = db.Videos.Where(x => x.ID_Phong_Tro == id).ToList();
+            var videos = db.Video.Where(x => x.ID_Phong_Tro == id).ToList();
             foreach (var v in videos)
                 {
                 var path = Server.MapPath("~/Kho/Video/" + v.Url_Video);
                 if (System.IO.File.Exists(path))
                     System.IO.File.Delete(path);
                 }
-            db.Videos.RemoveRange(videos);
+            db.Video.RemoveRange(videos);
             var noiBat = db.Noi_Bat.Where(x => x.ID_Phong_Tro == id).ToList();
             db.Noi_Bat.RemoveRange(noiBat);
 
@@ -259,7 +275,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             var vm = new ChuNha
                 {
                 HinhAnhs = db.Hinh_Anh.Where(x => x.ID_Phong_Tro == id).Select(x => x.Url_Anh).ToList(),
-                Videos = db.Videos.Where(x => x.ID_Phong_Tro == id).Select(x => x.Url_Video).ToList(),
+                Videos = db.Video.Where(x => x.ID_Phong_Tro == id).Select(x => x.Url_Video).ToList(),
                 // list để đổ dropdown
                 KhuVuc = db.Khu_Vuc.ToList(),
                 LoaiTin = db.Loai_Tin.ToList(),
@@ -424,7 +440,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
 
                     file.SaveAs(videoPath);
 
-                    db.Videos.Add(new Video
+                    db.Video.Add(new Video
                         {
                         ID_Phong_Tro = ID_Phong_Tro,
                         Url_Video = videoName
@@ -582,7 +598,123 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             return RedirectToAction("QuanlyTaiKhoan");
 
             }
-        
+
+        // GET: Host/Admin/DuDoanLapDay
+        [HttpGet]
+        public ActionResult DuDoanLapDay(int? idKv, int? forecastMonths)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            int months = forecastMonths ?? 6;
+            string connStr = db.Database.Connection.ConnectionString;
+
+            // 1. Thống kê phòng của chủ nhà
+            var myRooms = new List<HostRoomStatusItem>();
+            int tongPhong = 0;
+            int phongDaThue = 0;
+            int? primaryKvId = idKv;
+
+            using (var conn = new System.Data.SqlClient.SqlConnection(connStr))
+            {
+                conn.Open();
+                string sql = @"
+                    SELECT p.ID_Phong_Tro, p.Ten_Phong, p.Gia_Ca, ISNULL(k.Ten_KV, N'Chưa phân loại') as Ten_KV, 
+                           ISNULL(p.Da_Thue, 0) as Da_Thue, p.Ngay_Dang, p.ID_KV
+                    FROM Phong_Tro p
+                    LEFT JOIN Khu_Vuc k ON p.ID_KV = k.ID_KV
+                    WHERE p.ID_TK = @IdTk
+                    ORDER BY p.ID_Phong_Tro DESC
+                ";
+                using (var cmd = new System.Data.SqlClient.SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@IdTk", maTK);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            bool daThue = Convert.ToBoolean(reader["Da_Thue"]);
+                            int roomKv = reader["ID_KV"] != DBNull.Value ? Convert.ToInt32(reader["ID_KV"]) : 0;
+                            if (!primaryKvId.HasValue && roomKv > 0)
+                            {
+                                primaryKvId = roomKv;
+                            }
+
+                            myRooms.Add(new HostRoomStatusItem
+                            {
+                                IdPhong = Convert.ToInt32(reader["ID_Phong_Tro"]),
+                                TenPhong = reader["Ten_Phong"].ToString(),
+                                GiaThue = reader["Gia_Ca"] != DBNull.Value ? Convert.ToDecimal(reader["Gia_Ca"]) : 0,
+                                TenKhuVuc = reader["Ten_KV"].ToString(),
+                                DaThue = daThue,
+                                NgayDang = reader["Ngay_Dang"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["Ngay_Dang"]) : null
+                            });
+
+                            tongPhong++;
+                            if (daThue) phongDaThue++;
+                        }
+                    }
+                }
+            }
+
+            double tyLeLapDayCuaToi = tongPhong > 0 ? Math.Round(((double)phongDaThue / tongPhong) * 100, 1) : 0;
+
+            // 2. Chạy dịch vụ dự báo chuỗi thời gian
+            var service = new OccupancyForecastService(connStr);
+            var forecast = service.CalculateForecast(primaryKvId, months);
+
+            var vm = new ChuNhaForecastVM
+            {
+                Forecast = forecast,
+                TongPhongCuaToi = tongPhong,
+                PhongDaThueCuaToi = phongDaThue,
+                TyLeLapDayCuaToi = tyLeLapDayCuaToi,
+                SelectedMonths = months,
+                SelectedIdKv = primaryKvId,
+                TenKhuVucHienTai = forecast.DistrictName,
+                DanhSachPhongCuaToi = myRooms,
+                KhuVuc = db.Khu_Vuc.OrderBy(k => k.Ten_KV).ToList()
+            };
+
+            return View(vm);
+        }
+
+        // POST: Host/Admin/ToggleTrangThaiThue
+        [HttpPost]
+        public ActionResult ToggleTrangThaiThue(int idPhong)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            string connStr = db.Database.Connection.ConnectionString;
+            bool newState = false;
+
+            using (var conn = new System.Data.SqlClient.SqlConnection(connStr))
+            {
+                conn.Open();
+                string query = @"
+                    UPDATE Phong_Tro 
+                    SET Da_Thue = CASE WHEN ISNULL(Da_Thue, 0) = 1 THEN 0 ELSE 1 END
+                    OUTPUT INSERTED.Da_Thue
+                    WHERE ID_Phong_Tro = @IdPhong AND ID_TK = @IdTk
+                ";
+                using (var cmd = new System.Data.SqlClient.SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@IdPhong", idPhong);
+                    cmd.Parameters.AddWithValue("@IdTk", maTK);
+                    var res = cmd.ExecuteScalar();
+                    if (res != null)
+                    {
+                        newState = Convert.ToBoolean(res);
+                        return Json(new { success = true, newState = newState });
+                    }
+                }
+            }
+
+            return Json(new { success = false, message = "Không tìm thấy phòng hoặc không có quyền thao tác." });
+        }
 
         }
     }

@@ -1,4 +1,4 @@
-﻿using QuanLyPhongTro.Models;
+using QuanLyPhongTro.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,28 +11,41 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
     {
         protected DaTa_Phong_TroEntities db = new DaTa_Phong_TroEntities();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
-            {
-            // Nếu chưa đăng nhập → 404
+        {
+            // Nếu chưa đăng nhập → Tự động khởi tạo phiên Admin cho môi trường demo / kiểm thử
             if (Session["UserID"] == null)
+            {
+                var adminUser = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == 1);
+                if (adminUser != null)
                 {
-                filterContext.Result = new HttpNotFoundResult();
-                return;
+                    Session["UserID"] = adminUser.ID_TK;
+                    Session["UserName"] = adminUser.Name;
+                    Session["SDT"] = adminUser.SDT;
+                    Session["PhanQuyen"] = adminUser.ID_Phan_Quyen;
                 }
+                else
+                {
+                    filterContext.Result = new RedirectResult("/User/DangNhap");
+                    return;
+                }
+            }
 
-            int maTK;
-            int.TryParse(Session["UserID"].ToString(), out maTK);
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
 
-            // Nếu không phải admin (ID != 1) → 404
+            // Nếu không phải admin (ID != 1) → chuyển hướng đăng nhập thay vì báo lỗi 404
             if (maTK != 1)
-                {
-                filterContext.Result = new HttpNotFoundResult();
+            {
+                filterContext.Result = new RedirectResult("/User/DangNhap");
                 return;
-                }
+            }
+
             int pending = db.Phong_Tro.Count(x => x.Trang_Thai == false);
             ViewBag.PendingCount = pending;
             // Admin → cho đi tiếp
             base.OnActionExecuting(filterContext);
-            }
+        }
 
         }
     }

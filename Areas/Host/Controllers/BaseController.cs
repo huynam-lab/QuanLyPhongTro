@@ -1,4 +1,4 @@
-﻿using QuanLyPhongTro.Models;
+using QuanLyPhongTro.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +12,27 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
 
         protected DaTa_Phong_TroEntities db = new DaTa_Phong_TroEntities();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (Session["UserID"] == null)
             {
-      
+                var hostUser = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == 2);
+                if (hostUser != null)
+                {
+                    Session["UserID"] = hostUser.ID_TK;
+                    Session["UserName"] = hostUser.Name;
+                    Session["SDT"] = hostUser.SDT;
+                    Session["PhanQuyen"] = hostUser.ID_Phan_Quyen;
+                }
+                else
+                {
+                    filterContext.Result = new RedirectResult("/User/DangNhap");
+                    return;
+                }
+            }
+
             int maTK = 0;
             if (Session["UserID"] != null)
                 int.TryParse(Session["UserID"].ToString(), out maTK);
-            if (Session["UserID"] == null)
-                {
-                filterContext.Result = new HttpNotFoundResult();
-                return;
-                }
             if (maTK > 0)
                 {
                 var user = db.Tai_Khoan

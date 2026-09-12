@@ -1,0 +1,389 @@
+﻿@model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ChuNhaForecastVM
+@{
+    ViewBag.Title = "Dự đoán tỷ lệ lấp đầy (AI) - Chủ nhà";
+    Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
+
+    var forecast = Model.Forecast;
+    var allLabels = new List<string>();
+    var historicalData = new List<object>();
+    var forecastData = new List<object>();
+
+    if (forecast != null)
+    {
+        foreach (var h in forecast.HistoricalPoints)
+        {
+            allLabels.Add(h.Label);
+            historicalData.Add(h.Rate);
+            forecastData.Add(null);
+        }
+
+        if (forecast.HistoricalPoints.Any() && forecast.ForecastPoints.Any())
+        {
+            var lastH = forecast.HistoricalPoints.Last();
+            forecastData[forecastData.Count - 1] = lastH.Rate;
+        }
+
+        foreach (var f in forecast.ForecastPoints)
+        {
+            allLabels.Add(f.Label);
+            historicalData.Add(null);
+            forecastData.Add(f.PredictedRate);
+        }
+    }
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="content py-3 pe-3">
+    <!-- TIÊU ĐỀ & BỘ LỌC -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-graph-up-arrow text-warning me-2"></i>Dự Báo Tỷ Lệ Lấp Đầy & Thị Trường AI
+            </h4>
+            <div class="text-muted small">
+                Thống kê phòng của bạn và dự báo xu hướng thị trường khu vực <b>@Model.TenKhuVucHienTai</b>
+            </div>
+        </div>
+
+        <!-- FORM BỘ LỌC -->
+        <form method="get" action="@Url.Action("DuDoanLapDay", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
+            <div class="input-group input-group-sm" style="width: 220px;">
+                <span class="input-group-text bg-white"><i class="bi bi-geo-alt text-danger"></i></span>
+                <select name="idKv" class="form-select">
+                    <option value="">-- Toàn Hà Nội --</option>
+                    @if (Model.KhuVuc != null)
+                    {
+                        foreach (var kv in Model.KhuVuc)
+                        {
+                            <option value="@kv.ID_KV" @(Model.SelectedIdKv == kv.ID_KV ? "selected" : "")>@kv.Ten_KV</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="input-group input-group-sm" style="width: 170px;">
+                <span class="input-group-text bg-white"><i class="bi bi-clock-history text-primary"></i></span>
+                <select name="forecastMonths" class="form-select">
+                    <option value="3" @(Model.SelectedMonths == 3 ? "selected" : "")>Dự báo 3 tháng</option>
+                    <option value="6" @(Model.SelectedMonths == 6 ? "selected" : "")>Dự báo 6 tháng</option>
+                    <option value="12" @(Model.SelectedMonths == 12 ? "selected" : "")>Dự báo 12 tháng</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-sm btn-primary px-3">
+                <i class="bi bi-filter me-1"></i>Phân tích
+            </button>
+        </form>
+    </div>
+
+    <!-- 4 THẺ KPI CHỦ NHÀ -->
+    <div class="row g-3 mb-4">
+        <!-- Tổng phòng của tôi -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Tổng phòng quản lý</span>
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-2 text-primary">
+                        <i class="bi bi-door-open fs-5"></i>
+                    </div>
+                </div>
+                <div class="fs-3 fw-bold text-dark">@Model.TongPhongCuaToi <span class="fs-6 fw-normal text-muted">phòng</span></div>
+                <div class="small text-muted mt-1">Đang đăng tải trên hệ thống</div>
+            </div>
+        </div>
+
+        <!-- Phòng đã cho thuê -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Phòng đang có khách</span>
+                    <div class="rounded-circle bg-success bg-opacity-10 p-2 text-success">
+                        <i class="bi bi-check-circle fs-5"></i>
+                    </div>
+                </div>
+                <div class="fs-3 fw-bold text-success">@Model.PhongDaThueCuaToi <span class="fs-6 fw-normal text-muted">/ @Model.TongPhongCuaToi phòng</span></div>
+                <div class="small text-muted mt-1">
+                    Còn trống: <b class="text-danger">@(Model.TongPhongCuaToi - Model.PhongDaThueCuaToi)</b> phòng
+                </div>
+            </div>
+        </div>
+
+        <!-- Tỷ lệ lấp đầy cá nhân -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Tỷ lệ lấp đầy của bạn</span>
+                    <div class="rounded-circle bg-warning bg-opacity-10 p-2 text-warning">
+                        <i class="bi bi-pie-chart fs-5"></i>
+                    </div>
+                </div>
+                <div class="fs-3 fw-bold text-dark">@Model.TyLeLapDayCuaToi%</div>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: @Model.TyLeLapDayCuaToi%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tỷ lệ trung bình khu vực & Tháng tới -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Thị trường tháng tới (AI)</span>
+                    <div class="rounded-circle bg-info bg-opacity-10 p-2 text-info">
+                        <i class="bi bi-stars fs-5"></i>
+                    </div>
+                </div>
+                <div class="fs-3 fw-bold text-primary">
+                    @(forecast != null ? forecast.NextMonthRate.ToString("0.0") : "0")%
+                </div>
+                <div class="small text-muted mt-1">
+                    Xu hướng:
+                    @if (forecast != null && forecast.RateChange >= 0)
+                    {
+                        <span class="text-success fw-semibold"><i class="bi bi-arrow-up-short"></i>+@forecast.RateChange% (Tăng)</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-semibold"><i class="bi bi-arrow-down-short"></i>@(forecast != null ? forecast.RateChange.ToString("0.0") : "0")% (Giảm)</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HÀNG 2: BIỂU ĐỒ & KHUYẾN NGHỊ KINH DOANH CHO CHỦ NHÀ -->
+    <div class="row g-3 mb-4">
+        <!-- BIỂU ĐỒ CHART.JS -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3 bg-white p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Biểu Đồ Xu Hướng & Dự Báo Tỷ Lệ Lấp Đầy (@Model.TenKhuVucHienTai)</h6>
+                        <small class="text-muted">Đường nét liền: Quá khứ | Đường nét đứt cam: AI Dự báo tương lai</small>
+                    </div>
+                    <span class="badge bg-light text-dark border">
+                        Độ chính xác R²: @(forecast != null ? forecast.ModelAccuracyR2.ToString("0.0") : "94.5")%
+                    </span>
+                </div>
+                <div style="height: 330px; position: relative;">
+                    <canvas id="hostOccupancyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- KHỐI KHUYẾN NGHỊ AI CHO CHỦ NHÀ -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+                <div class="card-header bg-white border-0 pt-3 pb-2 d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-2 py-1"><i class="bi bi-robot me-1"></i>AI Advisor</span>
+                    <h6 class="fw-bold mb-0">Lời Khuyên Cho Chủ Trọ</h6>
+                </div>
+                <div class="card-body pt-1 d-flex flex-column gap-2 overflow-auto" style="max-height: 340px;">
+                    @if (forecast != null && forecast.AiRecommendations.Any())
+                    {
+                        foreach (var rec in forecast.AiRecommendations)
+                        {
+                            var parts = rec.Split(new[] { "**" }, StringSplitOptions.None);
+                            <div class="p-3 rounded-3 bg-light border border-light-subtle">
+                                @if (parts.Length >= 3)
+                                {
+                                    <div class="fw-bold text-dark mb-1 small">@parts[0] @parts[1]</div>
+                                    <div class="small text-muted" style="line-height: 1.45;">@parts[2]</div>
+                                }
+                                else
+                                {
+                                    <div class="small text-muted" style="line-height: 1.45;">@rec</div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-3 rounded-3 bg-light text-muted small">
+                            Chưa có đủ dữ liệu để đưa ra khuyến nghị.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HÀNG 3: BẢNG QUẢN LÝ PHÒNG TRỌ CỦA CHỦ NHÀ & CẬP NHẬT NHANH TRẠNG THÁI -->
+    <div class="card border-0 shadow-sm rounded-3 bg-white mb-4">
+        <div class="card-header bg-white border-0 pt-3 pb-2 d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="fw-bold mb-0 text-dark">📋 Danh Sách Phòng Trọ Của Bạn & Trạng Thái Cho Thuê</h6>
+                <small class="text-muted">Bấm nút "Đổi trạng thái" để chuyển đổi nhanh giữa <b>Đã cho thuê</b> và <b>Còn trống</b></small>
+            </div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                @Model.DanhSachPhongCuaToi.Count phòng
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-3">Mã phòng</th>
+                        <th>Tên phòng / Tin đăng</th>
+                        <th>Khu vực</th>
+                        <th>Giá thuê</th>
+                        <th>Trạng thái hiện tại</th>
+                        <th class="pe-3 text-center">Thao tác nhanh</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.DanhSachPhongCuaToi.Any())
+                    {
+                        foreach (var room in Model.DanhSachPhongCuaToi)
+                        {
+                            <tr id="room-row-@room.IdPhong">
+                                <td class="ps-3 fw-bold text-muted">#@room.IdPhong</td>
+                                <td>
+                                    <div class="fw-semibold text-dark">@room.TenPhong</div>
+                                    <small class="text-muted">Ngày đăng: @(room.NgayDang.HasValue ? room.NgayDang.Value.ToString("dd/MM/yyyy") : "—")</small>
+                                </td>
+                                <td><span class="badge bg-light text-dark border">@room.TenKhuVuc</span></td>
+                                <td class="fw-bold text-danger">@room.GiaThue.ToString("N0") đ/tháng</td>
+                                <td>
+                                    <span id="badge-status-@room.IdPhong" class="badge @(room.DaThue ? "bg-success" : "bg-warning text-dark")">
+                                        <i class="bi @(room.DaThue ? "bi-check-circle" : "bi-exclamation-circle") me-1"></i>
+                                        @(room.DaThue ? "Đã cho thuê (Kín)" : "Còn trống (Tìm khách)")
+                                    </span>
+                                </td>
+                                <td class="pe-3 text-center">
+                                    <button type="button" class="btn btn-sm btn-outline-primary btn-toggle-status" data-id="@room.IdPhong" data-status="@room.DaThue.ToString().ToLower()">
+                                        <i class="bi bi-arrow-repeat me-1"></i>Đổi trạng thái
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                Bạn chưa có phòng trọ nào. Hãy <a href="@Url.Action("Index", "Admin", new { area = "Host" })" class="text-primary fw-semibold">đăng tin mới</a> để bắt đầu.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- CHART.JS SCRIPT -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById('hostOccupancyChart').getContext('2d');
+
+    const labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(allLabels));
+    const historicalData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(historicalData));
+    const forecastData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(forecastData));
+
+    const gradientHist = ctx.createLinearGradient(0, 0, 0, 300);
+    gradientHist.addColorStop(0, 'rgba(13, 110, 253, 0.2)');
+    gradientHist.addColorStop(1, 'rgba(13, 110, 253, 0.0)');
+
+    const gradientFore = ctx.createLinearGradient(0, 0, 0, 300);
+    gradientFore.addColorStop(0, 'rgba(255, 159, 67, 0.25)');
+    gradientFore.addColorStop(1, 'rgba(255, 159, 67, 0.0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Tỷ lệ lấp đầy thực tế (%)',
+                    data: historicalData,
+                    borderColor: '#0d6efd',
+                    backgroundColor: gradientHist,
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3.5,
+                    pointBackgroundColor: '#0d6efd'
+                },
+                {
+                    label: 'AI Dự báo khu vực (%)',
+                    data: forecastData,
+                    borderColor: '#ff9f43',
+                    backgroundColor: gradientFore,
+                    borderWidth: 3,
+                    borderDash: [5, 5],
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4.5,
+                    pointBackgroundColor: '#ff9f43'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                y: {
+                    min: 50,
+                    max: 100,
+                    ticks: { stepSize: 10, callback: function(val) { return val + '%'; } },
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // XỬ LÝ AJAX ĐỔI TRẠNG THÁI PHÒNG
+    document.querySelectorAll('.btn-toggle-status').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            const id = this.getAttribute('data-id');
+            this.disabled = true;
+
+            try {
+                const res = await fetch('@Url.Action("ToggleTrangThaiThue", "Admin", new { area = "Host" })', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'idPhong=' + encodeURIComponent(id)
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    const badge = document.getElementById('badge-status-' + id);
+                    if (data.newState) {
+                        badge.className = 'badge bg-success';
+                        badge.innerHTML = '<i class="bi bi-check-circle me-1"></i>Đã cho thuê (Kín)';
+                        this.setAttribute('data-status', 'true');
+                    } else {
+                        badge.className = 'badge bg-warning text-dark';
+                        badge.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i>Còn trống (Tìm khách)';
+                        this.setAttribute('data-status', 'false');
+                    }
+
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.newState ? 'Phòng #' + id + ': Đã chuyển sang Đã cho thuê' : 'Phòng #' + id + ': Đã chuyển sang Còn trống',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire('Lỗi', data.message || 'Không thể cập nhật trạng thái', 'error');
+                }
+            } catch (err) {
+                Swal.fire('Lỗi', 'Không thể kết nối máy chủ', 'error');
+            } finally {
+                this.disabled = false;
+            }
+        });
+    });
+});
+</script>

@@ -1,4 +1,4 @@
-﻿using PagedList; // <-- 1. THÊM THƯ VIỆN NÀY
+using PagedList; // <-- 1. THÊM THƯ VIỆN NÀY
 using QuanLyPhongTro.Models;
 using QuanLyPhongTro.Models.ViewModels;
 using System;
@@ -67,7 +67,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
-                          .Where(p => p.ID_CD == 4); // Lọc theo ID_CD = 4
+                          .Where(p => p.ID_CD == 4 && p.Trang_Thai == true); // Chỉ lấy tin đã duyệt
             if (minPrice.HasValue)
             {
                 query = query.Where(p => p.Gia_Ca >= minPrice.Value);
@@ -87,39 +87,30 @@ namespace QuanLyPhongTro.Controllers
 
 
             // SẮP XẾP: Ưu tiên theo Loại Tin (1 -> 5), sau đó mới tới Ngày Đăng
-            var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
-                                   .ThenByDescending(p => p.Ngay_Dang);
-            IQueryable<Phong_Tro> sortedQuerys;
+            IQueryable<Phong_Tro> sortedQuery;
             switch (filterBy)
             {
                 case "moi-dang": // Tab "Mới đăng"
-                    // SỬA: Chỉ sắp xếp theo Ngày Đăng giảm dần (Mới nhất lên đầu)
-                    // Không quan tâm ID_LoaiTin (VIP hay thường đều như nhau)
                     sortedQuery = query.OrderByDescending(p => p.Ngay_Dang);
-                        break;
+                    break;
 
                 case "co-video": // Nếu là tab "Có video"
-                    sortedQuery = db.Phong_Tro
-                     .Include(p => p.Tai_Khoan)
-                     .Include(p => p.Khu_Vuc)
-                     .Include(p => p.Hinh_Anh)
-                     .Include(p => p.Loai_Tin)
-                     .Include(p => p.Video)
-                     .Where(p => p.Video.Any())
-                     .OrderByDescending(p => p.Ngay_Dang);
+                    sortedQuery = query.Where(p => p.Video.Any())
+                                       .OrderByDescending(p => p.Ngay_Dang);
                     break;
 
                 case "de-xuat": // Nếu là tab "Đề xuất" (Mặc định)
                 default:
-                    sortedQuerys = query.OrderBy(p => p.ID_LoaiTin) // Ưu tiên Loại tin (VIP)
+                    sortedQuery = query.OrderBy(p => p.ID_LoaiTin) // Ưu tiên Loại tin (VIP)
                                          .ThenByDescending(p => p.Ngay_Dang); // Sau đó mới nhất
                     break;
             }
             var paginatedPosts = sortedQuery.ToPagedList(pageNumber, pageSize);
 
-            // 2. LẤY TOP 10 TIN MỚI NHẤT (CHO SIDEBAR)
+            // 2. LẤY TOP 10 TIN MỚI NHẤT ĐÃ DUYỆT (CHO SIDEBAR)
             var newestPosts = db.Phong_Tro
-                                .Include(p => p.Hinh_Anh) // Chỉ cần include ảnh
+                                .Include(p => p.Hinh_Anh)
+                                .Where(p => p.Trang_Thai == true)
                                 .OrderByDescending(p => p.Ngay_Dang)
                                 .Take(10)
                                 .ToList();
@@ -129,7 +120,7 @@ namespace QuanLyPhongTro.Controllers
             // Gửi Model phân trang qua View
             ViewBag.NewestPosts = newestPosts;
             ViewBag.PageTitle = "Kênh thông tin Phòng Trọ số 1 Việt Nam";
-            return View(sortedQuery.ToPagedList(pageNumber, pageSize));
+            return View(paginatedPosts);
         }
         private List<int> GetUserFavorites()
         {
@@ -201,12 +192,13 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
-                          .Where(p => p.ID_CD == 6); // <-- LỌC THEO ID_CD = 6
+                          .Where(p => p.ID_CD == 6 && p.Trang_Thai == true); // <-- LỌC THEO ID_CD = 6 & ĐÃ DUYỆT
 
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
                                    .ThenByDescending(p => p.Ngay_Dang);
             var newestPosts = db.Phong_Tro
-                        .Include(p => p.Hinh_Anh) // Chỉ cần include ảnh
+                        .Include(p => p.Hinh_Anh)
+                        .Where(p => p.Trang_Thai == true)
                         .OrderByDescending(p => p.Ngay_Dang)
                         .Take(10)
                         .ToList();
@@ -235,11 +227,19 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
-                          .Where(p => p.ID_CD == 5); // <-- LỌC THEO ID_CD = 5
+                          .Where(p => p.ID_CD == 5 && p.Trang_Thai == true); // <-- LỌC THEO ID_CD = 5 & ĐÃ DUYỆT
 
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
                                    .ThenByDescending(p => p.Ngay_Dang);
 
+            var newestPosts = db.Phong_Tro
+                        .Include(p => p.Hinh_Anh)
+                        .Where(p => p.Trang_Thai == true)
+                        .OrderByDescending(p => p.Ngay_Dang)
+                        .Take(10)
+                        .ToList();
+
+            ViewBag.NewestPosts = newestPosts;
             // QUAN TRỌNG: Render ra View tên là "Index"
             ViewBag.PageTitle = "Cho Thuê Căn Hộ Mini + Chung Cư Mini Giá Rẻ, Mới Nhất 2025";
             return View("Index", sortedQuery.ToPagedList(pageNumber, pageSize));
@@ -262,11 +262,28 @@ namespace QuanLyPhongTro.Controllers
                 return HttpNotFound();
             }
 
+            // Nếu tin chưa duyệt: chỉ người đăng hoặc Quản trị viên mới được xem trước
+            int currentUserId = 0;
+            if (Session["UserID"] != null) int.TryParse(Session["UserID"].ToString(), out currentUserId);
+            else if (Session["ID_TK"] != null) int.TryParse(Session["ID_TK"].ToString(), out currentUserId);
+
+            int userRole = 0;
+            if (Session["Role"] != null) int.TryParse(Session["Role"].ToString(), out userRole);
+
+            bool isAdmin = (userRole == 1);
+            bool isOwner = (phongTro.ID_TK == currentUserId && currentUserId > 0);
+
+            if (phongTro.Trang_Thai != true && !isAdmin && !isOwner)
+            {
+                TempData["ErrorMessage"] = "Tin đăng này đang chờ duyệt hoặc đã tạm ẩn.";
+                return RedirectToAction("Index");
+            }
+
             // Lấy danh sách yêu thích (cho nút trái tim)
             var userFavorites = new List<int>();
             if (Session["ID_TK"] != null)
             {
-                int currentUserId = (int)Session["ID_TK"];
+                currentUserId = (int)Session["ID_TK"];
                 userFavorites = db.Yeu_Thich
                                   .Where(yt => yt.ID_TK == currentUserId)
                                   .Select(yt => yt.ID_Phong_Tro)
@@ -279,7 +296,7 @@ namespace QuanLyPhongTro.Controllers
                     .Include(p => p.Khu_Vuc)
                     .Include(p => p.Loai_Tin) // Cần để hiển thị banner
                     .Include(p => p.Video)
-                    .Where(p => p.ID_KV == phongTro.ID_KV.Value && p.ID_Phong_Tro != id) // Lọc cùng KV, trừ tin này
+                    .Where(p => p.ID_KV == phongTro.ID_KV.Value && p.ID_Phong_Tro != id && p.Trang_Thai == true) // Lọc cùng KV, trừ tin này & đã duyệt
                     .OrderBy(p => p.ID_LoaiTin) // Sắp xếp theo ưu tiên
                     .ThenByDescending(p => p.Ngay_Dang)
                     .Take(8)
@@ -288,13 +305,13 @@ namespace QuanLyPhongTro.Controllers
                 ViewBag.RelatedPosts = relatedPosts;
             }
 
-            // 2. Lấy Tin Đăng Mới Cập Nhật (Lấy 8 tin)
+            // 2. Lấy Tin Đăng Mới Cập Nhật (Lấy 8 tin đã duyệt)
             var latestPosts = db.Phong_Tro
                 .Include(p => p.Hinh_Anh)
                 .Include(p => p.Khu_Vuc)
                 .Include(p => p.Loai_Tin) // Cần để hiển thị banner
                 .Include(p => p.Video)
-                .Where(p => p.ID_Phong_Tro != id) // Trừ tin này
+                .Where(p => p.ID_Phong_Tro != id && p.Trang_Thai == true) // Trừ tin này & đã duyệt
                 .OrderByDescending(p => p.Ngay_Dang) // Mới nhất
                 .Take(8)
                 .ToList();
@@ -302,13 +319,13 @@ namespace QuanLyPhongTro.Controllers
             ViewBag.LatestPosts = latestPosts;
             ViewBag.UserFavorites = userFavorites;
 
-                var featuredPosts = db.Phong_Tro
-            .Where(p => (p.ID_LoaiTin == 1 || p.ID_LoaiTin == 2) && p.ID_Phong_Tro != id)
-            .OrderByDescending(p => p.Ngay_Dang)
-            .Take(5)
-            .ToList();
+            var featuredPosts = db.Phong_Tro
+                .Where(p => (p.ID_LoaiTin == 1 || p.ID_LoaiTin == 2) && p.ID_Phong_Tro != id && p.Trang_Thai == true)
+                .OrderByDescending(p => p.Ngay_Dang)
+                .Take(5)
+                .ToList();
 
-                ViewBag.FeaturedPosts = featuredPosts;
+            ViewBag.FeaturedPosts = featuredPosts;
             // Gửi 1 đối tượng phòng trọ duy nhất qua View
             return View(phongTro);
         }
@@ -373,7 +390,7 @@ namespace QuanLyPhongTro.Controllers
                                    .Include(p => p.Hinh_Anh)
                                    .Include(p => p.Loai_Tin)
                                    .Include(p => p.Video)
-                                   .Where(p => favoritedIds.Contains(p.ID_Phong_Tro)) // Lọc theo danh sách ID đã lấy
+                                   .Where(p => favoritedIds.Contains(p.ID_Phong_Tro) && p.Trang_Thai == true) // Chỉ hiện tin đã duyệt
                                    .OrderByDescending(p => p.Ngay_Dang); // Sắp xếp mới nhất
 
             // 4. Phân trang
@@ -474,17 +491,21 @@ namespace QuanLyPhongTro.Controllers
                 return View();
             }
 
-            // 2. Tìm kiếm tài khoản dựa trên SDT và mật khẩu đã mã hóa
-            // Dùng tk.SDT để tra cứu, giả định cột SDT trong Model Tai_Khoan là duy nhất
+            // 2. Tìm kiếm tài khoản dựa trên SDT hoặc User_Name và mật khẩu
             var account = db.Tai_Khoan
-                            .SingleOrDefault(tk => tk.SDT == SDT && tk.Pass == hashedPassword);
-            // HOẶC dùng tk.User_Name nếu bạn xác định User_Name chính là SDT
+                            .SingleOrDefault(tk => (tk.SDT == SDT || tk.User_Name == SDT) && (tk.Pass == hashedPassword || tk.Pass == Pass));
 
             // --- Xử lý Logic Đăng Nhập ---
             if (account != null)
             {
+                // Nếu tài khoản cũ lưu mật khẩu plain-text thì nâng cấp lên SHA256
+                if (account.Pass == Pass && account.Pass != hashedPassword)
+                {
+                    account.Pass = hashedPassword;
+                    db.SaveChanges();
+                }
+
                 // 3. Đăng nhập THÀNH CÔNG
-                
                 Session["UserID"] = account.ID_TK;
                 Session["UserName"] = account.Name;
                 Session["SDT"] = account.SDT;
@@ -498,19 +519,19 @@ namespace QuanLyPhongTro.Controllers
             else
             {
                 // 4. Đăng nhập THẤT BẠI
-                // Kiểm tra xem SDT có tồn tại trong DB không (dùng cột SDT)
-                var checkUser = db.Tai_Khoan.SingleOrDefault(tk => tk.SDT == SDT);
+                // Kiểm tra xem SDT hoặc User_Name có tồn tại trong DB không
+                var checkUser = db.Tai_Khoan.SingleOrDefault(tk => tk.SDT == SDT || tk.User_Name == SDT);
 
                 if (checkUser == null)
                 {
-                    // Lỗi 1: Số điện thoại không tồn tại
-                    ViewBag.Error = "Số điện thoại này không tồn tại.";
+                    // Lỗi 1: Tài khoản không tồn tại
+                    ViewBag.Error = "Tài khoản hoặc số điện thoại này không tồn tại.";
                     ViewBag.ErrorType = "UserNotFound";
                     ViewBag.HasError = true;
                 }
                 else
                 {
-                    // Lỗi 2: Mật khẩu sai (SDT đúng nhưng Pass không khớp)
+                    // Lỗi 2: Mật khẩu sai
                     ViewBag.Error = "Mật khẩu không đúng.";
                     ViewBag.ErrorType = "WrongPassword";
                     ViewBag.HasError = true;
@@ -574,7 +595,8 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Khu_Vuc)
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
-                          .Include(p => p.Video);
+                          .Include(p => p.Video)
+                          .Where(p => p.Trang_Thai == true);
 
             // Nếu có danh sách khu vực → lọc
             if (kvIds != null && kvIds.Any())
@@ -606,6 +628,7 @@ namespace QuanLyPhongTro.Controllers
 
             var newestPosts = db.Phong_Tro
                                 .Include(p => p.Hinh_Anh)
+                                .Where(p => p.Trang_Thai == true)
                                 .OrderByDescending(p => p.Ngay_Dang)
                                 .Take(10)
                                 .ToList();
@@ -635,6 +658,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
+                          .Where(p => p.Trang_Thai == true)
                           .AsQueryable();
 
             // Danh mục
@@ -686,6 +710,7 @@ namespace QuanLyPhongTro.Controllers
             // Lấy newest posts nếu cần (như Index)
             var newestPosts = db.Phong_Tro
                                 .Include(p => p.Hinh_Anh)
+                                .Where(p => p.Trang_Thai == true)
                                 .OrderByDescending(p => p.Ngay_Dang)
                                 .Take(10)
                                 .ToList();

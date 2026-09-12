@@ -1,0 +1,319 @@
+@* =======================================================
+   CỬA SỔ CHATBOT AI TƯ VẤN PHÒNG TRỌ
+   ======================================================= *@
+
+<!-- Cửa sổ Chatbot -->
+<div class="ai-chat-window" id="aiChatWindow">
+    <!-- Header -->
+    <div class="ai-chat-header">
+        <div class="ai-chat-header-info">
+            <div class="ai-chat-avatar">
+                <i class="bi bi-robot" style="font-size: 20px; color: #0d6efd;"></i>
+                <span class="ai-chat-status-dot"></span>
+            </div>
+            <div>
+                <h6 class="ai-chat-header-title">Trợ Lý Ảo Thuê Trọ</h6>
+                <p class="ai-chat-header-subtitle">Hỗ trợ AI trực tuyến 24/7</p>
+            </div>
+        </div>
+        <div class="ai-chat-header-actions">
+            <button type="button" class="ai-chat-btn-icon" id="aiChatCheckApiBtn" title="Kiểm tra trạng thái API Key & Token">
+                <i class="bi bi-activity" style="font-size: 13px;"></i>
+            </button>
+            <button type="button" class="ai-chat-btn-icon" id="aiChatClearBtn" title="Xóa lịch sử trò chuyện">
+                <i class="bi bi-trash3" style="font-size: 13px;"></i>
+            </button>
+            <button type="button" class="ai-chat-btn-icon" id="aiChatCloseBtn" title="Đóng cửa sổ">
+                <i class="bi bi-x-lg" style="font-size: 14px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Danh sách tin nhắn -->
+    <div class="ai-chat-body" id="aiChatBody">
+        <!-- Tin nhắn chào mừng ban đầu -->
+        <div class="ai-msg bot">
+            <div class="ai-msg-avatar">
+                <i class="bi bi-robot" style="font-size: 15px;"></i>
+            </div>
+            <div class="ai-msg-bubble">
+                Xin chào bạn! 👋 Mình là <strong>Trợ lý AI</strong> của hệ thống Phòng Trọ.
+                <br /><br />
+                Bạn đang muốn tìm phòng ở khu vực nào, tầm giá bao nhiêu hoặc cần hỏi về tiền cọc, điện nước? Hãy nhắn cho mình nhé!
+                
+                <div class="ai-chat-quick-questions">
+                    <button class="ai-quick-btn" data-query="Tìm phòng trọ ở Cầu Giấy dưới 3.5 triệu">📍 Cầu Giấy dưới 3.5tr</button>
+                    <button class="ai-quick-btn" data-query="Tìm phòng trọ ở Hoàn Kiếm">📍 Phòng Hoàn Kiếm</button>
+                    <button class="ai-quick-btn" data-query="Có phòng trọ nào có video xem trước không?">🎥 Có video xem trước</button>
+                    <button class="ai-quick-btn" data-query="Tiền đặt cọc và giá điện nước thường tính thế nào?">⚡ Tiền cọc & Điện nước</button>
+                    <button class="ai-quick-btn" data-query="kiểm tra api">📊 Kiểm tra API Key</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer nhập tin nhắn dạng ChatGPT -->
+    <div class="ai-chat-footer">
+        <div class="ai-chat-input-box">
+            <textarea class="ai-chat-textarea" id="aiChatInput" rows="1" placeholder="Hỏi AI: tìm phòng trọ, giá, khu vực..." autocomplete="off"></textarea>
+            <button type="button" class="ai-chat-send-btn" id="aiChatSendBtn" title="Gửi tin nhắn (Enter)">
+                <i class="bi bi-send-fill" style="font-size: 13px;"></i>
+            </button>
+        </div>
+        <div class="ai-chat-footer-hint">Nhấn <strong>Enter</strong> để gửi, <strong>Shift + Enter</strong> để xuống dòng</div>
+    </div>
+
+    <!-- Modal xác nhận xóa lịch sử chat đẹp mắt -->
+    <div class="ai-chat-modal-overlay" id="aiChatConfirmModal" style="display: none !important;">
+        <div class="ai-chat-modal-dialog">
+            <div class="ai-chat-modal-icon">
+                <i class="bi bi-trash3-fill"></i>
+            </div>
+            <h5 class="ai-chat-modal-title">Xóa lịch sử trò chuyện?</h5>
+            <p class="ai-chat-modal-desc">
+                Toàn bộ nội dung tư vấn và các đề xuất phòng sẽ bị xóa sạch. Bạn sẽ bắt đầu một phiên trò chuyện mới hoàn toàn.
+            </p>
+            <div class="ai-chat-modal-actions">
+                <button type="button" class="ai-chat-modal-btn cancel" id="aiChatCancelClearBtn">Hủy bỏ</button>
+                <button type="button" class="ai-chat-modal-btn confirm" id="aiChatConfirmClearBtn">
+                    <i class="bi bi-trash3" style="font-size: 13px; margin-right: 4px;"></i>Xóa tất cả
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* CSS NÂNG CAO ĐẢM BẢO HIỂN THỊ CHATGPT TEXTAREA 100% */
+.ai-chat-footer {
+    padding: 8px 12px 6px !important;
+    background: #ffffff !important;
+    border-top: 1px solid #edf0f5 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.ai-chat-input-box {
+    display: flex !important;
+    align-items: flex-end !important;
+    background: #f8fafc !important;
+    border: 1.5px solid #dbe2ea !important;
+    border-radius: 20px !important;
+    padding: 5px 6px 5px 14px !important;
+    transition: all 0.2s ease !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.ai-chat-input-box:focus-within {
+    border-color: #0d6efd !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
+}
+
+.ai-chat-textarea {
+    flex: 1 !important;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    resize: none !important;
+    outline: none !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    color: #1e293b !important;
+    font-family: inherit !important;
+    padding: 3px 0 !important;
+    margin: 0 !important;
+    height: 24px;
+    min-height: 24px;
+    max-height: 120px;
+    overflow-y: hidden;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+}
+
+.ai-chat-textarea::placeholder {
+    color: #94a3b8 !important;
+    font-size: 12.5px !important;
+}
+
+.ai-chat-textarea::-webkit-scrollbar {
+    width: 4px;
+}
+.ai-chat-textarea::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.ai-chat-send-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    border-radius: 50% !important;
+    background: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
+    margin-left: 6px !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+}
+
+.ai-chat-send-btn.active,
+.ai-chat-send-btn:hover:not(:disabled) {
+    background: #0d6efd !important;
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+    color: #ffffff !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.35) !important;
+}
+
+.ai-chat-send-btn:disabled {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+.ai-chat-footer-hint {
+    font-size: 10.5px !important;
+    color: #94a3b8 !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    user-select: none !important;
+}
+.ai-chat-footer-hint strong {
+    font-weight: 600 !important;
+    color: #64748b !important;
+}
+
+/* MODAL XÁC NHẬN XÓA LỊCH SỬ CHAT CAO CẤP */
+.ai-chat-modal-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(15, 23, 42, 0.5) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    display: none !important; /* MẶC ĐỊNH PHẢI ẨN 100% */
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+}
+
+.ai-chat-modal-overlay.active {
+    display: flex !important; /* CHỈ HIỂN THỊ KHI BẤM NÚT XÓA */
+    animation: aiModalFadeIn 0.2s ease !important;
+}
+
+.ai-chat-modal-dialog {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    padding: 22px 20px 20px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    text-align: center !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22), 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #e2e8f0 !important;
+    animation: aiModalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-sizing: border-box !important;
+}
+
+.ai-chat-modal-icon {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
+    font-size: 22px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 12px !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+}
+
+.ai-chat-modal-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin: 0 0 8px 0 !important;
+    line-height: 1.3 !important;
+}
+
+.ai-chat-modal-desc {
+    font-size: 12.5px !important;
+    color: #64748b !important;
+    line-height: 1.5 !important;
+    margin: 0 0 20px 0 !important;
+}
+
+.ai-chat-modal-actions {
+    display: flex !important;
+    gap: 10px !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+.ai-chat-modal-btn {
+    flex: 1 !important;
+    padding: 9px 14px !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+    outline: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+}
+
+.ai-chat-modal-btn.cancel {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.ai-chat-modal-btn.cancel:hover {
+    background: #e2e8f0 !important;
+    color: #1e293b !important;
+}
+
+.ai-chat-modal-btn.confirm {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35) !important;
+}
+
+.ai-chat-modal-btn.confirm:hover {
+    background: #dc2626 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.45) !important;
+}
+
+@@keyframes aiModalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@@keyframes aiModalSlideUp {
+    from { opacity: 0; transform: scale(0.92) translateY(12px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+</style>

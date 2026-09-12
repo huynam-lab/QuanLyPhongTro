@@ -1,4 +1,4 @@
-﻿using QuanLyPhongTro.Models;
+using QuanLyPhongTro.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,5 +62,26 @@ namespace QuanLyPhongTro.Areas.Admin.ChuNhaViewModels
         public bool? Trang_Thai { get; set; }  
         }
 
-
+    public class HostRoomStatusItem
+    {
+        public int IdPhong { get; set; }
+        public string TenPhong { get; set; }
+        public decimal GiaThue { get; set; }
+        public string TenKhuVuc { get; set; }
+        public bool DaThue { get; set; }
+        public DateTime? NgayDang { get; set; }
     }
+
+    public class ChuNhaForecastVM : ChuNha
+    {
+        public ForecastResult Forecast { get; set; }
+        public int TongPhongCuaToi { get; set; }
+        public int PhongDaThueCuaToi { get; set; }
+        public double TyLeLapDayCuaToi { get; set; }
+        public int SelectedMonths { get; set; }
+        public int? SelectedIdKv { get; set; }
+        public string TenKhuVucHienTai { get; set; }
+        public List<HostRoomStatusItem> DanhSachPhongCuaToi { get; set; } = new List<HostRoomStatusItem>();
+    }
+
+}

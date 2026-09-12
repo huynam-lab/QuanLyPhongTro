@@ -1,13 +1,21 @@
-﻿/* --- Bố Cục Chính (3 Cột) --- */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Bố Cục Chính (3 Cột) --- */
 .pt-main {
-    background-color: #fdf5ed;
+    background-color: #f8fafc; /* Màu nền Slate-50 hiện đại, thanh lịch thay cho màu vàng đất cũ */
+    min-height: 100vh;
 }
 
 /* Vùng chứa tối đa */
 .pt-main-container {
     max-width: 1500px;
     margin: 0 auto;
-    padding: 20px 15px;
+    padding: 24px 16px;
 }
 
 /* Điều chỉnh margin của hàng */
@@ -113,37 +121,39 @@
 
 /* Kiểu dáng chung cho các nút */
 .pt-floating-btn {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%; /* Hình tròn */
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
     cursor: pointer;
-    transition: all 0.3s ease;
-    border:0px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    border: none;
 }
 
-/* Nút Chat (Màu cam/hồng) */
+/* Nút Chat (Gradient Đỏ Hồng Sunset hiện đại) */
 .pt-chat-btn {
-    background-color: #ff5722; /* Màu cam đậm */
+    background: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
     color: white;
-    font-size: 20px;
+    font-size: 22px;
+    box-shadow: 0 8px 20px rgba(225, 29, 72, 0.35);
 }
 
-/* Nút Quay lên (Màu trắng/xám nhẹ) */
+/* Nút Quay lên (Màu trắng tinh tế viền siêu nhẹ) */
 .pt-scroll-top-btn {
-    background-color: white;
-    color: #495057; /* Màu xám đậm */
+    background-color: #ffffff;
+    color: #475569; /* Màu Slate đậm */
     font-size: 20px;
-    border: 1px solid #dee2e6;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
 }
 
-/* Hiệu ứng hover (tùy chọn) */
+/* Hiệu ứng hover hiện đại */
 .pt-floating-btn:hover {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.22);
+    transform: translateY(-3px) scale(1.05);
 }
 
 /* Đảm bảo nút không hiển thị trên màn hình quá hẹp nếu cần */

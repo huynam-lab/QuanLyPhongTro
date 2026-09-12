@@ -1,34 +1,76 @@
-﻿
+
 
 
 :root {
-    --color-orange-500: #f56c00;
-}
-.post-title-link {
-    color: inherit; /* Lấy màu của thẻ <h5> */
-    text-decoration: none;
+    --color-orange-500: #e11d48;
+    --heart-red-color: #e11d48; /* Màu Rose Red hiện đại, sang trọng */
+    --primary-accent: #e11d48;
+    --primary-gradient: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
 }
 
-    .post-title-link:hover {
-        color: inherit;
-       
-    }
+/* Card tin đăng hiện đại */
+.card {
+    border-radius: 14px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Nav Tabs lọc hiện đại */
+.nav-tabs {
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.nav-tabs .nav-link {
+    font-weight: 600;
+    color: #64748b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #e11d48;
+}
+
+.nav-tabs .nav-link.active {
+    color: #e11d48;
+    background-color: transparent;
+    border-bottom: 3px solid #e11d48;
+    font-weight: 700;
+}
+
+.post-title-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.post-title-link:hover {
+    color: #e11d48;
+}
+
 .post-image-link {
     display: block;
     text-decoration: none;
 }
+
 .post-actions {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* Khoảng cách giữa nút ĐT và nút Tim */
+    gap: 0.5rem;
 }
 
-/* Định nghĩa một biến màu cam */
-:root {
-    --heart-red-color: #f86c3a;
-}
-
-/* 1. Style cho NÚT (hình tròn) */
+/* 1. Style cho NÚT Tim Yêu Thích */
 .btn-favorite {
     display: flex;
     align-items: center;
@@ -37,7 +79,8 @@
     height: 2.5rem;
     border-radius: 50%;
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    border: 1px solid #e2e8f0;
     text-decoration: none;
     transition: all 0.2s ease-in-out;
     cursor: pointer;

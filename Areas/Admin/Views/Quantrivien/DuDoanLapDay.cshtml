@@ -1,0 +1,344 @@
+﻿@model QuanLyPhongTro.Models.ForecastResult
+@{
+    ViewBag.Title = "Dự đoán tỷ lệ lấp đầy (AI)";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var khuVucList = ViewBag.KhuVucList as List<QuanLyPhongTro.Models.Khu_Vuc> ?? new List<QuanLyPhongTro.Models.Khu_Vuc>();
+    int? selectedKv = ViewBag.SelectedKv as int?;
+    int forecastMonths = ViewBag.ForecastMonths != null ? (int)ViewBag.ForecastMonths : 6;
+
+    // Chuẩn bị dữ liệu cho Chart.js
+    var allLabels = new List<string>();
+    var historicalData = new List<object>();
+    var forecastData = new List<object>();
+
+    foreach (var h in Model.HistoricalPoints)
+    {
+        allLabels.Add(h.Label);
+        historicalData.Add(h.Rate);
+        forecastData.Add(null); // null cho quá khứ
+    }
+
+    // Nối điểm cuối của lịch sử vào đầu dự báo để đường vẽ liền mạch
+    if (Model.HistoricalPoints.Any() && Model.ForecastPoints.Any())
+    {
+        var lastH = Model.HistoricalPoints.Last();
+        forecastData[forecastData.Count - 1] = lastH.Rate;
+    }
+
+    foreach (var f in Model.ForecastPoints)
+    {
+        allLabels.Add(f.Label);
+        historicalData.Add(null);
+        forecastData.Add(f.PredictedRate);
+    }
+}
+
+<div class="container-fluid p-0">
+    <!-- Tiêu đề & Bộ lọc -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-graph-up-arrow text-primary me-2"></i>Dự Báo Tỷ Lệ Lấp Đầy Phòng Trọ
+            </h4>
+            <p class="text-muted small mb-0">
+                Ứng dụng mô hình phân tích chuỗi thời gian (Time-Series Decomposition) kết hợp Xu hướng (Trend) và Mùa vụ (Seasonality).
+            </p>
+        </div>
+
+        <!-- Form lọc -->
+        <form method="get" action="@Url.Action("DuDoanLapDay", "Quantrivien", new { area = "Admin" })" class="d-flex flex-wrap gap-2 align-items-center">
+            <select name="idKv" class="form-select form-select-sm" style="width: 220px;">
+                <option value="">-- Toàn hệ thống (Hà Nội) --</option>
+                @foreach (var kv in khuVucList)
+                {
+                    <option value="@kv.ID_KV" @(selectedKv == kv.ID_KV ? "selected" : "")>@kv.Ten_KV</option>
+                }
+            </select>
+
+            <select name="forecastMonths" class="form-select form-select-sm" style="width: 160px;">
+                <option value="3" @(forecastMonths == 3 ? "selected" : "")>Dự báo 3 tháng</option>
+                <option value="6" @(forecastMonths == 6 ? "selected" : "")>Dự báo 6 tháng</option>
+                <option value="12" @(forecastMonths == 12 ? "selected" : "")>Dự báo 12 tháng</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary btn-sm px-3 shadow-sm">
+                <i class="bi bi-cpu me-1"></i> Chạy dự báo
+            </button>
+        </form>
+    </div>
+
+    <!-- KHỐI 4 THẺ KPI -->
+    <div class="row g-3 mb-4">
+        <!-- KPI 1: Tỷ lệ hiện tại -->
+        <div class="col-xl-3 col-sm-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white border-start border-4 border-primary">
+                <div class="card-body">
+                    <span class="text-muted small fw-semibold text-uppercase">Tỷ lệ lấp đầy hiện tại</span>
+                    <div class="d-flex align-items-baseline justify-content-between mt-2">
+                        <h2 class="fw-bold mb-0 text-primary">@Model.CurrentRate%</h2>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">
+                            Thực tế
+                        </span>
+                    </div>
+                    <small class="text-muted mt-2 d-block">Khu vực: <strong>@Model.DistrictName</strong></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 2: Dự báo tháng tới -->
+        <div class="col-xl-3 col-sm-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white border-start border-4 border-warning">
+                <div class="card-body">
+                    <span class="text-muted small fw-semibold text-uppercase">Dự báo tháng tiếp theo</span>
+                    <div class="d-flex align-items-baseline justify-content-between mt-2">
+                        <h2 class="fw-bold mb-0 text-warning">@Model.NextMonthRate%</h2>
+                        <span class="badge @(Model.RateChange >= 0 ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger") px-2 py-1">
+                            @(Model.RateChange >= 0 ? "+" : "")@Model.RateChange%
+                        </span>
+                    </div>
+                    <small class="text-muted mt-2 d-block">Biến động so với tháng gần nhất</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 3: Xu hướng dài hạn -->
+        <div class="col-xl-3 col-sm-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white border-start border-4 border-success">
+                <div class="card-body">
+                    <span class="text-muted small fw-semibold text-uppercase">Xu hướng tăng trưởng</span>
+                    <div class="d-flex align-items-baseline justify-content-between mt-2">
+                        <h2 class="fw-bold mb-0 text-success">
+                            @(Model.TrendSlope >= 0 ? "+" : "")@Math.Round(Model.TrendSlope * 12, 1)%<span class="fs-6 text-muted fw-normal">/năm</span>
+                        </h2>
+                        <i class="bi bi-graph-up text-success fs-3"></i>
+                    </div>
+                    <small class="text-muted mt-2 d-block">Tốc độ gia tăng nhu cầu thuê</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 4: Độ tin cậy mô hình -->
+        <div class="col-xl-3 col-sm-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white border-start border-4 border-info">
+                <div class="card-body">
+                    <span class="text-muted small fw-semibold text-uppercase">Độ chính xác mô hình (R²)</span>
+                    <div class="d-flex align-items-baseline justify-content-between mt-2">
+                        <h2 class="fw-bold mb-0 text-info">@Model.ModelAccuracyR2%</h2>
+                        <span class="badge bg-info-subtle text-info px-2 py-1">R-Squared</span>
+                    </div>
+                    <small class="text-muted mt-2 d-block">Độ khớp thuật toán chuỗi thời gian</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BIỂU ĐỒ CHUỖI THỜI GIAN & DỰ BÁO -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+                <div class="card-header bg-white border-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="fw-bold mb-1">📈 Biểu Đồ Tỷ Lệ Lấp Đầy Theo Chuỗi Thời Gian</h6>
+                        <span class="text-muted small">Đường xanh: Dữ liệu thực tế | Đường cam nét đứt: AI Dự báo tương lai</span>
+                    </div>
+                    <span class="badge bg-light text-dark border px-2 py-1">
+                        <i class="bi bi-geo-alt-fill text-danger me-1"></i>@Model.DistrictName
+                    </span>
+                </div>
+                <div class="card-body" style="height: 380px;">
+                    <canvas id="occupancyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- KHỐI KHUYẾN NGHỊ KINH DOANH TỪ AI -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+                <div class="card-header bg-white border-0 pt-3 pb-2 d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-2 py-1"><i class="bi bi-robot me-1"></i>AI Advisor</span>
+                    <h6 class="fw-bold mb-0">Khuyến Nghị Chiến Lược</h6>
+                </div>
+                <div class="card-body pt-1 d-flex flex-column gap-3 overflow-auto" style="max-height: 380px;">
+                    @foreach (var rec in Model.AiRecommendations)
+                    {
+                        var parts = rec.Split(new[] { "**" }, StringSplitOptions.None);
+                        <div class="p-3 rounded-3 bg-light border border-light-subtle">
+                            @if (parts.Length >= 3)
+                            {
+                                <div class="fw-bold text-dark mb-1">@parts[0] @parts[1]</div>
+                                <div class="small text-muted" style="line-height: 1.5;">@parts[2]</div>
+                            }
+                            else
+                            {
+                                <div class="small text-muted" style="line-height: 1.5;">@rec</div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẢNG DỮ LIỆU DỰ BÁO CHI TIẾT -->
+    <div class="card border-0 shadow-sm rounded-3 bg-white mb-4">
+        <div class="card-header bg-white border-0 pt-3 pb-2 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold mb-0">📋 Chi Tiết Kết Quả Dự Báo @forecastMonths Tháng Tiếp Theo</h6>
+            <span class="small text-muted">Khoảng tin cậy ước tính 95%</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-3">Thời gian</th>
+                        <th>Loại dữ liệu</th>
+                        <th>Tỷ lệ dự báo</th>
+                        <th>Khoảng tin cậy (Min - Max)</th>
+                        <th>Hệ số mùa vụ</th>
+                        <th class="pe-3">Đánh giá trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var f in Model.ForecastPoints)
+                    {
+                        <tr>
+                            <td class="ps-3 fw-bold text-dark">
+                                <i class="bi bi-calendar3 text-primary me-2"></i>@f.Label
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark border border-warning-subtle">
+                                    <i class="bi bi-stars me-1"></i>AI Forecast
+                                </span>
+                            </td>
+                            <td>
+                                <span class="fs-6 fw-bold text-danger">@f.PredictedRate%</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="small text-muted">@f.LowerBound%</span>
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 80px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: @f.PredictedRate%"></div>
+                                    </div>
+                                    <span class="small text-muted">@f.UpperBound%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    x @f.SeasonalityFactor
+                                </span>
+                            </td>
+                            <td class="pe-3">
+                                <span class="fw-semibold">@f.StatusEvaluation</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT VẼ BIỂU ĐỒ CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById('occupancyChart').getContext('2d');
+
+    const labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(allLabels));
+    const historicalData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(historicalData));
+    const forecastData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(forecastData));
+
+    // Gradient màu cho lịch sử
+    const gradientHist = ctx.createLinearGradient(0, 0, 0, 350);
+    gradientHist.addColorStop(0, 'rgba(13, 110, 253, 0.25)');
+    gradientHist.addColorStop(1, 'rgba(13, 110, 253, 0.0)');
+
+    // Gradient màu cho dự báo
+    const gradientFore = ctx.createLinearGradient(0, 0, 0, 350);
+    gradientFore.addColorStop(0, 'rgba(255, 159, 67, 0.3)');
+    gradientFore.addColorStop(1, 'rgba(255, 159, 67, 0.0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Tỷ lệ lấp đầy thực tế (%)',
+                    data: historicalData,
+                    borderColor: '#0d6efd',
+                    backgroundColor: gradientHist,
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#0d6efd',
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'AI Dự báo lấp đầy (%)',
+                    data: forecastData,
+                    borderColor: '#ff9f43',
+                    backgroundColor: gradientFore,
+                    borderWidth: 3,
+                    borderDash: [6, 6], // Nét đứt biểu thị dự báo
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#ff9f43',
+                    pointHoverRadius: 7
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        boxWidth: 16,
+                        font: { size: 12, weight: '600' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    titleFont: { size: 13, weight: 'bold' },
+                    bodyFont: { size: 12 },
+                    padding: 10,
+                    callbacks: {
+                        label: function(context) {
+                            if (context.parsed.y !== null) {
+                                return ` ${context.dataset.label}: ${context.parsed.y}%`;
+                            }
+                            return '';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    min: 50,
+                    max: 100,
+                    ticks: {
+                        stepSize: 10,
+                        callback: function(value) { return value + '%'; }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+});
+</script>

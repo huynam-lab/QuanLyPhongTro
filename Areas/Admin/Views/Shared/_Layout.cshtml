@@ -206,6 +206,10 @@
                    href="@Url.Action("Dashboard","Quantrivien", new { area = "Admin" })">
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
+                <a class="nav-link @(ViewBag.Menu == "dudoan" ? "active" : "")"
+                   href="@Url.Action("DuDoanLapDay","Quantrivien", new { area = "Admin" })">
+                    <i class="bi bi-graph-up-arrow text-warning"></i> Dự báo lấp đầy (AI)
+                </a>
                 <a class="nav-link @(ViewBag.Menu == "account" ? "active" : "")"
                    href="@Url.Action("TaiKhoan","Quantrivien", new { area = "Admin" })">
                     <i class="bi bi-people"></i> Tài khoản

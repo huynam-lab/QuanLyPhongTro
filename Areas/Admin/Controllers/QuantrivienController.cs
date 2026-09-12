@@ -1,4 +1,4 @@
-﻿using QuanLyPhongTro.Areas.Admin.AdminViewModels;
+using QuanLyPhongTro.Areas.Admin.AdminViewModels;
 using QuanLyPhongTro.Models;
 using System;
 using System.Collections.Generic;
@@ -511,6 +511,22 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             return PartialView("_ViewTinModal", phong);
             }
 
+        // GET: Admin/DuDoanLapDay
+        [HttpGet]
+        public ActionResult DuDoanLapDay(int? idKv, int? forecastMonths)
+        {
+            ViewBag.Menu = "dudoan";
+            int months = forecastMonths ?? 6;
 
+            string connStr = db.Database.Connection.ConnectionString;
+            var service = new OccupancyForecastService(connStr);
+            var forecastResult = service.CalculateForecast(idKv, months);
+
+            ViewBag.KhuVucList = db.Khu_Vuc.OrderBy(k => k.Ten_KV).ToList();
+            ViewBag.SelectedKv = idKv;
+            ViewBag.ForecastMonths = months;
+
+            return View(forecastResult);
         }
     }
+}
