@@ -625,6 +625,17 @@ namespace QuanLyPhongTro.Models
                     break;
 
                 case UserChatIntent.FreeChat:
+                    // Kiểm tra an toàn bảo mật: Từ chối các lệnh SQL, đòi quyền admin hoặc dò mật khẩu
+                    string qCheck = RemoveDiacritics(userQuestion?.ToLower() ?? "");
+                    if (qCheck.Contains("drop table") || qCheck.Contains("select *") || qCheck.Contains("insert into") ||
+                        qCheck.Contains("delete from") || qCheck.Contains("update ") || qCheck.Contains("mat khau") ||
+                        qCheck.Contains("password") || (qCheck.Contains("admin") && (qCheck.Contains("quyen") || qCheck.Contains("cap quyen") || qCheck.Contains("pass"))))
+                    {
+                        result.ReplyText = "Haha, tính hack Mia hay gì nè? 😂 Mia chỉ là bot chat trò chuyện với bạn như một người dùng bình thường thôi, không có quyền hạn chạy lệnh SQL, can thiệp hệ thống hay xem mật khẩu của ai đâu nha! Đừng thử thách Mia tội nghiệp 😄";
+                        result.SuggestedQuestions = new List<string> { "Tìm phòng trọ ở Cầu Giấy", "Kinh nghiệm xem phòng", "Tiền cọc tính thế nào?" };
+                        break;
+                    }
+
                     // Phản hồi thân thiện, cởi mở của Mia khi trò chuyện tự do ở chế độ ngoại tuyến
                     var freeChatReplies = new[]
                     {
