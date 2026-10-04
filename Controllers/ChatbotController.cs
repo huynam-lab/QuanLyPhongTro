@@ -44,7 +44,7 @@ namespace QuanLyPhongTro.Controllers
                 return Json(new
                 {
                     success = false,
-                    reply = "Xin chào! Mình là Trợ lý AI Thuê Trọ. Bạn đang cần tìm phòng ở khu vực nào hoặc cần tư vấn điều gì, hãy nhắn cho mình nhé!"
+                    reply = "Xin chào! Mình là **Mia** — trợ lý AI của QuanLyPhongTro.vn 🏠 Mình vừa có thể tư vấn tìm phòng trọ, pháp lý, giá cả tại Hà Nội, vừa có thể trò chuyện, giải đáp thắc mắc cùng bạn. Bạn cần Mia hỗ trợ gì nè?"
                 });
             }
 
@@ -338,6 +338,21 @@ namespace QuanLyPhongTro.Controllers
                     });
                 }
 
+                if (intent == UserChatIntent.FreeChat)
+                {
+                    var freeChatAdvice = AiConsultationEngine.GenerateDeepAdvice(intent, question, criteria);
+                    return Json(new
+                    {
+                        success = true,
+                        reply = freeChatAdvice.ReplyText,
+                        rooms = new List<RoomDto>(),
+                        suggestions = freeChatAdvice.SuggestedQuestions,
+                        provider = "Offline Expert Engine",
+                        model = "Mia — Trợ Lý Tư Vấn Thuê Trọ",
+                        intent = intent.ToString()
+                    });
+                }
+
                 if (intent != UserChatIntent.RoomSearch)
                 {
                     var expertAdvice = AiConsultationEngine.GenerateDeepAdvice(intent, question, criteria);
@@ -348,7 +363,7 @@ namespace QuanLyPhongTro.Controllers
                         rooms = new List<RoomDto>(),
                         suggestions = expertAdvice.SuggestedQuestions,
                         provider = "Offline Expert Engine",
-                        model = "Chuyên Gia Tư Vấn Thuê Trọ",
+                        model = "Mia — Chuyên Gia Tư Vấn Thuê Trọ",
                         intent = intent.ToString()
                     });
                 }
@@ -371,7 +386,7 @@ namespace QuanLyPhongTro.Controllers
                 return Json(new
                 {
                     success = true,
-                    reply = "Dạ chào bạn! Hiện tại hệ thống đang đồng bộ dữ liệu phòng trọ mới nhất. Bạn có thể nêu rõ khu vực muốn tìm (ví dụ: Cầu Giấy, Hoàn Kiếm, Đống Đa) và tầm giá dự kiến để mình hỗ trợ ngay nhé!",
+                    reply = "Dạ chào bạn! Mình là **Mia** — trợ lý tư vấn thuê trọ 🏠 Hệ thống đang đồng bộ dữ liệu mới nhất. Bạn đang tìm phòng ở khu nào và tầm giá bao nhiêu? Mia tìm cho bạn ngay nhé!",
                     rooms = new List<RoomDto>()
                 });
             }

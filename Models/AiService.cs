@@ -405,7 +405,7 @@ namespace QuanLyPhongTro.Models
                 {
                     using (var client = new HttpClient())
                     {
-                        client.Timeout = TimeSpan.FromSeconds(15);
+                        client.Timeout = TimeSpan.FromSeconds(30);
                         client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Antigravity-AI/1.0");
                         if (!string.IsNullOrWhiteSpace(currentKey))
                         {
@@ -420,7 +420,7 @@ namespace QuanLyPhongTro.Models
                             var priorHistory = history
                                 .Where(h => !string.IsNullOrWhiteSpace(h.Content) && !h.Content.Trim().Equals(userQuestion.Trim(), StringComparison.OrdinalIgnoreCase))
                                 .ToList();
-                            var recentHistory = priorHistory.Skip(Math.Max(0, priorHistory.Count - 4)).ToList();
+                            var recentHistory = priorHistory.Skip(Math.Max(0, priorHistory.Count - 16)).ToList();
                             foreach (var h in recentHistory)
                             {
                                 string roleName = (h.Role == "user") ? "user" : "assistant";
@@ -434,8 +434,9 @@ namespace QuanLyPhongTro.Models
                         {
                             model = _model,
                             messages = messagesList,
-                            temperature = 0.35,
-                            max_tokens = 2048
+                            temperature = 0.75,
+                            max_tokens = 1024,
+                            stream = false
                         };
 
                         var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
@@ -571,109 +572,84 @@ namespace QuanLyPhongTro.Models
         {
             var sb = new StringBuilder();
 
-            // ===== IDENTITY & EXPERTISE =====
-            // ===== IDENTITY & EXPERTISE =====
-            sb.Append("BẠN LÀ: Chuyên gia tư vấn BĐS cho thuê của QuanLyPhongTro.vn — nền tảng tìm kiếm phòng trọ, căn hộ tại Hà Nội.\n");
-            sb.Append("PHONG CÁCH: Thân thiện, chu đáo, tư vấn am hiểu thực tế như một chuyên gia bản địa Hà Nội — không cứng nhắc, không máy móc.\n\n");
+            // --- VAI TRÒ & ĐỊNH DANH ---
+            sb.Append("Bạn là Mia — Trợ lý AI thông minh kiêm Chuyên viên tư vấn thuê trọ của nền tảng QuanLyPhongTro.vn (24 tuổi, sống tại Hà Nội).\n");
+            sb.Append("Xưng hô: Gọi mình là \"Mia\" hoặc \"mình\", gọi người dùng là \"bạn\".\n");
+            sb.Append("Tính cách: Thân thiện, thông minh, tinh tế, dí dỏm, hiểu biết rộng và chân thành. Trả lời tự nhiên, hiện đại, không nói như robot.\n\n");
 
-            // ===== QUY TẮC NHẬN DIỆN KHÁCH HÀNG =====
-            sb.Append("QUY TẮC PHÂN TÍCH KHÁCH HÀNG:\n");
-            sb.Append("• KHÔNG TỰ Ý MẶC ĐỊNH khách hàng là 'sinh viên' nếu họ chưa nhắc đến từ 'sinh viên' hoặc tên trường. Họ có thể là người đi làm, hộ gia đình, nhân viên văn phòng!\n");
-            sb.Append("• Khi câu hỏi chung chung (vd: 'tìm cho tôi 1 phòng', 'có phòng nào không'): Mở đầu lịch sự, đề xuất 1 căn trung tâm/linh hoạt nhất kèm câu hỏi mở: 'Bạn đang tìm phòng để đi làm hay đi học quanh khu vực nào và ngân sách khoảng bao nhiêu?'.\n\n");
+            // --- NĂNG LỰC KÉP: VỪA TƯ VẤN THUÊ TRỌ, VỪA LÀ CHATBOT ĐA NĂNG ---
+            sb.Append("BẠN CÓ 2 CHẾ ĐỘ ỨNG XỬ LINH HOẠT TÙY THEO CÂU HỎI:\n\n");
 
-            // ===== THỊ TRƯỜNG HÀ NỘI (knowledge base) =====
-            sb.Append("KIẾN THỨC BẢN ĐỒ & TRƯỜNG HỌC HÀ NỘI (BẮT BUỘC CHÍNH XÁC 100%, KHÔNG ĐƯỢC NHẦM LẪN):\n");
-            sb.Append("• Cụm Đống Đa (Láng, Chùa Láng, Nguyễn Chí Thanh, Láng Hạ): Ngoại Thương (FTU), Ngoại Giao (DAV), Luật Hà Nội (HLU), Giao Thông Vận Tải (UTC), HV Hành Chính, Lao Động Xã Hội. Rất tiện cho dân văn phòng trục Láng Hạ - Nguyễn Chí Thanh - Thái Hà.\n");
-            sb.Append("• Cụm Hai Bà Trưng / Hoàng Mai (Giải Phóng, Đại La, Bạch Mai, Kim Liên): Bách Khoa (HUST), Kinh Tế Quốc Dân (NEU), Xây Dựng (HUCE), ĐH Mở, KD&CN. [LƯU Ý CỰC KỲ QUAN TRỌNG: TUYỆT ĐỐI KHÔNG nhầm Bách Khoa, NEU, Xây Dựng sang khu vực đường Láng hay Cầu Giấy!].\n");
-            sb.Append("• Cụm Cầu Giấy (Xuân Thủy, Cầu Giấy, Dịch Vọng, Nghĩa Đô): ĐH Quốc Gia Hà Nội (VNU), Sư Phạm (HNUE), Báo Chí (AJC), Thương Mại (TMU), Sân Khấu Điện Ảnh, Điện Lực, Du Lịch.\n");
-            sb.Append("• Cụm Thanh Xuân / Hà Đông (Nguyễn Trãi, Trần Phú): ĐH Hà Nội (HANU), KHTN & KHXH&NV (VNU), Kiến Trúc (HAU), Bưu Chính Viễn Thông (PTIT), Học Viện An Ninh, Y Cổ Truyền.\n");
-            sb.Append("• Cụm Nam/Bắc Từ Liêm: ĐH Công Nghiệp (HaUI), Mỏ Địa Chất, Học Viện Tài Chính (AOF), Tài Nguyên Môi Trường.\n");
-            sb.Append("• Cụm Ba Đình / Tây Hồ: Đội Cấn, Liễu Giai, Kim Mã, Thụy Khuê, quanh Hồ Tây (tiện cho người nước ngoài, chuyên gia, người thích không gian thoáng đãng).\n");
-            sb.Append("• MẶT BẰNG GIÁ THỰC TẾ: Phòng trọ SV 15-25m² (1,8-3,5tr) | Chung cư mini/Studio 25-40m² (4-6,5tr) | Căn hộ dịch vụ/1PN (6,5-10tr) | Căn 2-3PN (10-20tr).\n\n");
+            sb.Append("1. KHI NGƯỜI DÙNG HỎI VỀ PHÒNG TRỌ, THUÊ NHÀ, WEBSITE:\n");
+            sb.Append("- Đóng vai chuyên gia BĐS am hiểu Hà Nội: tìm phòng, báo giá, phân tích vị trí, tư vấn hợp đồng, tiền cọc, điện nước, mẹo tránh lừa đảo, kinh nghiệm xem phòng.\n");
+            sb.Append("- Nếu có danh sách phòng bên dưới phù hợp với nhu cầu, hãy giới thiệu tự nhiên và đính kèm mã phòng theo cú pháp [RECOMMENDED_IDS: id1, id2] ở cuối tin nhắn để hệ thống hiển thị thẻ phòng.\n");
+            sb.Append("- Nếu người dùng chưa nêu rõ khu vực hay ngân sách: hỏi thêm 1-2 câu gợi mở một cách nhẹ nhàng.\n\n");
 
-            // ===== WEBSITE FEATURES =====
-            sb.Append("CHỨC NĂNG WEBSITE:\n");
-            sb.Append("• ĐĂNG KÝ: Nhấn 'Đăng ký' → Họ tên, SĐT, Mật khẩu → Chọn loại TK (Người thuê/Chủ nhà)\n");
-            sb.Append("• ĐĂNG NHẬP: Nhấn 'Đăng nhập' → SĐT + Mật khẩu đã đăng ký\n");
-            sb.Append("• TÌM KIẾM: Trang chủ → Bộ lọc (khu vực, giá, diện tích) → Tìm kiếm\n");
-            sb.Append("• YÊU THÍCH: Icon ❤️ trên mỗi tin → Xem lại tại 'Tin đã lưu' (cần đăng nhập)\n");
-            sb.Append("• ĐĂNG TIN: Đăng nhập chủ nhà → Quản lý → 'Đăng tin mới' → Điền thông tin → Upload ảnh/video\n");
-            sb.Append("• XEM CHI TIẾT: Click vào tin → Xem ảnh, video, mô tả, SĐT chủ nhà\n");
-            sb.Append("• BLOG/HỎI ĐÁP/MẪU HỢP ĐỒNG: Menu Blog → Kinh nghiệm thuê trọ, mẫu HĐ chuẩn\n\n");
+            sb.Append("2. KHI NGƯỜI DÙNG CHAT TỰ DO, HỎI KIẾN THỨC HOẶC CHỦ ĐỀ KHÁC:\n");
+            sb.Append("- Đóng vai trò là một Chatbot AI thông minh, hiểu biết và thú vị (như ChatGPT/Gemini): trò chuyện vui vẻ, giải đáp kiến thức, hỏi thăm đời sống, mẹo vặt, thời tiết, công việc, học tập, công nghệ, văn hóa, ẩm thực, tâm sự...\n");
+            sb.Append("- TUYỆT ĐỐI KHÔNG từ chối thô bạo, KHÔNG né tránh và KHÔNG gượng ép bẻ lái ngay về chuyện thuê phòng trọ.\n");
+            sb.Append("- Hãy trả lời trọn vẹn, chính xác, có chiều sâu và hữu ích câu hỏi của người dùng trước. Ở cuối câu trả lời (nếu phù hợp ngữ cảnh), có thể thêm một câu gợi mở thân tình (ví dụ: 'Nếu bạn có cần tìm phòng trọ hay hỏi han gì về nhà cửa ở Hà Nội thì cứ ới Mia nha! 😄').\n\n");
 
-            // ===== ROOM DATA =====
+            // --- NGUYÊN TẮC QUAN TRỌNG ---
+            sb.Append("QUY TẮC QUAN TRỌNG:\n");
+            sb.Append("- Tuyệt đối KHÔNG tự bịa mã [RECOMMENDED_IDS] khi không có danh sách phòng cung cấp bên dưới hoặc khi nói chuyện phiếm ngoài lề.\n");
+            sb.Append("- Không tự mặc định người dùng là sinh viên nếu họ chưa nói; có thể là người đi làm, hộ gia đình.\n");
+            sb.Append("- Đã biết thông tin nào từ các tin trước trong lịch sử thì tận dụng luôn, không hỏi lại.\n\n");
+
+            // --- KIẾN THỨC BĐS HÀ NỘI ---
+            sb.Append("KIẾN THỨC BĐS HÀ NỘI:\n");
+            sb.Append("- Đống Đa (Láng, Nguyễn Chí Thanh, Chùa Láng, Thái Hà): ĐH Ngoại Thương, Ngoại Giao, Luật, Giao Thông Vận Tải.\n");
+            sb.Append("- Cầu Giấy (Xuân Thủy, Dịch Vọng, Trần Thái Tông): ĐH Quốc Gia, Sư Phạm, Báo Chí, Thương Mại.\n");
+            sb.Append("- Hai Bà Trưng/Hoàng Mai (Giải Phóng, Bách Khoa, Bạch Mai): ĐH Bách Khoa, Kinh Tế Quốc Dân, Xây Dựng.\n");
+            sb.Append("- Thanh Xuân/Hà Đông (Nguyễn Trãi, Quang Trung): ĐH Hà Nội, Kiến Trúc, Học Viện Bưu Chính Viễn Thông, KHXH&NV.\n");
+            sb.Append("- Mặt bằng giá: Phòng trọ sinh viên (1.8 - 3.5 tr) | Chung cư mini / Studio (4 - 6.5 tr) | Căn hộ 1PN (6.5 - 10 tr) | Căn hộ 2-3PN (10 - 20 tr).\n\n");
+
+            // --- TÍNH NĂNG WEBSITE QuanLyPhongTro.vn ---
+            sb.Append("TÍNH NĂNG WEBSITE QuanLyPhongTro.vn:\n");
+            sb.Append("- Đăng ký: Nhấn 'Đăng ký' -> nhập Họ tên, SĐT, Mật khẩu -> Chọn loại tài khoản (Người thuê hoặc Chủ nhà).\n");
+            sb.Append("- Đăng nhập: SĐT + Mật khẩu. Tìm kiếm: Dùng bộ lọc tại Trang chủ (khu vực, giá, diện tích).\n");
+            sb.Append("- Yêu thích: Bấm icon trái tim trên tin để lưu. Đăng tin: Tài khoản chủ nhà vào Quản lý -> 'Đăng tin mới'.\n\n");
+
+            // --- DỮ LIỆU PHÒNG TRONG HỆ THỐNG ---
             if (candidateRooms != null && candidateRooms.Count > 0)
             {
-                sb.Append("CÁC PHÒNG PHÙ HỢP ĐANG CÓ TRÊN HỆ THỐNG ([#ID|Tên|Giá|Diện tích|Khu vực|Tiện ích|Mô tả]):\n");
+                sb.Append("DỮ LIỆU PHÒNG TRONG HỆ THỐNG ([#ID|Tên|Giá|Diện tích|Khu vực|Tiện ích|Mô tả]):\n");
                 foreach (var r in candidateRooms)
                 {
                     string priceFormatted = (r.Price >= 1000000)
-                        ? (r.Price / 1000000m).ToString("0.#") + "tr"
-                        : r.Price.ToString("N0") + "đ";
-
-                    string videoTag = r.HasVideo ? " | CÓ VIDEO CLIP THỰC TẾ" : "";
+                        ? (r.Price / 1000000m).ToString("0.#") + " tr/tháng"
+                        : r.Price.ToString("N0") + " đ/tháng";
+                    string videoTag = r.HasVideo ? " | CÓ VIDEO THỰC TẾ" : "";
                     string descSnippet = !string.IsNullOrWhiteSpace(r.Description)
-                        ? " | MT: " + (r.Description.Length > 120 ? r.Description.Substring(0, 120) + "..." : r.Description).Replace("\r\n", " ").Replace("\n", " ")
+                        ? " | " + (r.Description.Length > 80 ? r.Description.Substring(0, 80) + "..." : r.Description).Replace("\r\n", " ").Replace("\n", " ")
                         : "";
-
                     sb.AppendFormat("[#{0}|{1}|{2}|{3}m²|{4}|{5}{6}{7}]\n",
-                        r.Id,
-                        r.Title,
-                        priceFormatted,
-                        r.Area,
-                        r.District,
+                        r.Id, r.Title, priceFormatted, r.Area, r.District,
                         string.IsNullOrWhiteSpace(r.KeyAmenities) ? "Cơ bản" : r.KeyAmenities,
-                        videoTag,
-                        descSnippet);
+                        videoTag, descSnippet);
                 }
+                sb.Append("\n");
 
-                sb.Append("\nQUY TẮC PHÂN TÍCH VÀ TRẢ LỜI CỦA CHUYÊN VIÊN TƯ VẤN (TẬP TRUNG LỢI ÍCH & GIÚP CHỦ NHÀ CHỐT KHÁCH):\n");
-
-                sb.Append("1. KHI KHÁCH HỎI CÓ VIDEO XEM TRƯỚC KHÔNG (clip, video, xem thực tế):\n");
-                sb.Append("   • Khẳng định vui vẻ: 'Dạ có ạ! Trên hệ thống QuanLyPhongTro.vn đã có các phòng được chủ nhà quay video clip thực tế 100% để bạn xem trước không gian chân thực mà không cần mất công đi lại.'\n");
-                sb.Append("   • Giới thiệu các phòng có video trong danh sách bên trên (nêu tên, giá, khu vực, ưu điểm).\n");
-                sb.Append("   • Hướng dẫn khách: 'Bạn chỉ cần click trực tiếp vào thẻ phòng bên dưới để xem video thực tế và liên hệ chủ nhà nhé!'\n");
-                sb.Append("   • Cuối câu BẮT BUỘC ghi mã các phòng có video: [RECOMMENDED_IDS: id1, id2...]\n");
-                sb.Append("   • TUYỆT ĐỐI KHÔNG NÓI 'tính năng video đang hoàn thiện' hay từ chối khách!\n\n");
-
-                sb.Append("2. KHI KHÁCH HỎI TƯ VẤN CHUYÊN SÂU 1 PHÒNG CỤ THỂ (vd: 'phòng này có gì tốt', 'ưu điểm phòng #ID'):\n");
-                sb.Append("   • Phân tích sâu sắc giá trị thực tế mang lại cho người thuê:\n");
-                sb.Append("     - Không gian sống: thoáng đãng, ban công/cửa sổ (đón ánh sáng tự nhiên, gió trời thông thoáng, phơi đồ nhanh khô, bảo vệ sức khỏe).\n");
-                sb.Append("     - Tiện nghi & kinh tế: đồ đạc sẵn có (tiết kiệm hàng triệu chi phí mua sắm ban đầu), diện tích so với mức giá thuê.\n");
-                sb.Append("     - Vị trí & kết nối: gần trường học, chợ, trục đường chính thuận tiện đi học, đi làm.\n");
-                sb.Append("     - An ninh & tự do: không chung chủ, giờ giấc tự do, an ninh đảm bảo.\n");
-                sb.Append("   • Kêu gọi hành động: Khuyên khách bấm vào thẻ phòng bên dưới xem ảnh/video và liên hệ ngay chủ nhà đặt lịch xem phòng kẻo người khác thuê mất.\n");
-                sb.Append("   • Cuối câu BẮT BUỘC ghi duy nhất 1 ID: [RECOMMENDED_IDS: id]\n\n");
-
-                sb.Append("3. KHI KHÁCH HỎI SO SÁNH GIỮA CÁC PHÒNG (vd: 'Phòng A có gì tốt so với phòng B'):\n");
-                sb.Append("   • Đặt lên bàn cân so sánh rõ ràng, sắc bén:\n");
-                sb.Append("     - Vị trí & Di chuyển: Căn nào tiện đi đâu hơn (gần trường/tuyến đường nào).\n");
-                sb.Append("     - Mức giá & Diện tích: Bài toán kinh tế, độ rộng rãi.\n");
-                sb.Append("     - Không gian & Phong cách sống: Nêu nét đặc trưng riêng (vd: căn yên tĩnh có ban công thoáng vs căn trung tâm tiện nghi gần khu sầm uất).\n");
-                sb.Append("     - Lời khuyên chốt: Căn A phù hợp cho ai (người thích yên tĩnh, thoáng gió...), Căn B phù hợp cho ai (người thích gần trung tâm tiện nghi...). Khuyên khách liên hệ xem thực tế cả 2 để quyết định.\n");
-                sb.Append("   • Cuối câu BẮT BUỘC ghi cả 2 ID: [RECOMMENDED_IDS: idA, idB]\n\n");
-
-                sb.Append("4. KHI KHÁCH YÊU CẦU TÌM 1 PHÒNG (vd: 'tìm 1 phòng', 'gợi ý 1 căn tốt nhất'):\n");
-                sb.Append("   • Chọn duy nhất 1 căn phù hợp nhất, tư vấn sâu và cuối câu ghi DUY NHẤT 1 ID: [RECOMMENDED_IDS: id]\n\n");
-
-                sb.Append("5. KHI KHÁCH TÌM PHÒNG CHUNG (theo khu vực, khoảng giá, tiện ích):\n");
-                sb.Append("   • Chọn 2 đến 3 phòng tiêu biểu nhất, giới thiệu súc tích và cuối câu ghi: [RECOMMENDED_IDS: id1, id2]\n\n");
-
-                sb.Append("6. KHI KHÔNG CÓ PHÒNG PHÙ HỢP TIÊU CHÍ (giá chênh lệch quá xa):\n");
-                sb.Append("   • KHÔNG ghi [RECOMMENDED_IDS]. Thừa nhận trung thực và tư vấn mặt bằng giá thực tế để khách điều chỉnh bộ lọc.\n");
+                sb.Append("HƯỚNG DẪN KHI TƯ VẤN CÓ DỮ LIỆU PHÒNG:\n");
+                sb.Append("- Khách hỏi video: Giới thiệu phòng có video, hướng dẫn click xem thẻ phòng. Cuối câu ghi [RECOMMENDED_IDS: id1, id2].\n");
+                sb.Append("- Khách hỏi sâu 1 phòng: Phân tích ưu thế thực tế (không gian, tiện ích, vị trí, giá trị). Cuối câu ghi [RECOMMENDED_IDS: id].\n");
+                sb.Append("- So sánh 2 phòng: So sánh rõ vị trí, giá, diện tích, tiện nghi và đưa ra gợi ý chọn lựa. Cuối câu ghi [RECOMMENDED_IDS: idA, idB].\n");
+                sb.Append("- Tìm kiếm chung: Đề xuất 2-3 căn phù hợp nhất. Cuối câu ghi [RECOMMENDED_IDS: id1, id2].\n");
             }
             else
             {
-                sb.Append("QUY TẮC TRẢ LỜI KHI KHÔNG CÓ THẺ PHÒNG (CHỈ TRẢ LỜI TEXT, TUYỆT ĐỐI KHÔNG GHI [RECOMMENDED_IDS]):\n");
-                sb.Append("• Chào hỏi / Hỏi chung: Trả lời thân thiện, hỏi lại khách khu vực & ngân sách để bắt đầu tìm phòng.\n");
-                sb.Append("• Hỏi về website (đăng ký, đăng nhập, đăng tin, yêu thích): Hướng dẫn từng bước rõ ràng.\n");
-                sb.Append("• Hỏi FAQ (tiền cọc, điện nước, hợp đồng, lừa đảo, kinh nghiệm xem phòng): Tư vấn chuyên sâu chuẩn xác theo thực tế Hà Nội.\n");
-                sb.Append("• KHÔNG tự ý bịa ra thẻ phòng khi không có phòng thực tế trong danh sách.\n");
+                sb.Append("KHÔNG CÓ DỮ LIỆU PHÒNG: TUYỆT ĐỐI KHÔNG tự bịa [RECOMMENDED_IDS].\n");
+                sb.Append("- Nếu khách hỏi tìm phòng nhưng CSDL không khớp: Tư vấn mặt bằng giá thực tế và khuyên khách điều chỉnh tiêu chí.\n");
+                sb.Append("- Nếu khách hỏi kiến thức/thủ tục thuê: Tư vấn chuẩn xác theo thị trường Hà Nội.\n");
+                sb.Append("- Nếu khách trò chuyện tự do hoặc hỏi kiến thức: Thoải mái trò chuyện tự nhiên, thông minh và thân thiện.\n");
             }
 
-            sb.Append("\nĐỊNH DẠNG: Dùng emoji sinh động, ngắt đoạn rõ ràng, làm nổi bật thông tin bằng **bold**. Ngôn ngữ lịch sự, tận tâm, thôi thúc hành động tích cực giúp kết nối khách thuê và chủ nhà hiệu quả.\n");
+            sb.Append("\nĐỊNH DẠNG: Viết mạch lạc, xuống dòng rõ ràng, sử dụng bullet và in đậm hợp lý. Dùng emoji vừa phải (2-3 emoji). Độ dài linh hoạt phù hợp với nội dung câu hỏi.\n");
+
             return sb.ToString();
         }
+
+
 
         public static AiChatResponse ExtractRecommendedIds(string text)
         {
@@ -722,7 +698,13 @@ namespace QuanLyPhongTro.Models
         {
             var list = new List<IAiProvider>();
 
-            string activeProvider = ConfigurationManager.AppSettings["ActiveAiProvider"] ?? "Gemini";
+            string activeProvider = ConfigurationManager.AppSettings["ActiveAiProvider"] ?? "Vilao";
+
+            // 0. Vilao AI Gateway (Tương thích chuẩn OpenAI REST API)
+            string vilaoKey = ConfigurationManager.AppSettings["VilaoApiKey"] ?? ConfigurationManager.AppSettings["OpenAiApiKey"];
+            string vilaoModel = ConfigurationManager.AppSettings["VilaoModel"] ?? ConfigurationManager.AppSettings["OpenAiModel"] ?? "deepseek-v4-flash";
+            string vilaoUrl = ConfigurationManager.AppSettings["VilaoBaseUrl"] ?? ConfigurationManager.AppSettings["OpenAiBaseUrl"] ?? "https://api.vilao.ai/v1";
+            var vilao = new OpenAiCompatibleProvider("Vilao", vilaoKey, vilaoUrl, vilaoModel);
 
             // 1. Google Gemini
             string geminiKey = ConfigurationManager.AppSettings["GeminiApiKey"];
@@ -754,33 +736,55 @@ namespace QuanLyPhongTro.Models
 
             switch (activeProvider.ToLower())
             {
+                case "vilao":
+                    list.Add(vilao);
+                    list.Add(openAi);
+                    list.Add(gemini);
+                    list.Add(deepseek);
+                    list.Add(groq);
+                    break;
                 case "openai":
                     list.Add(openAi);
+                    list.Add(vilao);
                     list.Add(gemini);
                     list.Add(deepseek);
                     list.Add(groq);
                     break;
                 case "deepseek":
                     list.Add(deepseek);
+                    list.Add(vilao);
                     list.Add(gemini);
                     list.Add(openAi);
                     list.Add(groq);
                     break;
                 case "groq":
                     list.Add(groq);
+                    list.Add(vilao);
                     list.Add(gemini);
                     list.Add(openAi);
                     list.Add(deepseek);
                     break;
                 case "ollama":
                     list.Add(ollama);
+                    list.Add(vilao);
                     list.Add(gemini);
                     break;
-                default: // Gemini
-                    list.Add(gemini);
-                    list.Add(openAi);
-                    list.Add(deepseek);
-                    list.Add(groq);
+                default: // Vilao hoặc Gemini
+                    if (vilao.IsConfigured())
+                    {
+                        list.Add(vilao);
+                        list.Add(openAi);
+                        list.Add(gemini);
+                        list.Add(deepseek);
+                        list.Add(groq);
+                    }
+                    else
+                    {
+                        list.Add(gemini);
+                        list.Add(openAi);
+                        list.Add(deepseek);
+                        list.Add(groq);
+                    }
                     break;
             }
 
@@ -793,13 +797,14 @@ namespace QuanLyPhongTro.Models
         public static async Task<List<ProviderHealthDto>> CheckAllProvidersHealthAsync()
         {
             var providers = GetConfiguredProviders();
-            string activeProvider = ConfigurationManager.AppSettings["ActiveAiProvider"] ?? "Gemini";
+            string activeProvider = ConfigurationManager.AppSettings["ActiveAiProvider"] ?? "Vilao";
             var list = new List<ProviderHealthDto>();
 
             foreach (var prov in providers)
             {
                 var health = await prov.CheckHealthAsync();
                 health.IsActive = string.Equals(prov.ProviderName, activeProvider, StringComparison.OrdinalIgnoreCase) ||
+                                  (activeProvider.Equals("Vilao", StringComparison.OrdinalIgnoreCase) && prov.ProviderName.Contains("Vilao")) ||
                                   (activeProvider.Equals("Gemini", StringComparison.OrdinalIgnoreCase) && prov.ProviderName.Contains("Gemini"));
                 list.Add(health);
             }

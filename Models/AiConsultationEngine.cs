@@ -20,7 +20,8 @@ namespace QuanLyPhongTro.Models
         CheckApiStatus,               // Kiểm tra tình trạng API Key, token, quota
         RoomComparison,               // So sánh giữa các phòng trọ
         SpecificRoomInquiry,          // Hỏi sâu về 1 phòng trọ cụ thể (ưu điểm, có gì tốt, có nên thuê...)
-        RoomSearch                    // Tìm kiếm phòng cụ thể (đã có khu vực, mức giá hoặc tiện ích)
+        RoomSearch,                   // Tìm kiếm phòng cụ thể (đã có khu vực, mức giá hoặc tiện ích)
+        FreeChat                      // Câu hỏi ngoài chủ đề (spam, tán gẫu, câu hỏi linh tinh) — bot khéo từ chối và dẫn về chủ đề
     }
 
     public class ExtractedSearchCriteria
@@ -313,9 +314,33 @@ namespace QuanLyPhongTro.Models
                 return UserChatIntent.RoomSearch;
             }
 
-            // 11. Mặc định: Chào hỏi, yêu cầu tư vấn chung chưa có tiêu chí cụ thể
+            // 11. Phát hiện câu hỏi hoàn toàn ngoài chủ đề / spam / tán gẫu vô nghĩa
+            // Nếu câu hỏi quá ngắn (1-2 ký tự), hoặc chứa từ khóa rõ ràng ngoài lĩnh vực
+            bool isSpam = lower.Length <= 3 && !lower.Contains("alo") && !lower.Contains("hi");
+            bool isOffTopic = lower.Contains("thoi tiet") || lower.Contains("bong da") ||
+                              lower.Contains("phim") || lower.Contains("game") ||
+                              lower.Contains("nau an") || lower.Contains("cong thuc") ||
+                              lower.Contains("giai toan") || lower.Contains("thu do") ||
+                              lower.Contains("dich thuat") || lower.Contains("kieu") ||
+                              lower.Contains("may tinh") || lower.Contains("lap trinh") ||
+                              lower.Contains("lich su") || lower.Contains("khoa hoc") ||
+                              lower.Contains("am nhac") || lower.Contains("ca si") ||
+                              lower.Contains("yeu") || lower.Contains("hen ho") ||
+                              lower.Contains("nguoi yeu") || lower.Contains("tinh yeu") ||
+                              lower.Contains("choi gi") || lower.Contains("an gi") ||
+                              lower.Contains("ban la ai") || lower.Contains("may la gi") ||
+                              lower.Contains("chat gpt") || lower.Contains("gemini") ||
+                              Regex.IsMatch(lower, @"^[a-z\s]{1,8}$") && !lower.Contains("phong") && !lower.Contains("nha") && !lower.Contains("thue");
+
+            if (isSpam || isOffTopic)
+            {
+                return UserChatIntent.FreeChat;
+            }
+
+            // 12. Mặc định: Chào hỏi, yêu cầu tư vấn chung chưa có tiêu chí cụ thể
             return UserChatIntent.GreetingOrConsultRequest;
         }
+
 
         /// <summary>
         /// Bản đồ ánh xạ quận huyện Hà Nội sang các phường/tuyến phố tương ứng trong CSDL
@@ -597,6 +622,27 @@ namespace QuanLyPhongTro.Models
                         "- Chọn căn thứ hai nếu bạn ưu tiên sự tiện lợi, vị trí sôi động, gần các khu dịch vụ vui chơi giải trí.\n\n" +
                         "👉 Mời bạn tham khảo chi tiết cả 2 căn phòng bên dưới và liên hệ chủ nhà để chốt lịch xem trực tiếp!";
                     result.SuggestedQuestions = new List<string> { "Xem thêm phòng cùng khu vực", "Cách thương lượng giá phòng", "Thủ tục ký hợp đồng" };
+                    break;
+
+                case UserChatIntent.FreeChat:
+                    // Phản hồi thân thiện, cởi mở của Mia khi trò chuyện tự do ở chế độ ngoại tuyến
+                    var freeChatReplies = new[]
+                    {
+                        "Chào bạn! Mia đang ở đây nghe bạn chia sẻ nè 😄 Bạn muốn tâm sự điều gì hay cần Mia hỗ trợ thông tin gì không? Cứ thoải mái nhắn cho Mia nhé!",
+                        "Rất vui được trò chuyện với bạn! ✨ Mia là trợ lý AI của QuanLyPhongTro.vn. Mình luôn sẵn sàng lắng nghe, tán gẫu cùng bạn, hoặc nếu bạn có nhu cầu tìm phòng trọ tại Hà Nội thì Mia phục vụ ngay nha!",
+                        "Haha, nghe thú vị ghê! 😄 Hôm nay của bạn thế nào rồi? Cần tìm hiểu thông tin gì hay muốn tâm sự chuyện thuê trọ, cuộc sống ở Hà Nội cứ kể cho Mia nghe nhé!",
+                        "Mia nghe nè! Bạn đang quan tâm chủ đề gì thế? Hãy chia sẻ thêm với mình nhé, Mia rất sẵn lòng trò chuyện cùng bạn 😊",
+                        "Chào bạn nhé! Mia có thể vừa trò chuyện cùng bạn, vừa giúp bạn săn những căn phòng trọ siêu đẹp giá tốt tại Hà Nội. Hôm nay bạn đang có dự định gì thế nào?"
+                    };
+                    var rnd = new Random();
+                    result.ReplyText = freeChatReplies[rnd.Next(freeChatReplies.Length)];
+                    result.SuggestedQuestions = new List<string>
+                    {
+                        "Tìm phòng dưới 3 triệu ở Cầu Giấy",
+                        "Phòng có ban công và gác xép",
+                        "Tiền cọc và giá điện nước tính sao?",
+                        "Kinh nghiệm xem phòng tránh bị lừa"
+                    };
                     break;
             }
 
