@@ -1,0 +1,168 @@
+@model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.QuanLyHopDongVM
+@{
+    ViewBag.Title = "Quản lý hợp đồng";
+    Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
+    string search = ViewBag.Search as string;
+    string status = ViewBag.Status as string;
+}
+
+<div class="container-fluid py-3 px-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <h5 class="fw-bold mb-0 text-dark text-nowrap">
+                <i class="bi bi-file-earmark-text text-primary me-2"></i>Quản Lý Hợp Đồng Thuê Phòng
+            </h5>
+            <div class="text-muted small text-nowrap">
+                Theo dõi thời hạn hợp đồng, giá thuê và tình trạng pháp lý giữa chủ nhà và khách thuê
+            </div>
+        </div>
+
+        <form method="get" action="@Url.Action("QuanLyHopDong", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
+            <div class="input-group input-group-sm" style="width: 240px;">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" class="form-control text-nowrap" placeholder="Phòng, khách, SĐT, CCCD..." value="@search" />
+            </div>
+
+            <div class="input-group input-group-sm" style="width: 170px;">
+                <span class="input-group-text bg-white"><i class="bi bi-shield-check"></i></span>
+                <select name="status" class="form-select text-nowrap">
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="active" @(status == "active" ? "selected" : "")>Đang hiệu lực</option>
+                    <option value="expired" @(status == "expired" ? "selected" : "")>Đã kết thúc</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-sm btn-primary text-nowrap">
+                <i class="bi bi-filter me-1"></i>Lọc
+            </button>
+            <a href="@Url.Action("QuanLyHopDong", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
+            </a>
+        </form>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-primary h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Tổng hợp đồng</span>
+                    <div class="bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
+                        <i class="bi bi-files fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-dark text-nowrap">@Model.TongHopDong <span class="fs-6 fw-normal text-muted">hợp đồng</span></div>
+                <div class="small text-muted text-nowrap">Toàn bộ hợp đồng đã tạo</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-success h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Đang hiệu lực</span>
+                    <div class="bg-success bg-opacity-10 text-success p-2 rounded-circle">
+                        <i class="bi bi-check2-circle fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-success text-nowrap">@Model.HopDongHieuLuc <span class="fs-6 fw-normal text-muted">hợp đồng</span></div>
+                <div class="small text-muted text-nowrap">Phòng đang có khách thuê</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-secondary h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Đã hết hạn / thanh lý</span>
+                    <div class="bg-secondary bg-opacity-10 text-secondary p-2 rounded-circle">
+                        <i class="bi bi-clock-history fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-secondary text-nowrap">@Model.HopDongHetHan <span class="fs-6 fw-normal text-muted">hợp đồng</span></div>
+                <div class="small text-muted text-nowrap">Hợp đồng đã kết thúc</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-info h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Tổng giá trị hợp đồng / tháng</span>
+                    <div class="bg-info bg-opacity-10 text-info p-2 rounded-circle">
+                        <i class="bi bi-cash-stack fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-info text-nowrap">@Model.TongGiaTriThue.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></div>
+                <div class="small text-muted text-nowrap">Doanh thu phòng ký kết hiện tại</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-white py-2 px-3 border-bottom d-flex justify-content-between align-items-center">
+            <div class="fw-bold text-dark text-nowrap">
+                <i class="bi bi-table me-2 text-primary"></i>Danh Sách Hợp Đồng Chi Tiết
+            </div>
+            <div class="small text-muted text-nowrap">Tổng số: <b>@(Model.DanhSachHopDong?.Count ?? 0)</b> bản ghi</div>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.DanhSachHopDong != null && Model.DanhSachHopDong.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-nowrap ps-3">Mã HĐ</th>
+                                <th class="text-nowrap">Phòng trọ</th>
+                                <th class="text-nowrap">Khách thuê</th>
+                                <th class="text-nowrap">Số điện thoại</th>
+                                <th class="text-nowrap">CCCD / CMND</th>
+                                <th class="text-nowrap text-center">Ngày ký</th>
+                                <th class="text-nowrap text-center">Thời hạn hợp đồng</th>
+                                <th class="text-nowrap text-end">Giá thuê</th>
+                                <th class="text-nowrap text-center">Kỳ thanh toán</th>
+                                <th class="text-nowrap text-center pe-3">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var hd in Model.DanhSachHopDong)
+                            {
+                                <tr>
+                                    <td class="ps-3 text-nowrap"><span class="badge bg-light text-dark border">#@hd.ID_Hop_Dong</span></td>
+                                    <td class="text-nowrap">
+                                        <div class="fw-semibold text-dark text-truncate" style="max-width: 220px;" title="@hd.TenPhong">@hd.TenPhong</div>
+                                        <small class="text-muted">Mã phòng: #@hd.ID_Phong_Tro</small>
+                                    </td>
+                                    <td class="text-nowrap fw-semibold text-dark">@hd.TenKhach</td>
+                                    <td class="text-nowrap text-primary fw-semibold">@hd.SDT</td>
+                                    <td class="text-nowrap text-dark">@hd.CCCD</td>
+                                    <td class="text-nowrap text-center">@hd.NgayKy.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-nowrap text-center">
+                                        <div class="small fw-semibold">@hd.NgayBatDau.ToString("dd/MM/yyyy") &rarr; @(hd.NgayKetThuc.HasValue ? hd.NgayKetThuc.Value.ToString("dd/MM/yyyy") : "Vô thời hạn")</div>
+                                    </td>
+                                    <td class="text-nowrap text-end fw-bold text-dark">@hd.GiaThue.ToString("N0") đ</td>
+                                    <td class="text-nowrap text-center"><span class="badge bg-light text-dark border">@hd.KyThanhToan tháng / lần</span></td>
+                                    <td class="text-nowrap text-center pe-3">
+                                        @if (hd.TrangThai)
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Đang hiệu lực</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Đã kết thúc</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5 text-muted text-nowrap">
+                    <i class="bi bi-file-earmark-x fs-1 d-block mb-2"></i>
+                    Không có hợp đồng nào phù hợp với bộ lọc
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

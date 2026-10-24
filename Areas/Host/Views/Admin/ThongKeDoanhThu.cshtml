@@ -1,0 +1,250 @@
+@model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ThongKeDoanhThuVM
+@{
+    ViewBag.Title = "Thống kê doanh thu";
+    Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-3 px-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <h5 class="fw-bold mb-0 text-dark text-nowrap">
+                <i class="bi bi-bar-chart-line text-primary me-2"></i>Thống Kê Doanh Thu
+            </h5>
+            <div class="text-muted small text-nowrap">
+                Theo dõi tổng quan doanh thu phòng trọ, điện nước và các khoản thu dịch vụ
+            </div>
+        </div>
+
+        <form method="get" action="@Url.Action("ThongKeDoanhThu", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
+            <div class="input-group input-group-sm" style="width: 145px;">
+                <span class="input-group-text bg-white"><i class="bi bi-calendar-event"></i></span>
+                <select name="thang" class="form-select text-nowrap">
+                    <option value="">-- Tất cả tháng --</option>
+                    @for (int m = 1; m <= 12; m++)
+                    {
+                        <option value="@m" @(Model.SelectedThang == m ? "selected" : "")>Tháng @m</option>
+                    }
+                </select>
+            </div>
+
+            <div class="input-group input-group-sm" style="width: 135px;">
+                <span class="input-group-text bg-white"><i class="bi bi-calendar3"></i></span>
+                <select name="nam" class="form-select text-nowrap">
+                    <option value="">-- Tất cả năm --</option>
+                    @if (Model.DanhSachNam != null)
+                    {
+                        foreach (var y in Model.DanhSachNam)
+                        {
+                            <option value="@y" @(Model.SelectedNam == y ? "selected" : "")>Năm @y</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-sm btn-primary text-nowrap">
+                <i class="bi bi-filter me-1"></i>Lọc
+            </button>
+            <a href="@Url.Action("ThongKeDoanhThu", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
+            </a>
+        </form>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-xl-4 col-md-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-primary h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Tổng doanh thu</span>
+                    <div class="bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
+                        <i class="bi bi-wallet2 fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-dark text-nowrap">@Model.TongDoanhThu.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-success h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Đã thu thực tế</span>
+                    <div class="bg-success bg-opacity-10 text-success p-2 rounded-circle">
+                        <i class="bi bi-check-circle fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-success text-nowrap">@Model.DaThu.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-danger h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Chưa thu / Còn nợ</span>
+                    <div class="bg-danger bg-opacity-10 text-danger p-2 rounded-circle">
+                        <i class="bi bi-exclamation-triangle fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-danger text-nowrap">@Model.ChuaThu.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-info h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Tiền thuê phòng</span>
+                    <div class="bg-info bg-opacity-10 text-info p-2 rounded-circle">
+                        <i class="bi bi-door-closed fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-dark text-nowrap">@Model.TongTienPhong.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-warning h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Tiền điện & nước</span>
+                    <div class="bg-warning bg-opacity-10 text-warning p-2 rounded-circle">
+                        <i class="bi bi-lightning-charge fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-dark text-nowrap">@((Model.TongTienDien + Model.TongTienNuoc).ToString("N0")) <span class="fs-6 fw-normal text-muted">đ</span></div>
+                <div class="small text-muted text-nowrap">Điện: @Model.TongTienDien.ToString("N0") đ | Nước: @Model.TongTienNuoc.ToString("N0") đ</div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-secondary h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Tiền mạng & dịch vụ</span>
+                    <div class="bg-secondary bg-opacity-10 text-secondary p-2 rounded-circle">
+                        <i class="bi bi-wifi fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-dark text-nowrap">@Model.TongTienWifi.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-white py-2 px-3 border-bottom">
+            <div class="fw-bold text-dark text-nowrap">
+                <i class="bi bi-calendar-check me-2 text-primary"></i>Doanh Thu Theo Từng Kỳ (Tháng / Năm)
+            </div>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.DoanhThuTheoThang != null && Model.DoanhThuTheoThang.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3 text-nowrap">Kỳ thu</th>
+                                <th class="text-center text-nowrap">Số hóa đơn</th>
+                                <th class="text-end text-nowrap">Tiền phòng</th>
+                                <th class="text-end text-nowrap">Tiền điện</th>
+                                <th class="text-end text-nowrap">Tiền nước</th>
+                                <th class="text-end text-nowrap">Wifi/DV</th>
+                                <th class="text-end text-nowrap">Tổng cộng</th>
+                                <th class="text-end text-nowrap">Đã thu</th>
+                                <th class="text-end text-nowrap pe-3">Chưa thu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in Model.DoanhThuTheoThang)
+                            {
+                                <tr>
+                                    <td class="ps-3 fw-semibold text-nowrap">Tháng @row.Thang / @row.Nam</td>
+                                    <td class="text-center text-nowrap"><span class="badge bg-light text-dark border">@row.SoHoaDon</span></td>
+                                    <td class="text-end text-nowrap">@row.TienPhong.ToString("N0") đ</td>
+                                    <td class="text-end text-nowrap">@row.TienDien.ToString("N0") đ</td>
+                                    <td class="text-end text-nowrap">@row.TienNuoc.ToString("N0") đ</td>
+                                    <td class="text-end text-nowrap">@row.TienWifi.ToString("N0") đ</td>
+                                    <td class="text-end fw-bold text-primary text-nowrap">@row.TongCong.ToString("N0") đ</td>
+                                    <td class="text-end text-success fw-semibold text-nowrap">@row.DaThu.ToString("N0") đ</td>
+                                    <td class="text-end text-danger fw-semibold text-nowrap pe-3">@row.ChuaThu.ToString("N0") đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4 text-muted text-nowrap">
+                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                    Không có dữ liệu doanh thu cho khoảng thời gian này
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-white py-2 px-3 border-bottom d-flex justify-content-between align-items-center">
+            <div class="fw-bold text-dark text-nowrap">
+                <i class="bi bi-receipt-cutoff me-2 text-primary"></i>Danh Sách Hóa Đơn Chi Tiết
+            </div>
+            <div class="small text-muted text-nowrap">Tổng số: <b>@(Model.DanhSachHoaDon?.Count ?? 0)</b> hóa đơn</div>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.DanhSachHoaDon != null && Model.DanhSachHoaDon.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3 text-nowrap">Mã HĐ</th>
+                                <th class="text-nowrap">Phòng trọ</th>
+                                <th class="text-nowrap">Khách thuê</th>
+                                <th class="text-center text-nowrap">Kỳ</th>
+                                <th class="text-end text-nowrap">Điện</th>
+                                <th class="text-end text-nowrap">Nước</th>
+                                <th class="text-end text-nowrap">Tiền phòng</th>
+                                <th class="text-end text-nowrap">Wifi</th>
+                                <th class="text-end text-nowrap">Tổng tiền</th>
+                                <th class="text-center text-nowrap">Hạn TT</th>
+                                <th class="text-center text-nowrap pe-3">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var hd in Model.DanhSachHoaDon)
+                            {
+                                <tr>
+                                    <td class="ps-3 text-nowrap"><span class="badge bg-light text-dark border">#@hd.ID_Hoa_Don</span></td>
+                                    <td class="fw-semibold text-nowrap">@hd.TenPhong</td>
+                                    <td class="text-nowrap">
+                                        <div class="fw-semibold text-dark">@hd.TenKhach</div>
+                                        <small class="text-muted">@hd.SDT</small>
+                                    </td>
+                                    <td class="text-center text-nowrap">@hd.Thang/@hd.Nam</td>
+                                    <td class="text-end text-nowrap">@hd.TienDien.ToString("N0") đ</td>
+                                    <td class="text-end text-nowrap">@hd.TienNuoc.ToString("N0") đ</td>
+                                    <td class="text-end text-nowrap">@hd.TienPhong.ToString("N0") đ</td>
+                                    <td class="text-end text-nowrap">@hd.TienWifi.ToString("N0") đ</td>
+                                    <td class="text-end fw-bold text-dark text-nowrap">@hd.TongTien.ToString("N0") đ</td>
+                                    <td class="text-center small text-nowrap">@(hd.HanThanhToan.HasValue ? hd.HanThanhToan.Value.ToString("dd/MM/yyyy") : "-")</td>
+                                    <td class="text-center text-nowrap pe-3">
+                                        @if (hd.TrangThai)
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Đã thanh toán</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">Chưa thanh toán</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4 text-muted text-nowrap">
+                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                    Chưa có hóa đơn nào phù hợp với bộ lọc
+                </div>
+            }
+        </div>
+    </div>
+</div>

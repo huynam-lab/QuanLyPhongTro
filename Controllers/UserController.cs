@@ -506,7 +506,7 @@ namespace QuanLyPhongTro.Controllers
                 }
 
                 // 3. Đăng nhập THÀNH CÔNG
-                Session["UserID"] = account.ID_TK;
+                Session["UserID"] = account.ID_Tk;
                 Session["UserName"] = account.Name;
                 Session["SDT"] = account.SDT;
                 Session["Avatar"] = account.Avata;

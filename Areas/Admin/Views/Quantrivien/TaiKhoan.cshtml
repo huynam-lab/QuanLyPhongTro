@@ -92,7 +92,7 @@
                     foreach (var u in Model)
                         {
                         <tr>
-                            <td>@u.ID_TK</td>
+                            <td>@u.ID_Tk</td>
                             <td>@u.User_Name</td>
                             <td>@u.Name</td>
                             <td>@u.SDT</td>
@@ -111,7 +111,7 @@
                                 @using (Html.BeginForm("ToggleTaiKhoan", "Admin", FormMethod.Post, new { area = "Admin" }))
                                     {
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@u.ID_TK" />
+                                    <input type="hidden" name="id" value="@u.ID_Tk" />
                                     <button class="btn btn-sm @(u.Trang_Thai == true ? "btn-outline-danger" : "btn-outline-success")">
                                         @(u.Trang_Thai == true ? "Khóa" : "Mở")
                                     </button>

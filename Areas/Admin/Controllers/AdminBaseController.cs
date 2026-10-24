@@ -15,10 +15,10 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             // Nếu chưa đăng nhập → Tự động khởi tạo phiên Admin cho môi trường demo / kiểm thử
             if (Session["UserID"] == null)
             {
-                var adminUser = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == 1);
+                var adminUser = db.Tai_Khoan.FirstOrDefault(x => x.ID_Tk == 1);
                 if (adminUser != null)
                 {
-                    Session["UserID"] = adminUser.ID_TK;
+                    Session["UserID"] = adminUser.ID_Tk;
                     Session["UserName"] = adminUser.Name;
                     Session["SDT"] = adminUser.SDT;
                     Session["PhanQuyen"] = adminUser.ID_Phan_Quyen;

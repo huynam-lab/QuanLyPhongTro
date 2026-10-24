@@ -1,0 +1,438 @@
+@model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.QuanLyPhongTroVM
+@{
+    ViewBag.Title = "Quản lý phòng trọ";
+    Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
+    var khuVucList = ViewBag.KhuVuc as List<QuanLyPhongTro.Models.Khu_Vuc>;
+    string selectedStatus = ViewBag.SelectedStatus as string;
+    int? selectedKv = ViewBag.SelectedKv as int?;
+    string search = ViewBag.Search as string;
+}
+
+<div class="container-fluid py-3 px-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <h5 class="fw-bold mb-0 text-dark text-nowrap">
+                <i class="bi bi-door-open text-primary me-2"></i>Quản Lý Phòng Trọ & Lịch Sử Thuê
+            </h5>
+            <div class="text-muted small text-nowrap">
+                Quản lý danh sách phòng, theo dõi phòng chưa có người thuê và tra cứu lịch sử hợp đồng
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary text-nowrap d-none" id="btnRestoreAll" onclick="khoiPhucDanhSach()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Khôi phục hiển thị (<span id="hiddenCount">0</span>)
+            </button>
+            <a href="@Url.Action("Index", "Admin", new { area = "Host" })" class="btn btn-primary btn-sm text-nowrap">
+                <i class="bi bi-plus-circle me-1"></i>Đăng tin phòng mới
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-primary h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Tổng số phòng</span>
+                    <div class="bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
+                        <i class="bi bi-houses fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-dark text-nowrap" id="kpiTongPhong">@Model.TongSoPhong <span class="fs-6 fw-normal text-muted">phòng</span></div>
+                <div class="small text-muted text-nowrap">Phòng thuộc tài khoản của bạn</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-warning h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Chưa có người thuê (Còn trống)</span>
+                    <div class="bg-warning bg-opacity-10 text-warning p-2 rounded-circle">
+                        <i class="bi bi-door-closed fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-warning text-nowrap" id="kpiPhongTrong">@Model.SoPhongTrong <span class="fs-6 fw-normal text-muted">phòng</span></div>
+                <div class="small text-muted text-nowrap">Đang sẵn sàng đón khách mới</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-success h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Đang cho thuê</span>
+                    <div class="bg-success bg-opacity-10 text-success p-2 rounded-circle">
+                        <i class="bi bi-person-check fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-success text-nowrap" id="kpiPhongDangThue">@Model.SoPhongDangThue <span class="fs-6 fw-normal text-muted">phòng</span></div>
+                <div class="small text-muted text-nowrap">Đang có hợp đồng hiệu lực</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-start border-4 border-info h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-nowrap">Giá trị phòng / tháng</span>
+                    <div class="bg-info bg-opacity-10 text-info p-2 rounded-circle">
+                        <i class="bi bi-cash-coin fs-6"></i>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold text-info text-nowrap">@Model.TongGiaTriThueThang.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></div>
+                <div class="small text-muted text-nowrap">Tổng tiền niêm yết hàng tháng</div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-3" id="roomTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active text-nowrap" id="tab-danhsach" data-bs-toggle="tab" href="#content-danhsach">
+                <i class="bi bi-list-task me-1"></i>Danh Sách Phòng Trọ
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-nowrap" id="tab-lichsu" data-bs-toggle="tab" href="#content-lichsu">
+                <i class="bi bi-clock-history me-1"></i>Lịch Sử Thuê Phòng (@(Model.LichSuThue?.Count ?? 0))
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="roomTabContent">
+        <div class="tab-pane fade show active" id="content-danhsach">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body p-2">
+                    <form method="get" action="@Url.Action("QuanLyPhongTro", "Admin", new { area = "Host" })" class="row g-2 align-items-center">
+                        <div class="col-lg-4 col-md-5">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                <input type="text" name="search" class="form-control text-nowrap" placeholder="Tìm theo tên phòng, địa chỉ..." value="@search" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3">
+                            <select name="idKv" class="form-select form-select-sm text-nowrap">
+                                <option value="">-- Tất cả khu vực --</option>
+                                @if (khuVucList != null)
+                                {
+                                    foreach (var kv in khuVucList)
+                                    {
+                                        <option value="@kv.ID_KV" @(selectedKv == kv.ID_KV ? "selected" : "")>@kv.Ten_KV</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4">
+                            <select name="status" class="form-select form-select-sm text-nowrap">
+                                <option value="">-- Tất cả tình trạng --</option>
+                                <option value="trong" @(selectedStatus == "trong" ? "selected" : "")>Phòng chưa có người thuê (Còn trống)</option>
+                                <option value="dangthue" @(selectedStatus == "dangthue" ? "selected" : "")>Phòng đang cho thuê</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-2 col-md-12 d-flex gap-1">
+                            <button type="submit" class="btn btn-sm btn-primary w-100 text-nowrap">
+                                <i class="bi bi-filter me-1"></i>Lọc
+                            </button>
+                            <a href="@Url.Action("QuanLyPhongTro", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white py-2 px-3 border-bottom d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fw-bold text-dark text-nowrap">Danh Sách Phòng</span>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="@Url.Action("QuanLyPhongTro", "Admin", new { area = "Host" })" class="btn @(string.IsNullOrEmpty(selectedStatus) ? "btn-primary" : "btn-outline-secondary") btn-sm text-nowrap">Tất cả</a>
+                            <a href="@Url.Action("QuanLyPhongTro", "Admin", new { area = "Host", status = "trong" })" class="btn @(selectedStatus == "trong" ? "btn-warning" : "btn-outline-warning text-dark") btn-sm text-nowrap">
+                                <i class="bi bi-door-closed me-1"></i>Chưa thuê (@Model.SoPhongTrong)
+                            </a>
+                            <a href="@Url.Action("QuanLyPhongTro", "Admin", new { area = "Host", status = "dangthue" })" class="btn @(selectedStatus == "dangthue" ? "btn-success" : "btn-outline-success") btn-sm text-nowrap">
+                                <i class="bi bi-person-check me-1"></i>Đang thuê (@Model.SoPhongDangThue)
+                            </a>
+                        </div>
+                    </div>
+                    <div class="small text-muted text-nowrap">Hiển thị: <b id="displayedRoomCount">@(Model.DanhSachPhong?.Count ?? 0)</b> phòng</div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.DanhSachPhong != null && Model.DanhSachPhong.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="tblDanhSachPhong" style="font-size: 13px;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3 text-nowrap">Mã phòng</th>
+                                        <th class="text-nowrap">Tên phòng trọ</th>
+                                        <th class="text-nowrap">Khu vực / Địa chỉ</th>
+                                        <th class="text-center text-nowrap">Diện tích</th>
+                                        <th class="text-end text-nowrap">Giá thuê</th>
+                                        <th class="text-center text-nowrap">Tình trạng</th>
+                                        <th class="text-nowrap">Khách đang thuê</th>
+                                        <th class="text-center text-nowrap">Duyệt tin</th>
+                                        <th class="text-center text-nowrap pe-3">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var p in Model.DanhSachPhong)
+                                    {
+                                        <tr id="row-phong-@p.ID_Phong_Tro" data-status="@(p.DangCoKhachThue ? "dangthue" : "trong")">
+                                            <td class="ps-3 text-nowrap"><span class="badge bg-light text-dark border">#@p.ID_Phong_Tro</span></td>
+                                            <td class="text-nowrap">
+                                                <div class="fw-semibold text-dark text-truncate" style="max-width: 250px;" title="@p.TenPhong">@p.TenPhong</div>
+                                                <small class="text-muted">Ngày đăng: @(p.NgayDang.HasValue ? p.NgayDang.Value.ToString("dd/MM/yyyy") : "-")</small>
+                                            </td>
+                                            <td class="text-nowrap">
+                                                <span class="badge bg-light text-primary border">@p.TenKhuVuc</span>
+                                                <div class="small text-muted text-truncate" style="max-width: 180px;" title="@p.DiaChi">@p.DiaChi</div>
+                                            </td>
+                                            <td class="text-center text-nowrap">@(p.DienTich.HasValue ? p.DienTich.Value + " m²" : "-")</td>
+                                            <td class="text-end fw-bold text-dark text-nowrap">@(p.GiaThue.HasValue ? p.GiaThue.Value.ToString("N0") + " đ" : "-")</td>
+                                            <td class="text-center text-nowrap">
+                                                @if (p.DangCoKhachThue)
+                                                {
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Đang thuê</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1">Chưa có người thuê</span>
+                                                }
+                                            </td>
+                                            <td class="text-nowrap">
+                                                @if (p.DangCoKhachThue)
+                                                {
+                                                    <div class="fw-semibold text-dark">@p.TenKhachThue</div>
+                                                    <small class="text-muted"><i class="bi bi-telephone me-1"></i>@p.SDTKhachThue</small>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted small">Phòng trống</span>
+                                                }
+                                            </td>
+                                            <td class="text-center text-nowrap">
+                                                @if (p.TrangThaiDuyet)
+                                                {
+                                                    <span class="badge bg-success text-white">Đã duyệt</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary text-white">Chờ duyệt</span>
+                                                }
+                                            </td>
+                                            <td class="text-center text-nowrap pe-3">
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="@Url.Action("UpdateData", "Admin", new { area = "Host", id = p.ID_Phong_Tro })" class="btn btn-outline-primary" title="Sửa thông tin phòng">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-outline-info" title="Xem lịch sử thuê phòng này" onclick="xemLichSuPhong('@p.TenPhong')">
+                                                        <i class="bi bi-clock-history"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-danger" title="Xóa phòng trên giao diện" onclick="xoaPhongGiaoDien(@p.ID_Phong_Tro, '@p.TenPhong', '@(p.DangCoKhachThue ? "dangthue" : "trong")')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted text-nowrap">
+                            <i class="bi bi-door-closed fs-1 d-block mb-2"></i>
+                            Không có phòng trọ nào phù hợp với bộ lọc
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="content-lichsu">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white py-2 px-3 border-bottom d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold text-dark text-nowrap"><i class="bi bi-clock-history me-2 text-primary"></i>Lịch Sử Các Hợp Đồng Thuê Phòng</span>
+                        <div class="small text-muted text-nowrap">Tra cứu thông tin khách thuê trước đây và hiện tại của các phòng</div>
+                    </div>
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="text" id="searchLichSu" class="form-control text-nowrap" placeholder="Tìm phòng, khách, SĐT..." onkeyup="filterLichSuTable()" />
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.LichSuThue != null && Model.LichSuThue.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="tblLichSuThue" style="font-size: 13px;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3 text-nowrap">Mã HĐ</th>
+                                        <th class="text-nowrap">Phòng trọ</th>
+                                        <th class="text-nowrap">Khách thuê</th>
+                                        <th class="text-nowrap">Số điện thoại</th>
+                                        <th class="text-nowrap">CCCD / CMND</th>
+                                        <th class="text-center text-nowrap">Thời gian thuê</th>
+                                        <th class="text-end text-nowrap">Giá thuê</th>
+                                        <th class="text-center text-nowrap pe-3">Trạng thái hợp đồng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ls in Model.LichSuThue)
+                                    {
+                                        <tr>
+                                            <td class="ps-3 text-nowrap"><span class="badge bg-light text-dark border">#@ls.ID_Hop_Dong</span></td>
+                                            <td class="text-nowrap fw-semibold text-dark">@ls.TenPhong</td>
+                                            <td class="text-nowrap">@ls.TenKhach</td>
+                                            <td class="text-nowrap text-primary fw-semibold">@ls.SDT</td>
+                                            <td class="text-nowrap text-dark">@ls.CCCD</td>
+                                            <td class="text-center text-nowrap">
+                                                <div class="small fw-semibold">@ls.NgayBatDau.ToString("dd/MM/yyyy") &rarr; @(ls.NgayKetThuc.HasValue ? ls.NgayKetThuc.Value.ToString("dd/MM/yyyy") : "Hiện tại")</div>
+                                            </td>
+                                            <td class="text-end fw-bold text-dark text-nowrap">@ls.GiaThue.ToString("N0") đ</td>
+                                            <td class="text-center text-nowrap pe-3">
+                                                @if (ls.TrangThai)
+                                                {
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Đang thuê</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Đã thanh lý</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted text-nowrap">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            Chưa có dữ liệu lịch sử thuê phòng nào
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        const STORAGE_KEY = 'hidden_rooms_session';
+
+        function getHiddenRooms() {
+            try {
+                return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function setHiddenRooms(list) {
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+            updateHiddenUI();
+        }
+
+        function updateHiddenUI() {
+            const hidden = getHiddenRooms();
+            const btnRestore = document.getElementById('btnRestoreAll');
+            const hiddenCount = document.getElementById('hiddenCount');
+            if (hidden.length > 0) {
+                btnRestore.classList.remove('d-none');
+                hiddenCount.innerText = hidden.length;
+            } else {
+                btnRestore.classList.add('d-none');
+                hiddenCount.innerText = 0;
+            }
+
+            hidden.forEach(id => {
+                const row = document.getElementById('row-phong-' + id);
+                if (row) {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function xoaPhongGiaoDien(id, tenPhong, status) {
+            Swal.fire({
+                title: 'Xóa phòng khỏi giao diện?',
+                text: 'Bạn có chắc chắn muốn xóa phòng "' + tenPhong + '" khỏi giao diện danh sách hiển thị? (Dữ liệu database được giữ nguyên hoàn toàn)',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Đồng ý xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const row = document.getElementById('row-phong-' + id);
+                    if (row) {
+                        row.style.transition = 'all 0.3s ease';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.style.display = 'none';
+                            const hidden = getHiddenRooms();
+                            if (!hidden.includes(id)) {
+                                hidden.push(id);
+                                setHiddenRooms(hidden);
+                            }
+
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Đã xóa phòng khỏi giao diện hiển thị',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }, 300);
+                    }
+                }
+            });
+        }
+
+        function khoiPhucDanhSach() {
+            sessionStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('#tblDanhSachPhong tbody tr').forEach(r => {
+                r.style.display = '';
+                r.style.opacity = '1';
+            });
+            updateHiddenUI();
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Đã khôi phục toàn bộ phòng hiển thị',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+        function xemLichSuPhong(tenPhong) {
+            const tabLichSu = new bootstrap.Tab(document.getElementById('tab-lichsu'));
+            tabLichSu.show();
+            const inputSearch = document.getElementById('searchLichSu');
+            inputSearch.value = tenPhong;
+            filterLichSuTable();
+        }
+
+        function filterLichSuTable() {
+            const val = document.getElementById('searchLichSu').value.toLowerCase();
+            const rows = document.querySelectorAll('#tblLichSuThue tbody tr');
+            rows.forEach(r => {
+                const text = r.innerText.toLowerCase();
+                r.style.display = text.includes(val) ? '' : 'none';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHiddenUI();
+        });
+    </script>
+}

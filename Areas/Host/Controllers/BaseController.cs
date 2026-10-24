@@ -15,10 +15,10 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
         {
             if (Session["UserID"] == null)
             {
-                var hostUser = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == 2);
+                var hostUser = db.Tai_Khoan.FirstOrDefault(x => x.ID_Tk  == 2);
                 if (hostUser != null)
                 {
-                    Session["UserID"] = hostUser.ID_TK;
+                    Session["UserID"] = hostUser.ID_Tk;
                     Session["UserName"] = hostUser.Name;
                     Session["SDT"] = hostUser.SDT;
                     Session["PhanQuyen"] = hostUser.ID_Phan_Quyen;
@@ -36,11 +36,11 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             if (maTK > 0)
                 {
                 var user = db.Tai_Khoan
-                    .Where(x => x.ID_TK == maTK)
+                    .Where(x => x.ID_Tk == maTK)
                     .Select(x => new { x.Name, x.Avata, x.SDT })
                     .FirstOrDefault();
                 var Admin = db.Tai_Khoan
-                   .Where(x => x.ID_TK == 1)
+                   .Where(x => x.ID_Tk == 1)
                    .Select(x => new { x.Name, x.SDT })
                    .FirstOrDefault();
                 ViewBag.AdminName = Admin?.Name ?? "";

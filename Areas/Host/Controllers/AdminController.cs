@@ -263,7 +263,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 int.TryParse(Session["UserID"].ToString(), out maTK);
 
             var user = db.Tai_Khoan
-                .Where(x => x.ID_TK == maTK)
+                .Where(x => x.ID_Tk == maTK)
                 .Select(x => new { x.Name, x.SDT, x.Avata })
                 .FirstOrDefault();
 
@@ -472,7 +472,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 }
 
             int maTK = Convert.ToInt32(Session["UserID"]);
-            var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == maTK);
+            var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_Tk == maTK);
             if (tk == null)
                 {
                 TempData["Error"] = "Không tìm thấy tài khoản.";
@@ -503,7 +503,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 }
 
             int maTK = Convert.ToInt32(Session["UserID"]);
-            var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == maTK);
+            var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_Tk == maTK);
 
             if (tk == null)
                 {
@@ -557,7 +557,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             if (Session["UserID"] != null)
                 int.TryParse(Session["UserID"].ToString(), out maTK);
 
-            var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_TK == maTK);
+            var tk = db.Tai_Khoan.FirstOrDefault(x => x.ID_Tk == maTK);
             if (tk == null)
                 {
                 ModelState.AddModelError("", "Không tìm thấy tài khoản.");
@@ -599,7 +599,6 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
 
             }
 
-        // GET: Host/Admin/DuDoanLapDay
         [HttpGet]
         public ActionResult DuDoanLapDay(int? idKv, int? forecastMonths)
         {
@@ -610,57 +609,95 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             int months = forecastMonths ?? 6;
             string connStr = db.Database.Connection.ConnectionString;
 
-            // 1. Thống kê phòng của chủ nhà
             var myRooms = new List<HostRoomStatusItem>();
             int tongPhong = 0;
             int phongDaThue = 0;
             int? primaryKvId = idKv;
 
-            using (var conn = new System.Data.SqlClient.SqlConnection(connStr))
+            try
             {
-                conn.Open();
-                string sql = @"
-                    SELECT p.ID_Phong_Tro, p.Ten_Phong, p.Gia_Ca, ISNULL(k.Ten_KV, N'Chưa phân loại') as Ten_KV, 
-                           ISNULL(p.Da_Thue, 0) as Da_Thue, p.Ngay_Dang, p.ID_KV
-                    FROM Phong_Tro p
-                    LEFT JOIN Khu_Vuc k ON p.ID_KV = k.ID_KV
-                    WHERE p.ID_TK = @IdTk
-                    ORDER BY p.ID_Phong_Tro DESC
-                ";
-                using (var cmd = new System.Data.SqlClient.SqlCommand(sql, conn))
+                using (var conn = new System.Data.SqlClient.SqlConnection(connStr))
                 {
-                    cmd.Parameters.AddWithValue("@IdTk", maTK);
-                    using (var reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (var checkCmd = new System.Data.SqlClient.SqlCommand(@"
+                        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Phong_Tro') AND name = 'Da_Thue')
+                        BEGIN
+                            ALTER TABLE Phong_Tro ADD Da_Thue BIT NOT NULL CONSTRAINT DF_Phong_Tro_Da_Thue DEFAULT 0;
+                            UPDATE p SET p.Da_Thue = 1 FROM Phong_Tro p WHERE EXISTS (SELECT 1 FROM Hop_Dong hd WHERE hd.ID_Phong_Tro = p.ID_Phong_Tro AND hd.Trang_Thai = 1);
+                        END
+                    ", conn))
                     {
-                        while (reader.Read())
+                        checkCmd.ExecuteNonQuery();
+                    }
+
+                    string sql = @"
+                        SELECT p.ID_Phong_Tro, p.Ten_Phong, p.Gia_Ca, ISNULL(k.Ten_KV, N'Chưa phân loại') as Ten_KV, 
+                               ISNULL(p.Da_Thue, 0) as Da_Thue, p.Ngay_Dang, p.ID_KV
+                        FROM Phong_Tro p
+                        LEFT JOIN Khu_Vuc k ON p.ID_KV = k.ID_KV
+                        WHERE p.ID_TK = @IdTk
+                        ORDER BY p.ID_Phong_Tro DESC
+                    ";
+                    using (var cmd = new System.Data.SqlClient.SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@IdTk", maTK);
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            bool daThue = Convert.ToBoolean(reader["Da_Thue"]);
-                            int roomKv = reader["ID_KV"] != DBNull.Value ? Convert.ToInt32(reader["ID_KV"]) : 0;
-                            if (!primaryKvId.HasValue && roomKv > 0)
+                            while (reader.Read())
                             {
-                                primaryKvId = roomKv;
+                                bool daThue = Convert.ToBoolean(reader["Da_Thue"]);
+                                int roomKv = reader["ID_KV"] != DBNull.Value ? Convert.ToInt32(reader["ID_KV"]) : 0;
+                                if (!primaryKvId.HasValue && roomKv > 0)
+                                {
+                                    primaryKvId = roomKv;
+                                }
+
+                                myRooms.Add(new HostRoomStatusItem
+                                {
+                                    IdPhong = Convert.ToInt32(reader["ID_Phong_Tro"]),
+                                    TenPhong = reader["Ten_Phong"].ToString(),
+                                    GiaThue = reader["Gia_Ca"] != DBNull.Value ? Convert.ToDecimal(reader["Gia_Ca"]) : 0,
+                                    TenKhuVuc = reader["Ten_KV"].ToString(),
+                                    DaThue = daThue,
+                                    NgayDang = reader["Ngay_Dang"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["Ngay_Dang"]) : null
+                                });
+
+                                tongPhong++;
+                                if (daThue) phongDaThue++;
                             }
-
-                            myRooms.Add(new HostRoomStatusItem
-                            {
-                                IdPhong = Convert.ToInt32(reader["ID_Phong_Tro"]),
-                                TenPhong = reader["Ten_Phong"].ToString(),
-                                GiaThue = reader["Gia_Ca"] != DBNull.Value ? Convert.ToDecimal(reader["Gia_Ca"]) : 0,
-                                TenKhuVuc = reader["Ten_KV"].ToString(),
-                                DaThue = daThue,
-                                NgayDang = reader["Ngay_Dang"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["Ngay_Dang"]) : null
-                            });
-
-                            tongPhong++;
-                            if (daThue) phongDaThue++;
                         }
                     }
+                }
+            }
+            catch
+            {
+                var fallbackRooms = db.Phong_Tro.Where(p => p.ID_TK == maTK).OrderByDescending(p => p.ID_Phong_Tro).ToList();
+                foreach (var p in fallbackRooms)
+                {
+                    bool daThue = p.Hop_Dong.Any(h => h.Trang_Thai);
+                    int roomKv = p.ID_KV ?? 0;
+                    if (!primaryKvId.HasValue && roomKv > 0)
+                    {
+                        primaryKvId = roomKv;
+                    }
+
+                    myRooms.Add(new HostRoomStatusItem
+                    {
+                        IdPhong = p.ID_Phong_Tro,
+                        TenPhong = p.Ten_Phong,
+                        GiaThue = p.Gia_Ca ?? 0,
+                        TenKhuVuc = p.Khu_Vuc != null ? p.Khu_Vuc.Ten_KV : "Chưa phân loại",
+                        DaThue = daThue,
+                        NgayDang = p.Ngay_Dang
+                    });
+
+                    tongPhong++;
+                    if (daThue) phongDaThue++;
                 }
             }
 
             double tyLeLapDayCuaToi = tongPhong > 0 ? Math.Round(((double)phongDaThue / tongPhong) * 100, 1) : 0;
 
-            // 2. Chạy dịch vụ dự báo chuỗi thời gian
             var service = new OccupancyForecastService(connStr);
             var forecast = service.CalculateForecast(primaryKvId, months);
 
@@ -680,7 +717,6 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             return View(vm);
         }
 
-        // POST: Host/Admin/ToggleTrangThaiThue
         [HttpPost]
         public ActionResult ToggleTrangThaiThue(int idPhong)
         {
@@ -691,29 +727,425 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             string connStr = db.Database.Connection.ConnectionString;
             bool newState = false;
 
-            using (var conn = new System.Data.SqlClient.SqlConnection(connStr))
+            try
             {
-                conn.Open();
-                string query = @"
-                    UPDATE Phong_Tro 
-                    SET Da_Thue = CASE WHEN ISNULL(Da_Thue, 0) = 1 THEN 0 ELSE 1 END
-                    OUTPUT INSERTED.Da_Thue
-                    WHERE ID_Phong_Tro = @IdPhong AND ID_TK = @IdTk
-                ";
-                using (var cmd = new System.Data.SqlClient.SqlCommand(query, conn))
+                using (var conn = new System.Data.SqlClient.SqlConnection(connStr))
                 {
-                    cmd.Parameters.AddWithValue("@IdPhong", idPhong);
-                    cmd.Parameters.AddWithValue("@IdTk", maTK);
-                    var res = cmd.ExecuteScalar();
-                    if (res != null)
+                    conn.Open();
+                    using (var checkCmd = new System.Data.SqlClient.SqlCommand(@"
+                        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Phong_Tro') AND name = 'Da_Thue')
+                        BEGIN
+                            ALTER TABLE Phong_Tro ADD Da_Thue BIT NOT NULL CONSTRAINT DF_Phong_Tro_Da_Thue DEFAULT 0;
+                            UPDATE p SET p.Da_Thue = 1 FROM Phong_Tro p WHERE EXISTS (SELECT 1 FROM Hop_Dong hd WHERE hd.ID_Phong_Tro = p.ID_Phong_Tro AND hd.Trang_Thai = 1);
+                        END
+                    ", conn))
                     {
-                        newState = Convert.ToBoolean(res);
-                        return Json(new { success = true, newState = newState });
+                        checkCmd.ExecuteNonQuery();
+                    }
+
+                    string query = @"
+                        UPDATE Phong_Tro 
+                        SET Da_Thue = CASE WHEN ISNULL(Da_Thue, 0) = 1 THEN 0 ELSE 1 END
+                        OUTPUT INSERTED.Da_Thue
+                        WHERE ID_Phong_Tro = @IdPhong AND ID_TK = @IdTk
+                    ";
+                    using (var cmd = new System.Data.SqlClient.SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@IdPhong", idPhong);
+                        cmd.Parameters.AddWithValue("@IdTk", maTK);
+                        var res = cmd.ExecuteScalar();
+                        if (res != null)
+                        {
+                            newState = Convert.ToBoolean(res);
+                            return Json(new { success = true, newState = newState });
+                        }
                     }
                 }
             }
+            catch
+            {
+            }
 
             return Json(new { success = false, message = "Không tìm thấy phòng hoặc không có quyền thao tác." });
+        }
+
+        public ActionResult ThongKeDoanhThu(int? thang, int? nam)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var query = db.Hoa_Don_Dien_Nuoc.Where(h => h.Hop_Dong.Phong_Tro.ID_TK == maTK);
+
+            var danhSachNam = query.Select(h => h.Nam).Distinct().OrderByDescending(x => x).ToList();
+            if (!danhSachNam.Any())
+            {
+                danhSachNam.Add(DateTime.Now.Year);
+            }
+
+            var filteredQuery = query;
+            if (nam.HasValue && nam.Value > 0)
+            {
+                filteredQuery = filteredQuery.Where(h => h.Nam == nam.Value);
+            }
+            if (thang.HasValue && thang.Value > 0)
+            {
+                filteredQuery = filteredQuery.Where(h => h.Thang == thang.Value);
+            }
+
+            var listHoaDon = filteredQuery
+                .OrderByDescending(h => h.Nam)
+                .ThenByDescending(h => h.Thang)
+                .ThenByDescending(h => h.ID_Hoa_Don)
+                .Select(h => new HoaDonChiTietItem
+                {
+                    ID_Hoa_Don = h.ID_Hoa_Don,
+                    TenPhong = h.Hop_Dong.Phong_Tro.Ten_Phong,
+                    TenKhach = h.Hop_Dong.Khach_Thue.Ho_Ten,
+                    SDT = h.Hop_Dong.Khach_Thue.SDT,
+                    Thang = h.Thang,
+                    Nam = h.Nam,
+                    SoDien = h.So_Dien,
+                    TienDien = h.Tien_Dien,
+                    SoNuoc = h.So_Nuoc,
+                    TienNuoc = h.Tien_Nuoc,
+                    TienPhong = h.Tien_Phong,
+                    TienWifi = h.Tien_Wifi,
+                    TongTien = h.Tong_Tien,
+                    NgayLap = h.Ngay_Lap,
+                    HanThanhToan = h.Han_Thanh_Toan,
+                    TrangThai = h.Trang_Thai
+                })
+                .ToList();
+
+            var groupTheoThang = query
+                .GroupBy(h => new { h.Nam, h.Thang })
+                .Select(g => new DoanhThuThangItem
+                {
+                    Nam = g.Key.Nam,
+                    Thang = g.Key.Thang,
+                    SoHoaDon = g.Count(),
+                    TienPhong = g.Sum(x => (decimal?)x.Tien_Phong) ?? 0,
+                    TienDien = g.Sum(x => (decimal?)x.Tien_Dien) ?? 0,
+                    TienNuoc = g.Sum(x => (decimal?)x.Tien_Nuoc) ?? 0,
+                    TienWifi = g.Sum(x => (decimal?)x.Tien_Wifi) ?? 0,
+                    TongCong = g.Sum(x => (decimal?)x.Tong_Tien) ?? 0,
+                    DaThu = g.Where(x => x.Trang_Thai).Sum(x => (decimal?)x.Tong_Tien) ?? 0,
+                    ChuaThu = g.Where(x => !x.Trang_Thai).Sum(x => (decimal?)x.Tong_Tien) ?? 0
+                })
+                .OrderByDescending(g => g.Nam)
+                .ThenByDescending(g => g.Thang)
+                .ToList();
+
+            var vm = new ThongKeDoanhThuVM
+            {
+                TongDoanhThu = listHoaDon.Sum(x => x.TongTien),
+                DaThu = listHoaDon.Where(x => x.TrangThai).Sum(x => x.TongTien),
+                ChuaThu = listHoaDon.Where(x => !x.TrangThai).Sum(x => x.TongTien),
+                TongTienPhong = listHoaDon.Sum(x => x.TienPhong),
+                TongTienDien = listHoaDon.Sum(x => x.TienDien),
+                TongTienNuoc = listHoaDon.Sum(x => x.TienNuoc),
+                TongTienWifi = listHoaDon.Sum(x => x.TienWifi),
+                SelectedThang = thang,
+                SelectedNam = nam,
+                DanhSachNam = danhSachNam,
+                DoanhThuTheoThang = groupTheoThang,
+                DanhSachHoaDon = listHoaDon
+            };
+
+            return View(vm);
+        }
+
+        public ActionResult QuanLyPhongTro(string search, int? idKv, string status)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var query = db.Phong_Tro.Where(p => p.ID_TK == maTK);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p => p.Ten_Phong.Contains(search) || p.Dia_Chi.Contains(search));
+            }
+            if (idKv.HasValue && idKv.Value > 0)
+            {
+                query = query.Where(p => p.ID_KV == idKv.Value);
+            }
+
+            var listPhongRaw = query.OrderByDescending(p => p.ID_Phong_Tro).ToList();
+
+            var listPhongVM = listPhongRaw.Select(p =>
+            {
+                var hdHienTai = p.Hop_Dong
+                    .Where(h => h.Trang_Thai)
+                    .OrderByDescending(h => h.ID_Hop_Dong)
+                    .FirstOrDefault();
+
+                return new PhongTroQuanLyItem
+                {
+                    ID_Phong_Tro = p.ID_Phong_Tro,
+                    TenPhong = p.Ten_Phong,
+                    TenKhuVuc = p.Khu_Vuc != null ? p.Khu_Vuc.Ten_KV : "",
+                    DiaChi = p.Dia_Chi,
+                    DienTich = p.Dien_Tich,
+                    GiaThue = p.Gia_Ca,
+                    NgayDang = p.Ngay_Dang,
+                    NgayHetHan = p.Ngay_Het_Han,
+                    TrangThaiDuyet = p.Trang_Thai ?? false,
+                    DangCoKhachThue = hdHienTai != null,
+                    TenKhachThue = hdHienTai != null && hdHienTai.Khach_Thue != null ? hdHienTai.Khach_Thue.Ho_Ten : "",
+                    SDTKhachThue = hdHienTai != null && hdHienTai.Khach_Thue != null ? hdHienTai.Khach_Thue.SDT : "",
+                    NgayBatDauThue = hdHienTai != null ? (DateTime?)hdHienTai.Ngay_Bat_Dau : null,
+                    NgayKetThucThue = hdHienTai != null ? hdHienTai.Ngay_Ket_Thuc : null
+                };
+            }).ToList();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status == "dangthue")
+                    listPhongVM = listPhongVM.Where(p => p.DangCoKhachThue).ToList();
+                else if (status == "trong")
+                    listPhongVM = listPhongVM.Where(p => !p.DangCoKhachThue).ToList();
+            }
+
+            var lichSuThue = db.Hop_Dong
+                .Where(h => h.Phong_Tro.ID_TK == maTK)
+                .OrderByDescending(h => h.ID_Hop_Dong)
+                .Select(h => new LichSuThuePhongItem
+                {
+                    ID_Hop_Dong = h.ID_Hop_Dong,
+                    ID_Phong_Tro = h.ID_Phong_Tro,
+                    TenPhong = h.Phong_Tro.Ten_Phong,
+                    TenKhach = h.Khach_Thue != null ? h.Khach_Thue.Ho_Ten : "",
+                    SDT = h.Khach_Thue != null ? h.Khach_Thue.SDT : "",
+                    CCCD = h.Khach_Thue != null ? h.Khach_Thue.CCCD : "",
+                    NgayBatDau = h.Ngay_Bat_Dau,
+                    NgayKetThuc = h.Ngay_Ket_Thuc,
+                    GiaThue = h.Gia_Thue,
+                    TrangThai = h.Trang_Thai
+                })
+                .ToList();
+
+            var vm = new QuanLyPhongTroVM
+            {
+                TongSoPhong = listPhongRaw.Count,
+                SoPhongDangThue = listPhongRaw.Count(p => p.Hop_Dong.Any(h => h.Trang_Thai)),
+                SoPhongTrong = listPhongRaw.Count(p => !p.Hop_Dong.Any(h => h.Trang_Thai)),
+                TongGiaTriThueThang = listPhongRaw.Sum(p => p.Gia_Ca ?? 0),
+                DanhSachPhong = listPhongVM,
+                LichSuThue = lichSuThue
+            };
+
+            ViewBag.KhuVuc = db.Khu_Vuc.OrderBy(k => k.Ten_KV).ToList();
+            ViewBag.Search = search;
+            ViewBag.SelectedKv = idKv;
+            ViewBag.SelectedStatus = status;
+
+            return View(vm);
+        }
+
+        public ActionResult QuanLyKhachThue(string search, string status)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var query = db.Hop_Dong.Where(h => h.Phong_Tro.ID_TK == maTK);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(h => h.Khach_Thue.Ho_Ten.Contains(search) ||
+                                         h.Khach_Thue.SDT.Contains(search) ||
+                                         h.Khach_Thue.CCCD.Contains(search) ||
+                                         h.Phong_Tro.Ten_Phong.Contains(search));
+            }
+
+            var rawList = query.OrderByDescending(h => h.ID_Hop_Dong).ToList();
+
+            var listKhach = rawList.Select(h => new KhachThueItem
+            {
+                ID_Khach_Thue = h.ID_Khach_Thue,
+                HoTen = h.Khach_Thue != null ? h.Khach_Thue.Ho_Ten : "",
+                CCCD = h.Khach_Thue != null ? h.Khach_Thue.CCCD : "",
+                SDT = h.Khach_Thue != null ? h.Khach_Thue.SDT : "",
+                NgaySinh = h.Khach_Thue != null ? h.Khach_Thue.Ngay_Sinh : null,
+                GioiTinh = h.Khach_Thue != null ? h.Khach_Thue.Gioi_Tinh : "",
+                DiaChi = h.Khach_Thue != null ? h.Khach_Thue.Dia_Chi : "",
+                TenPhong = h.Phong_Tro != null ? h.Phong_Tro.Ten_Phong : "",
+                ID_HopDong = h.ID_Hop_Dong,
+                NgayBatDau = h.Ngay_Bat_Dau,
+                NgayKetThuc = h.Ngay_Ket_Thuc,
+                GiaThue = h.Gia_Thue,
+                HopDongHieuLuc = h.Trang_Thai
+            }).ToList();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status == "active")
+                    listKhach = listKhach.Where(k => k.HopDongHieuLuc).ToList();
+                else if (status == "expired")
+                    listKhach = listKhach.Where(k => !k.HopDongHieuLuc).ToList();
+            }
+
+            var vm = new QuanLyKhachThueVM
+            {
+                TongKhach = rawList.Select(h => h.ID_Khach_Thue).Distinct().Count(),
+                KhachDangThue = rawList.Where(h => h.Trang_Thai).Select(h => h.ID_Khach_Thue).Distinct().Count(),
+                KhachDaKetThuc = rawList.Where(h => !h.Trang_Thai).Select(h => h.ID_Khach_Thue).Distinct().Count(),
+                DanhSachKhach = listKhach
+            };
+
+            ViewBag.Search = search;
+            ViewBag.Status = status;
+
+            return View(vm);
+        }
+
+        public ActionResult QuanLyDienNuoc(int? thang, int? nam, bool? trangThai)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var baseQuery = db.Hoa_Don_Dien_Nuoc.Where(h => h.Hop_Dong.Phong_Tro.ID_TK == maTK);
+
+            var danhSachNam = baseQuery.Select(h => h.Nam).Distinct().OrderByDescending(x => x).ToList();
+            if (!danhSachNam.Any())
+            {
+                danhSachNam.Add(DateTime.Now.Year);
+            }
+
+            var query = baseQuery;
+            if (nam.HasValue && nam.Value > 0)
+            {
+                query = query.Where(h => h.Nam == nam.Value);
+            }
+            if (thang.HasValue && thang.Value > 0)
+            {
+                query = query.Where(h => h.Thang == thang.Value);
+            }
+            if (trangThai.HasValue)
+            {
+                query = query.Where(h => h.Trang_Thai == trangThai.Value);
+            }
+
+            var listHoaDon = query
+                .OrderByDescending(h => h.Nam)
+                .ThenByDescending(h => h.Thang)
+                .ThenByDescending(h => h.ID_Hoa_Don)
+                .Select(h => new HoaDonChiTietItem
+                {
+                    ID_Hoa_Don = h.ID_Hoa_Don,
+                    TenPhong = h.Hop_Dong.Phong_Tro.Ten_Phong,
+                    TenKhach = h.Hop_Dong.Khach_Thue.Ho_Ten,
+                    SDT = h.Hop_Dong.Khach_Thue.SDT,
+                    Thang = h.Thang,
+                    Nam = h.Nam,
+                    SoDien = h.So_Dien,
+                    TienDien = h.Tien_Dien,
+                    SoNuoc = h.So_Nuoc,
+                    TienNuoc = h.Tien_Nuoc,
+                    TienPhong = h.Tien_Phong,
+                    TienWifi = h.Tien_Wifi,
+                    TongTien = h.Tong_Tien,
+                    NgayLap = h.Ngay_Lap,
+                    HanThanhToan = h.Han_Thanh_Toan,
+                    TrangThai = h.Trang_Thai
+                })
+                .ToList();
+
+            var vm = new QuanLyDienNuocVM
+            {
+                TongTienDien = listHoaDon.Sum(h => h.TienDien),
+                TongTienNuoc = listHoaDon.Sum(h => h.TienNuoc),
+                SoHoaDonDaThu = listHoaDon.Count(h => h.TrangThai),
+                SoHoaDonChuaThu = listHoaDon.Count(h => !h.TrangThai),
+                TongTienDaThu = listHoaDon.Where(h => h.TrangThai).Sum(h => h.TongTien),
+                TongTienChuaThu = listHoaDon.Where(h => !h.TrangThai).Sum(h => h.TongTien),
+                SelectedThang = thang,
+                SelectedNam = nam,
+                SelectedTrangThai = trangThai,
+                DanhSachNam = danhSachNam,
+                DanhSachHoaDon = listHoaDon
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public ActionResult CapNhatTrangThaiHoaDon(int id)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var hd = db.Hoa_Don_Dien_Nuoc.FirstOrDefault(x => x.ID_Hoa_Don == id && x.Hop_Dong.Phong_Tro.ID_TK == maTK);
+            if (hd != null)
+            {
+                hd.Trang_Thai = !hd.Trang_Thai;
+                db.SaveChanges();
+                return Json(new { success = true, trangThai = hd.Trang_Thai });
+            }
+            return Json(new { success = false });
+        }
+
+        public ActionResult QuanLyHopDong(string search, string status)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var query = db.Hop_Dong.Where(h => h.Phong_Tro.ID_TK == maTK);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(h => h.Phong_Tro.Ten_Phong.Contains(search) ||
+                                         h.Khach_Thue.Ho_Ten.Contains(search) ||
+                                         h.Khach_Thue.SDT.Contains(search) ||
+                                         h.Khach_Thue.CCCD.Contains(search));
+            }
+
+            var rawList = query.OrderByDescending(h => h.ID_Hop_Dong).ToList();
+
+            var listHopDong = rawList.Select(h => new HopDongItem
+            {
+                ID_Hop_Dong = h.ID_Hop_Dong,
+                ID_Phong_Tro = h.ID_Phong_Tro,
+                TenPhong = h.Phong_Tro != null ? h.Phong_Tro.Ten_Phong : "",
+                ID_Khach_Thue = h.ID_Khach_Thue,
+                TenKhach = h.Khach_Thue != null ? h.Khach_Thue.Ho_Ten : "",
+                SDT = h.Khach_Thue != null ? h.Khach_Thue.SDT : "",
+                CCCD = h.Khach_Thue != null ? h.Khach_Thue.CCCD : "",
+                NgayKy = h.Ngay_Ky,
+                NgayBatDau = h.Ngay_Bat_Dau,
+                NgayKetThuc = h.Ngay_Ket_Thuc,
+                GiaThue = h.Gia_Thue,
+                KyThanhToan = h.Ky_Thanh_Toan,
+                TrangThai = h.Trang_Thai
+            }).ToList();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status == "active")
+                    listHopDong = listHopDong.Where(h => h.TrangThai).ToList();
+                else if (status == "expired")
+                    listHopDong = listHopDong.Where(h => !h.TrangThai).ToList();
+            }
+
+            var vm = new QuanLyHopDongVM
+            {
+                TongHopDong = rawList.Count,
+                HopDongHieuLuc = rawList.Count(h => h.Trang_Thai),
+                HopDongHetHan = rawList.Count(h => !h.Trang_Thai),
+                TongGiaTriThue = rawList.Where(h => h.Trang_Thai).Sum(h => h.Gia_Thue),
+                DanhSachHopDong = listHopDong
+            };
+
+            ViewBag.Search = search;
+            ViewBag.Status = status;
+
+            return View(vm);
         }
 
         }

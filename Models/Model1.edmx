@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DaTa_Phong_TroModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DaTa_Phong_TroModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bang_Gia_Tin">
           <Key>
             <PropertyRef Name="ID_Gia" />
@@ -32,6 +32,54 @@
           <Property Name="ID_Phong_Tro" Type="int" Nullable="false" />
           <Property Name="Url_Anh" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
+        <EntityType Name="Hoa_Don_Dien_Nuoc">
+          <Key>
+            <PropertyRef Name="ID_Hoa_Don" />
+          </Key>
+          <Property Name="ID_Hoa_Don" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_Hop_Dong" Type="int" Nullable="false" />
+          <Property Name="Thang" Type="int" Nullable="false" />
+          <Property Name="Nam" Type="int" Nullable="false" />
+          <Property Name="So_Dien" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Tien_Dien" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="So_Nuoc" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Tien_Nuoc" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Tien_Phong" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Tien_Wifi" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Tong_Tien" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Ngay_Lap" Type="date" Nullable="false" />
+          <Property Name="Han_Thanh_Toan" Type="date" />
+          <Property Name="Trang_Thai" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Hop_Dong">
+          <Key>
+            <PropertyRef Name="ID_Hop_Dong" />
+          </Key>
+          <Property Name="ID_Hop_Dong" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_Phong_Tro" Type="int" Nullable="false" />
+          <Property Name="ID_Khach_Thue" Type="int" Nullable="false" />
+          <Property Name="Ngay_Ky" Type="date" Nullable="false" />
+          <Property Name="Ngay_Bat_Dau" Type="date" Nullable="false" />
+          <Property Name="Ngay_Ket_Thuc" Type="date" />
+          <Property Name="Gia_Thue" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Ky_Thanh_Toan" Type="int" Nullable="false" />
+          <Property Name="Trang_Thai" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Khach_Thue">
+          <Key>
+            <PropertyRef Name="ID_Khach_Thue" />
+          </Key>
+          <Property Name="ID_Khach_Thue" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_TK" Type="int" />
+          <Property Name="Ho_Ten" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CCCD" Type="varchar" MaxLength="12" />
+          <Property Name="SDT" Type="varchar" MaxLength="15" />
+          <Property Name="Ngay_Sinh" Type="date" />
+          <Property Name="Gioi_Tinh" Type="nvarchar" MaxLength="10" />
+          <Property Name="Dia_Chi" Type="nvarchar" MaxLength="255" />
+          <Property Name="Ngay_Tao" Type="datetime" Nullable="false" />
+          <Property Name="Trang_Thai" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="Khu_Vuc">
           <Key>
             <PropertyRef Name="ID_KV" />
@@ -48,6 +96,7 @@
           <Property Name="Ten_LoaiTin" Type="nvarchar" MaxLength="50" />
           <Property Name="CapDo" Type="int" />
           <Property Name="Mau_TieuDe" Type="nvarchar" MaxLength="50" />
+          <Property Name="Kieu_Chu" Type="nvarchar" MaxLength="20" />
           <Property Name="KichThuoc" Type="nvarchar" MaxLength="20" />
           <Property Name="Tu_Dong_Duyet" Type="bit" />
           <Property Name="Hien_Thi_Goi_Dien" Type="bit" />
@@ -59,6 +108,7 @@
           </Key>
           <Property Name="ID_Noi_Bat" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ID_Phong_Tro" Type="int" Nullable="false" />
+          <Property Name="ID_Dac_Diem" Type="int" Nullable="false" />
           <Property Name="Day_du_noi_that" Type="bit" />
           <Property Name="Co_gac" Type="bit" />
           <Property Name="Ke_bep" Type="bit" />
@@ -93,8 +143,17 @@
           <Property Name="Gia_Ca" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Ngay_Dang" Type="datetime" />
           <Property Name="Ngay_Het_Han" Type="datetime" />
-          <Property Name="Gia_Duyet" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Trang_Thai" Type="bit" />
+          <Property Name="Gia_Duyet" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DaTa_Phong_Tro.dbo.Phong_Tro_Backup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Phong_Tro_Backup">
+          <Key>
+            <PropertyRef Name="ID_Phong_Tro" />
+          </Key>
+          <Property Name="ID_Phong_Tro" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mo_Ta" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -108,9 +167,9 @@
         </EntityType>
         <EntityType Name="Tai_Khoan">
           <Key>
-            <PropertyRef Name="ID_TK" />
+            <PropertyRef Name="ID_Tk" />
           </Key>
-          <Property Name="ID_TK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_Tk" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ID_Phan_Quyen" Type="int" Nullable="false" />
           <Property Name="User_Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Pass" Type="nvarchar" MaxLength="255" Nullable="false" />
@@ -162,6 +221,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_HoaDon_HopDong">
+          <End Role="Hop_Dong" Type="Self.Hop_Dong" Multiplicity="1" />
+          <End Role="Hoa_Don_Dien_Nuoc" Type="Self.Hoa_Don_Dien_Nuoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hop_Dong">
+              <PropertyRef Name="ID_Hop_Dong" />
+            </Principal>
+            <Dependent Role="Hoa_Don_Dien_Nuoc">
+              <PropertyRef Name="ID_Hop_Dong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HopDong_KhachThue">
+          <End Role="Khach_Thue" Type="Self.Khach_Thue" Multiplicity="1" />
+          <End Role="Hop_Dong" Type="Self.Hop_Dong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Khach_Thue">
+              <PropertyRef Name="ID_Khach_Thue" />
+            </Principal>
+            <Dependent Role="Hop_Dong">
+              <PropertyRef Name="ID_Khach_Thue" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HopDong_PhongTro">
+          <End Role="Phong_Tro" Type="Self.Phong_Tro" Multiplicity="1" />
+          <End Role="Hop_Dong" Type="Self.Hop_Dong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Phong_Tro">
+              <PropertyRef Name="ID_Phong_Tro" />
+            </Principal>
+            <Dependent Role="Hop_Dong">
+              <PropertyRef Name="ID_Phong_Tro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KhachThue_TaiKhoan">
+          <End Role="Tai_Khoan" Type="Self.Tai_Khoan" Multiplicity="0..1" />
+          <End Role="Khach_Thue" Type="Self.Khach_Thue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tai_Khoan">
+              <PropertyRef Name="ID_Tk" />
+            </Principal>
+            <Dependent Role="Khach_Thue">
+              <PropertyRef Name="ID_TK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_NoiBat_PhongTro">
           <End Role="Phong_Tro" Type="Self.Phong_Tro" Multiplicity="1" />
           <End Role="Noi_Bat" Type="Self.Noi_Bat" Multiplicity="*" />
@@ -191,7 +298,7 @@
           <End Role="Phong_Tro" Type="Self.Phong_Tro" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tai_Khoan">
-              <PropertyRef Name="ID_TK" />
+              <PropertyRef Name="ID_Tk" />
             </Principal>
             <Dependent Role="Phong_Tro">
               <PropertyRef Name="ID_TK" />
@@ -267,7 +374,7 @@
           <End Role="Yeu_Thich" Type="Self.Yeu_Thich" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tai_Khoan">
-              <PropertyRef Name="ID_TK" />
+              <PropertyRef Name="ID_Tk" />
             </Principal>
             <Dependent Role="Yeu_Thich">
               <PropertyRef Name="ID_TK" />
@@ -278,6 +385,9 @@
           <EntitySet Name="Bang_Gia_Tin" EntityType="Self.Bang_Gia_Tin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Chu_De" EntityType="Self.Chu_De" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Hinh_Anh" EntityType="Self.Hinh_Anh" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Hoa_Don_Dien_Nuoc" EntityType="Self.Hoa_Don_Dien_Nuoc" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Hop_Dong" EntityType="Self.Hop_Dong" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Khach_Thue" EntityType="Self.Khach_Thue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Khu_Vuc" EntityType="Self.Khu_Vuc" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Loai_Tin" EntityType="Self.Loai_Tin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Noi_Bat" EntityType="Self.Noi_Bat" Schema="dbo" store:Type="Tables" />
@@ -287,6 +397,12 @@
           <EntitySet Name="Tai_Khoan" EntityType="Self.Tai_Khoan" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Video" EntityType="Self.Video" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Yeu_Thich" EntityType="Self.Yeu_Thich" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Phong_Tro_Backup" EntityType="Self.Phong_Tro_Backup" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Phong_Tro_Backup].[ID_Phong_Tro] AS [ID_Phong_Tro], 
+    [Phong_Tro_Backup].[Mo_Ta] AS [Mo_Ta]
+    FROM [dbo].[Phong_Tro_Backup] AS [Phong_Tro_Backup]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Bang_Gia_Tin_Loai_Tin" Association="Self.FK_Bang_Gia_Tin_Loai_Tin">
             <End Role="Loai_Tin" EntitySet="Loai_Tin" />
             <End Role="Bang_Gia_Tin" EntitySet="Bang_Gia_Tin" />
@@ -294,6 +410,22 @@
           <AssociationSet Name="FK_HinhAnh_PhongTro" Association="Self.FK_HinhAnh_PhongTro">
             <End Role="Phong_Tro" EntitySet="Phong_Tro" />
             <End Role="Hinh_Anh" EntitySet="Hinh_Anh" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HoaDon_HopDong" Association="Self.FK_HoaDon_HopDong">
+            <End Role="Hop_Dong" EntitySet="Hop_Dong" />
+            <End Role="Hoa_Don_Dien_Nuoc" EntitySet="Hoa_Don_Dien_Nuoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HopDong_KhachThue" Association="Self.FK_HopDong_KhachThue">
+            <End Role="Khach_Thue" EntitySet="Khach_Thue" />
+            <End Role="Hop_Dong" EntitySet="Hop_Dong" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HopDong_PhongTro" Association="Self.FK_HopDong_PhongTro">
+            <End Role="Phong_Tro" EntitySet="Phong_Tro" />
+            <End Role="Hop_Dong" EntitySet="Hop_Dong" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KhachThue_TaiKhoan" Association="Self.FK_KhachThue_TaiKhoan">
+            <End Role="Tai_Khoan" EntitySet="Tai_Khoan" />
+            <End Role="Khach_Thue" EntitySet="Khach_Thue" />
           </AssociationSet>
           <AssociationSet Name="FK_NoiBat_PhongTro" Association="Self.FK_NoiBat_PhongTro">
             <End Role="Phong_Tro" EntitySet="Phong_Tro" />
@@ -332,8 +464,7 @@
             <End Role="Yeu_Thich" EntitySet="Yeu_Thich" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DaTa_Phong_TroModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -384,6 +515,7 @@
           <Property Name="Ten_LoaiTin" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CapDo" Type="Int32" />
           <Property Name="Mau_TieuDe" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Kieu_Chu" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="KichThuoc" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Tu_Dong_Duyet" Type="Boolean" />
           <Property Name="Hien_Thi_Goi_Dien" Type="Boolean" />
@@ -397,6 +529,7 @@
           </Key>
           <Property Name="ID_Noi_Bat" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ID_Phong_Tro" Type="Int32" Nullable="false" />
+          <Property Name="ID_Dac_Diem" Type="Int32" Nullable="false" />
           <Property Name="Day_du_noi_that" Type="Boolean" />
           <Property Name="Co_gac" Type="Boolean" />
           <Property Name="Ke_bep" Type="Boolean" />
@@ -433,7 +566,6 @@
           <Property Name="Gia_Ca" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Ngay_Dang" Type="DateTime" Precision="3" />
           <Property Name="Ngay_Het_Han" Type="DateTime" Precision="3" />
-          <Property Name="Gia_Duyet" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Trang_Thai" Type="Boolean" />
           <NavigationProperty Name="Chu_De" Relationship="Self.FK_PhongTro_ChuDe" FromRole="Phong_Tro" ToRole="Chu_De" />
           <NavigationProperty Name="Hinh_Anh" Relationship="Self.FK_HinhAnh_PhongTro" FromRole="Phong_Tro" ToRole="Hinh_Anh" />
@@ -443,6 +575,8 @@
           <NavigationProperty Name="Tai_Khoan" Relationship="Self.FK_Phong_Tro_Tai_Khoan" FromRole="Phong_Tro" ToRole="Tai_Khoan" />
           <NavigationProperty Name="Video" Relationship="Self.FK_Video_PhongTro" FromRole="Phong_Tro" ToRole="Video" />
           <NavigationProperty Name="Yeu_Thich" Relationship="Self.FK_Yeu_Thich_Phong_Tro" FromRole="Phong_Tro" ToRole="Yeu_Thich" />
+          <Property Name="Gia_Duyet" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="Hop_Dong" Relationship="DaTa_Phong_TroModel.FK_HopDong_PhongTro" FromRole="Phong_Tro" ToRole="Hop_Dong" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -456,9 +590,9 @@
         </EntityType>
         <EntityType Name="Tai_Khoan">
           <Key>
-            <PropertyRef Name="ID_TK" />
+            <PropertyRef Name="ID_Tk" />
           </Key>
-          <Property Name="ID_TK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_Tk" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ID_Phan_Quyen" Type="Int32" Nullable="false" />
           <Property Name="User_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Pass" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
@@ -471,6 +605,7 @@
           <NavigationProperty Name="Phan_Quyen" Relationship="Self.FK_TaiKhoan_PhanQuyen" FromRole="Tai_Khoan" ToRole="Phan_Quyen" />
           <NavigationProperty Name="Phong_Tro" Relationship="Self.FK_Phong_Tro_Tai_Khoan" FromRole="Tai_Khoan" ToRole="Phong_Tro" />
           <NavigationProperty Name="Yeu_Thich" Relationship="Self.FK_Yeu_Thich_Tai_Khoan" FromRole="Tai_Khoan" ToRole="Yeu_Thich" />
+          <NavigationProperty Name="Khach_Thue" Relationship="DaTa_Phong_TroModel.FK_KhachThue_TaiKhoan" FromRole="Tai_Khoan" ToRole="Khach_Thue" />
         </EntityType>
         <EntityType Name="Video">
           <Key>
@@ -491,6 +626,13 @@
           <Property Name="ID_TK" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Phong_Tro" Relationship="Self.FK_Yeu_Thich_Phong_Tro" FromRole="Yeu_Thich" ToRole="Phong_Tro" />
           <NavigationProperty Name="Tai_Khoan" Relationship="Self.FK_Yeu_Thich_Tai_Khoan" FromRole="Yeu_Thich" ToRole="Tai_Khoan" />
+        </EntityType>
+        <EntityType Name="Phong_Tro_Backup">
+          <Key>
+            <PropertyRef Name="ID_Phong_Tro" />
+          </Key>
+          <Property Name="ID_Phong_Tro" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mo_Ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_Bang_Gia_Tin_Loai_Tin">
           <End Role="Loai_Tin" Type="Self.Loai_Tin" Multiplicity="0..1" />
@@ -583,7 +725,7 @@
           <End Role="Phong_Tro" Type="Self.Phong_Tro" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tai_Khoan">
-              <PropertyRef Name="ID_TK" />
+              <PropertyRef Name="ID_Tk" />
             </Principal>
             <Dependent Role="Phong_Tro">
               <PropertyRef Name="ID_TK" />
@@ -621,7 +763,7 @@
           <End Role="Yeu_Thich" Type="Self.Yeu_Thich" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tai_Khoan">
-              <PropertyRef Name="ID_TK" />
+              <PropertyRef Name="ID_Tk" />
             </Principal>
             <Dependent Role="Yeu_Thich">
               <PropertyRef Name="ID_TK" />
@@ -641,6 +783,7 @@
           <EntitySet Name="Tai_Khoan" EntityType="Self.Tai_Khoan" />
           <EntitySet Name="Video" EntityType="Self.Video" />
           <EntitySet Name="Yeu_Thich" EntityType="Self.Yeu_Thich" />
+          <EntitySet Name="Phong_Tro_Backup" EntityType="Self.Phong_Tro_Backup" />
           <AssociationSet Name="FK_Bang_Gia_Tin_Loai_Tin" Association="Self.FK_Bang_Gia_Tin_Loai_Tin">
             <End Role="Loai_Tin" EntitySet="Loai_Tin" />
             <End Role="Bang_Gia_Tin" EntitySet="Bang_Gia_Tin" />
@@ -685,7 +828,128 @@
             <End Role="Tai_Khoan" EntitySet="Tai_Khoan" />
             <End Role="Yeu_Thich" EntitySet="Yeu_Thich" />
           </AssociationSet>
+          <EntitySet Name="Hoa_Don_Dien_Nuoc" EntityType="DaTa_Phong_TroModel.Hoa_Don_Dien_Nuoc" />
+          <EntitySet Name="Hop_Dong" EntityType="DaTa_Phong_TroModel.Hop_Dong" />
+          <EntitySet Name="Khach_Thue" EntityType="DaTa_Phong_TroModel.Khach_Thue" />
+          <AssociationSet Name="FK_HoaDon_HopDong" Association="DaTa_Phong_TroModel.FK_HoaDon_HopDong">
+            <End Role="Hop_Dong" EntitySet="Hop_Dong" />
+            <End Role="Hoa_Don_Dien_Nuoc" EntitySet="Hoa_Don_Dien_Nuoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HopDong_KhachThue" Association="DaTa_Phong_TroModel.FK_HopDong_KhachThue">
+            <End Role="Khach_Thue" EntitySet="Khach_Thue" />
+            <End Role="Hop_Dong" EntitySet="Hop_Dong" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HopDong_PhongTro" Association="DaTa_Phong_TroModel.FK_HopDong_PhongTro">
+            <End Role="Phong_Tro" EntitySet="Phong_Tro" />
+            <End Role="Hop_Dong" EntitySet="Hop_Dong" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KhachThue_TaiKhoan" Association="DaTa_Phong_TroModel.FK_KhachThue_TaiKhoan">
+            <End Role="Tai_Khoan" EntitySet="Tai_Khoan" />
+            <End Role="Khach_Thue" EntitySet="Khach_Thue" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Hoa_Don_Dien_Nuoc">
+          <Key>
+            <PropertyRef Name="ID_Hoa_Don" />
+          </Key>
+          <Property Name="ID_Hoa_Don" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_Hop_Dong" Type="Int32" Nullable="false" />
+          <Property Name="Thang" Type="Int32" Nullable="false" />
+          <Property Name="Nam" Type="Int32" Nullable="false" />
+          <Property Name="So_Dien" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Tien_Dien" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="So_Nuoc" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Tien_Nuoc" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Tien_Phong" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Tien_Wifi" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Tong_Tien" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Ngay_Lap" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Han_Thanh_Toan" Type="DateTime" Precision="0" />
+          <Property Name="Trang_Thai" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Hop_Dong" Relationship="DaTa_Phong_TroModel.FK_HoaDon_HopDong" FromRole="Hoa_Don_Dien_Nuoc" ToRole="Hop_Dong" />
+        </EntityType>
+        <EntityType Name="Hop_Dong">
+          <Key>
+            <PropertyRef Name="ID_Hop_Dong" />
+          </Key>
+          <Property Name="ID_Hop_Dong" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_Phong_Tro" Type="Int32" Nullable="false" />
+          <Property Name="ID_Khach_Thue" Type="Int32" Nullable="false" />
+          <Property Name="Ngay_Ky" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Ngay_Bat_Dau" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Ngay_Ket_Thuc" Type="DateTime" Precision="0" />
+          <Property Name="Gia_Thue" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Ky_Thanh_Toan" Type="Int32" Nullable="false" />
+          <Property Name="Trang_Thai" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Hoa_Don_Dien_Nuoc" Relationship="DaTa_Phong_TroModel.FK_HoaDon_HopDong" FromRole="Hop_Dong" ToRole="Hoa_Don_Dien_Nuoc" />
+          <NavigationProperty Name="Khach_Thue" Relationship="DaTa_Phong_TroModel.FK_HopDong_KhachThue" FromRole="Hop_Dong" ToRole="Khach_Thue" />
+          <NavigationProperty Name="Phong_Tro" Relationship="DaTa_Phong_TroModel.FK_HopDong_PhongTro" FromRole="Hop_Dong" ToRole="Phong_Tro" />
+        </EntityType>
+        <EntityType Name="Khach_Thue">
+          <Key>
+            <PropertyRef Name="ID_Khach_Thue" />
+          </Key>
+          <Property Name="ID_Khach_Thue" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_TK" Type="Int32" />
+          <Property Name="Ho_Ten" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CCCD" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="SDT" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Ngay_Sinh" Type="DateTime" Precision="0" />
+          <Property Name="Gioi_Tinh" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Dia_Chi" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Ngay_Tao" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Trang_Thai" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Hop_Dong" Relationship="DaTa_Phong_TroModel.FK_HopDong_KhachThue" FromRole="Khach_Thue" ToRole="Hop_Dong" />
+          <NavigationProperty Name="Tai_Khoan" Relationship="DaTa_Phong_TroModel.FK_KhachThue_TaiKhoan" FromRole="Khach_Thue" ToRole="Tai_Khoan" />
+        </EntityType>
+        <Association Name="FK_HoaDon_HopDong">
+          <End Type="DaTa_Phong_TroModel.Hop_Dong" Role="Hop_Dong" Multiplicity="1" />
+          <End Type="DaTa_Phong_TroModel.Hoa_Don_Dien_Nuoc" Role="Hoa_Don_Dien_Nuoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hop_Dong">
+              <PropertyRef Name="ID_Hop_Dong" />
+            </Principal>
+            <Dependent Role="Hoa_Don_Dien_Nuoc">
+              <PropertyRef Name="ID_Hop_Dong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HopDong_KhachThue">
+          <End Type="DaTa_Phong_TroModel.Khach_Thue" Role="Khach_Thue" Multiplicity="1" />
+          <End Type="DaTa_Phong_TroModel.Hop_Dong" Role="Hop_Dong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Khach_Thue">
+              <PropertyRef Name="ID_Khach_Thue" />
+            </Principal>
+            <Dependent Role="Hop_Dong">
+              <PropertyRef Name="ID_Khach_Thue" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HopDong_PhongTro">
+          <End Type="DaTa_Phong_TroModel.Phong_Tro" Role="Phong_Tro" Multiplicity="1" />
+          <End Type="DaTa_Phong_TroModel.Hop_Dong" Role="Hop_Dong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Phong_Tro">
+              <PropertyRef Name="ID_Phong_Tro" />
+            </Principal>
+            <Dependent Role="Hop_Dong">
+              <PropertyRef Name="ID_Phong_Tro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KhachThue_TaiKhoan">
+          <End Type="DaTa_Phong_TroModel.Tai_Khoan" Role="Tai_Khoan" Multiplicity="0..1" />
+          <End Type="DaTa_Phong_TroModel.Khach_Thue" Role="Khach_Thue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tai_Khoan">
+              <PropertyRef Name="ID_Tk" />
+            </Principal>
+            <Dependent Role="Khach_Thue">
+              <PropertyRef Name="ID_TK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -738,6 +1002,7 @@
                 <ScalarProperty Name="Ten_LoaiTin" ColumnName="Ten_LoaiTin" />
                 <ScalarProperty Name="CapDo" ColumnName="CapDo" />
                 <ScalarProperty Name="Mau_TieuDe" ColumnName="Mau_TieuDe" />
+                <ScalarProperty Name="Kieu_Chu" ColumnName="Kieu_Chu" />
                 <ScalarProperty Name="KichThuoc" ColumnName="KichThuoc" />
                 <ScalarProperty Name="Tu_Dong_Duyet" ColumnName="Tu_Dong_Duyet" />
                 <ScalarProperty Name="Hien_Thi_Goi_Dien" ColumnName="Hien_Thi_Goi_Dien" />
@@ -750,6 +1015,7 @@
               <MappingFragment StoreEntitySet="Noi_Bat">
                 <ScalarProperty Name="ID_Noi_Bat" ColumnName="ID_Noi_Bat" />
                 <ScalarProperty Name="ID_Phong_Tro" ColumnName="ID_Phong_Tro" />
+                <ScalarProperty Name="ID_Dac_Diem" ColumnName="ID_Dac_Diem" />
                 <ScalarProperty Name="Day_du_noi_that" ColumnName="Day_du_noi_that" />
                 <ScalarProperty Name="Co_gac" ColumnName="Co_gac" />
                 <ScalarProperty Name="Ke_bep" ColumnName="Ke_bep" />
@@ -774,6 +1040,7 @@
           <EntitySetMapping Name="Phong_Tro">
             <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Phong_Tro">
               <MappingFragment StoreEntitySet="Phong_Tro">
+                <ScalarProperty Name="Gia_Duyet" ColumnName="Gia_Duyet" />
                 <ScalarProperty Name="ID_Phong_Tro" ColumnName="ID_Phong_Tro" />
                 <ScalarProperty Name="ID_KV" ColumnName="ID_KV" />
                 <ScalarProperty Name="ID_CD" ColumnName="ID_CD" />
@@ -786,7 +1053,6 @@
                 <ScalarProperty Name="Gia_Ca" ColumnName="Gia_Ca" />
                 <ScalarProperty Name="Ngay_Dang" ColumnName="Ngay_Dang" />
                 <ScalarProperty Name="Ngay_Het_Han" ColumnName="Ngay_Het_Han" />
-                <ScalarProperty Name="Gia_Duyet" ColumnName="Gia_Duyet" />
                 <ScalarProperty Name="Trang_Thai" ColumnName="Trang_Thai" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -805,7 +1071,7 @@
           <EntitySetMapping Name="Tai_Khoan">
             <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Tai_Khoan">
               <MappingFragment StoreEntitySet="Tai_Khoan">
-                <ScalarProperty Name="ID_TK" ColumnName="ID_TK" />
+                <ScalarProperty Name="ID_Tk" ColumnName="ID_Tk" />
                 <ScalarProperty Name="ID_Phan_Quyen" ColumnName="ID_Phan_Quyen" />
                 <ScalarProperty Name="User_Name" ColumnName="User_Name" />
                 <ScalarProperty Name="Pass" ColumnName="Pass" />
@@ -834,6 +1100,65 @@
                 <ScalarProperty Name="ID_YT" ColumnName="ID_YT" />
                 <ScalarProperty Name="ID_Phong_Tro" ColumnName="ID_Phong_Tro" />
                 <ScalarProperty Name="ID_TK" ColumnName="ID_TK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Phong_Tro_Backup">
+            <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Phong_Tro_Backup">
+              <MappingFragment StoreEntitySet="Phong_Tro_Backup">
+                <ScalarProperty Name="ID_Phong_Tro" ColumnName="ID_Phong_Tro" />
+                <ScalarProperty Name="Mo_Ta" ColumnName="Mo_Ta" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Hoa_Don_Dien_Nuoc">
+            <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Hoa_Don_Dien_Nuoc">
+              <MappingFragment StoreEntitySet="Hoa_Don_Dien_Nuoc">
+                <ScalarProperty Name="Trang_Thai" ColumnName="Trang_Thai" />
+                <ScalarProperty Name="Han_Thanh_Toan" ColumnName="Han_Thanh_Toan" />
+                <ScalarProperty Name="Ngay_Lap" ColumnName="Ngay_Lap" />
+                <ScalarProperty Name="Tong_Tien" ColumnName="Tong_Tien" />
+                <ScalarProperty Name="Tien_Wifi" ColumnName="Tien_Wifi" />
+                <ScalarProperty Name="Tien_Phong" ColumnName="Tien_Phong" />
+                <ScalarProperty Name="Tien_Nuoc" ColumnName="Tien_Nuoc" />
+                <ScalarProperty Name="So_Nuoc" ColumnName="So_Nuoc" />
+                <ScalarProperty Name="Tien_Dien" ColumnName="Tien_Dien" />
+                <ScalarProperty Name="So_Dien" ColumnName="So_Dien" />
+                <ScalarProperty Name="Nam" ColumnName="Nam" />
+                <ScalarProperty Name="Thang" ColumnName="Thang" />
+                <ScalarProperty Name="ID_Hop_Dong" ColumnName="ID_Hop_Dong" />
+                <ScalarProperty Name="ID_Hoa_Don" ColumnName="ID_Hoa_Don" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Hop_Dong">
+            <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Hop_Dong">
+              <MappingFragment StoreEntitySet="Hop_Dong">
+                <ScalarProperty Name="Trang_Thai" ColumnName="Trang_Thai" />
+                <ScalarProperty Name="Ky_Thanh_Toan" ColumnName="Ky_Thanh_Toan" />
+                <ScalarProperty Name="Gia_Thue" ColumnName="Gia_Thue" />
+                <ScalarProperty Name="Ngay_Ket_Thuc" ColumnName="Ngay_Ket_Thuc" />
+                <ScalarProperty Name="Ngay_Bat_Dau" ColumnName="Ngay_Bat_Dau" />
+                <ScalarProperty Name="Ngay_Ky" ColumnName="Ngay_Ky" />
+                <ScalarProperty Name="ID_Khach_Thue" ColumnName="ID_Khach_Thue" />
+                <ScalarProperty Name="ID_Phong_Tro" ColumnName="ID_Phong_Tro" />
+                <ScalarProperty Name="ID_Hop_Dong" ColumnName="ID_Hop_Dong" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Khach_Thue">
+            <EntityTypeMapping TypeName="DaTa_Phong_TroModel.Khach_Thue">
+              <MappingFragment StoreEntitySet="Khach_Thue">
+                <ScalarProperty Name="Trang_Thai" ColumnName="Trang_Thai" />
+                <ScalarProperty Name="Ngay_Tao" ColumnName="Ngay_Tao" />
+                <ScalarProperty Name="Dia_Chi" ColumnName="Dia_Chi" />
+                <ScalarProperty Name="Gioi_Tinh" ColumnName="Gioi_Tinh" />
+                <ScalarProperty Name="Ngay_Sinh" ColumnName="Ngay_Sinh" />
+                <ScalarProperty Name="SDT" ColumnName="SDT" />
+                <ScalarProperty Name="CCCD" ColumnName="CCCD" />
+                <ScalarProperty Name="Ho_Ten" ColumnName="Ho_Ten" />
+                <ScalarProperty Name="ID_TK" ColumnName="ID_TK" />
+                <ScalarProperty Name="ID_Khach_Thue" ColumnName="ID_Khach_Thue" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

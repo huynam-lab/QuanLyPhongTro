@@ -37,5 +37,9 @@ namespace QuanLyPhongTro.Models
         public virtual DbSet<Tai_Khoan> Tai_Khoan { get; set; }
         public virtual DbSet<Video> Video { get; set; }
         public virtual DbSet<Yeu_Thich> Yeu_Thich { get; set; }
+        public virtual DbSet<Phong_Tro_Backup> Phong_Tro_Backup { get; set; }
+        public virtual DbSet<Hoa_Don_Dien_Nuoc> Hoa_Don_Dien_Nuoc { get; set; }
+        public virtual DbSet<Hop_Dong> Hop_Dong { get; set; }
+        public virtual DbSet<Khach_Thue> Khach_Thue { get; set; }
     }
 }

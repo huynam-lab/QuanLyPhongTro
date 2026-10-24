@@ -672,6 +672,11 @@
     <Content Include="Areas\Host\Views\Admin\QuanlyTaiKhoan.cshtml" />
     <Content Include="Areas\Host\Views\Admin\UpdateData.cshtml" />
     <Content Include="Areas\Host\Views\Admin\DuDoanLapDay.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\ThongKeDoanhThu.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\QuanLyPhongTro.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\QuanLyKhachThue.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\QuanLyDienNuoc.cshtml" />
+    <Content Include="Areas\Host\Views\Admin\QuanLyHopDong.cshtml" />
     <Content Include="Kho\Video\23_2384.mp4" />
     <Content Include="Kho\Video\67_9834.mp4" />
     <Content Include="Kho\Video\68_9283.mp4" />
@@ -733,12 +738,6 @@
     <Compile Include="Areas\Host\Controllers\BaseController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ChatbotController.cs" />
-    <Compile Include="Models\OccupancyForecastService.cs" />
-    <Compile Include="Models\AiService.cs" />
-    <Compile Include="Models\AiConsultationEngine.cs" />
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
     <Compile Include="Models\Bang_Gia_Tin.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -746,6 +745,15 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Hinh_Anh.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Hoa_Don_Dien_Nuoc.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Hop_Dong.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Khach_Thue.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Khu_Vuc.cs">
@@ -772,11 +780,20 @@
     <Compile Include="Models\Noi_Bat.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\OccupancyForecastService.cs" />
+    <Compile Include="Models\AiService.cs" />
+    <Compile Include="Models\AiConsultationEngine.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="Models\Phan_Quyen.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PhongTroItemViewModel.cs" />
     <Compile Include="Models\Phong_Tro.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Phong_Tro_Backup.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagrams.cs">

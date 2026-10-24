@@ -19,9 +19,10 @@ namespace QuanLyPhongTro.Models
         {
             this.Phong_Tro = new HashSet<Phong_Tro>();
             this.Yeu_Thich = new HashSet<Yeu_Thich>();
+            this.Khach_Thue = new HashSet<Khach_Thue>();
         }
     
-        public int ID_TK { get; set; }
+        public int ID_Tk { get; set; }
         public int ID_Phan_Quyen { get; set; }
         public string User_Name { get; set; }
         public string Pass { get; set; }
@@ -37,5 +38,7 @@ namespace QuanLyPhongTro.Models
         public virtual ICollection<Phong_Tro> Phong_Tro { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Yeu_Thich> Yeu_Thich { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Khach_Thue> Khach_Thue { get; set; }
     }
 }

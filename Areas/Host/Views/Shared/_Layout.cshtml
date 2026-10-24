@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -45,12 +45,11 @@
                     background-color: #ffca28;
                 }
 
-        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 250px;
             background-color: #fff;
             position: fixed;
-            top: 40px; /* trừ chiều cao navbar */
+            top: 40px;
             bottom: 0;
             left: 0;
             border-right: 1px solid #e0e0e0;
@@ -110,9 +109,15 @@
                     color: #0047b3;
                 }
 
-        /* ===== CONTENT ===== */
         .content {
             margin-left: 250px;
+            padding-top: 42px;
+        }
+
+        .table th, .table td {
+            white-space: nowrap;
+            vertical-align: middle;
+            font-size: 13px;
         }
 
         .card {
@@ -138,7 +143,6 @@
 
 </head>
 <body>
-    @model QuanLyPhongTro.Areas.Admin.ChuNhaViewModels.ChuNha
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="height:40px;">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold " href="#" style="font-size:13px;">
@@ -162,23 +166,6 @@
                 <ul class="navbar-nav ms-auto align-items-center" style="font-size:13px; font-weight:400;">
                     <li class="nav-item me-3"><a href="#" class="nav-link"><i class="bi bi-heart"></i> Tin đã lưu</a></li>
                     <li class="nav-item me-3"><a href="@Url.Action("DSTinDang", "Admin", new { area = "Host" })" class="nav-link"><i class="bi bi-folder"></i> Quản lý</a></li>
-                    @*<li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            @if (ViewBag.Avata != "")
-                                {
-                                <img src="~/Kho/Img/Avata/@ViewBag.Avata" alt="avatar" width="28" class="rounded-circle me-1" style="object-fit:cover; height:28px;" />
-                                }
-                            else
-                                {
-                                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" width="28" class="rounded-circle me-1">
-                                @ViewBag.Name
-                                }
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="@Url.Action("QuanLyTaiKhoan", "Admin", new { area = "Admin" })">Tài khoản</a></li>
-                            <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
-                        </ul>
-                    </li>*@
                     <li class="nav-item ms-3">
                         <a href="@Url.Action("Index", "Admin", new { area = "Host" })" class="btn btn-dangtin"><i class="bi bi-pencil-square me-1"></i>Đăng tin</a>
                     </li>
@@ -192,12 +179,10 @@
         string avatarPath;
         if (string.IsNullOrEmpty(userAvatar))
             {
-            // Nếu Session["Avatar"] null hoặc rỗng, dùng ảnh mặc định
             avatarPath = "~/Assets/Images/Avatar/avatar-mac-dinh.jpg";
             }
         else
             {
-            // Nếu có, dùng đường dẫn ảnh tùy chỉnh
             avatarPath = "~/Assets/Images/Avatar/" + userAvatar;
             }
     }
@@ -221,6 +206,25 @@
             </a>
 
             <a href="@Url.Action("BangGiaDichVu", "User", new { area = "" })"><i class="bi bi-tags me-2"></i>Bảng giá dịch vụ</a>
+        </div>
+
+        <div class="nav-section">
+            <h6>Quản lý nhà trọ</h6>
+            <a href="@Url.Action("QuanLyPhongTro", "Admin", new { area = "Host" })">
+                <i class="bi bi-door-open me-2"></i> Quản lý phòng trọ
+            </a>
+            <a href="@Url.Action("QuanLyHopDong", "Admin", new { area = "Host" })">
+                <i class="bi bi-file-earmark-text me-2"></i> Quản lý hợp đồng
+            </a>
+            <a href="@Url.Action("QuanLyKhachThue", "Admin", new { area = "Host" })">
+                <i class="bi bi-people me-2"></i> Quản lý khách thuê
+            </a>
+            <a href="@Url.Action("QuanLyDienNuoc", "Admin", new { area = "Host" })">
+                <i class="bi bi-lightning-charge me-2"></i> Quản lý điện nước
+            </a>
+            <a href="@Url.Action("ThongKeDoanhThu", "Admin", new { area = "Host" })">
+                <i class="bi bi-bar-chart-line me-2"></i> Thống kê doanh thu
+            </a>
         </div>
 
         <div class="nav-section">

@@ -83,7 +83,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
             ViewBag.Roles = db.Phan_Quyen.ToList();
 
             var list = query
-                .OrderByDescending(x => x.ID_TK)
+                .OrderByDescending(x => x.ID_Tk)
                 .ToList();
 
             return View(list);
