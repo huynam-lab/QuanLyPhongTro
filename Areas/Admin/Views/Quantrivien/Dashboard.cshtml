@@ -1,12 +1,17 @@
-﻿@model IEnumerable<QuanLyPhongTro.Models.Phong_Tro>
+@model IEnumerable<QuanLyPhongTro.Models.Phong_Tro>
 @{
     ViewBag.Title = "Dashboard";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    decimal tongDoanhThu = ViewBag.TongDoanhThu != null ? (decimal)ViewBag.TongDoanhThu : 0m;
+    decimal doanhThuHopDong = ViewBag.DoanhThuHopDong != null ? (decimal)ViewBag.DoanhThuHopDong : 0m;
+    decimal dienNuocDaThu = ViewBag.DienNuocDaThu != null ? (decimal)ViewBag.DienNuocDaThu : 0m;
+    decimal dienNuocChuaThu = ViewBag.DienNuocChuaThu != null ? (decimal)ViewBag.DienNuocChuaThu : 0m;
 }
 
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-3">
     <div class="col-md-3">
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <p class="text-muted mb-1">Tài khoản</p>
                 <h3>@ViewBag.TotalUser</h3>
@@ -14,15 +19,15 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
-                <p class="text-muted mb-1">Hiển thị</p>
+                <p class="text-muted mb-1">Hiển thị (Phòng trống)</p>
                 <h3>@ViewBag.PhongHienThi</h3>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <p class="text-muted mb-1">Hết hạn</p>
                 <h3>@ViewBag.HetHan</h3>
@@ -30,10 +35,58 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
-                <p class="text-muted mb-1">Chờ duyệt</p>
+                <p class="text-muted mb-1">Ẩn / Đã thuê</p>
                 <h3>@ViewBag.PhongChoDuyet</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== THỐNG KÊ TỶ LỆ LẤP ĐẦY, HỢP ĐỒNG & DOANH THU ==================== -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-uppercase">Tỷ lệ lấp đầy & Phòng trống</span>
+                    <span class="badge bg-primary-subtle text-primary">@ViewBag.TyLeLapDay% lấp đầy</span>
+                </div>
+                <h4 class="fw-bold text-primary mb-1">@ViewBag.SoPhongDangThue / @ViewBag.TongSoPhong phòng đã thuê</h4>
+                <div class="small text-muted">
+                    Đang còn trống: <b class="text-danger">@ViewBag.SoPhongTrong phòng</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 border-start border-4 border-success h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-uppercase">Hợp đồng & Khách thuê</span>
+                    <span class="badge bg-success-subtle text-success">Đang hiệu lực</span>
+                </div>
+                <h4 class="fw-bold text-success mb-1">@ViewBag.TongHopDong hợp đồng</h4>
+                <div class="small text-muted">
+                    Tổng khách đang lưu trú: <b class="text-dark">@ViewBag.TongKhachThue người</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 border-start border-4 border-warning h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small fw-semibold text-uppercase">Tổng doanh thu (Phòng & Điện nước)</span>
+                    <span class="badge bg-warning-subtle text-dark">Thống kê thực tế</span>
+                </div>
+                <h4 class="fw-bold text-danger mb-1">@tongDoanhThu.ToString("N0") đ</h4>
+                <div class="small text-muted">
+                    Tiền phòng: <b>@doanhThuHopDong.ToString("N0")đ</b> | Điện nước đã thu: <b class="text-success">@dienNuocDaThu.ToString("N0")đ</b> (Chờ thu: <b class="text-warning">@dienNuocChuaThu.ToString("N0")đ</b>)
+                </div>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-using QuanLyPhongTro.Areas.Admin.ChuNhaViewModels;
+﻿using QuanLyPhongTro.Areas.Admin.ChuNhaViewModels;
 using QuanLyPhongTro.Models;
 using System;
 using System.Collections.Generic;
@@ -178,73 +178,138 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 return RedirectToAction("DSTinDang");
                 }
             }
-        public ActionResult DSTinDang()
+        // Äá»“ng bá»™ tráº¡ng thÃ¡i bÃ i Ä‘Äƒng: Khi phÃ²ng cÃ³ ngÆ°á»i á»Ÿ (há»£p Ä‘á»“ng Ä‘ang hiá»‡u lá»±c) -> BÃ i Ä‘Äƒng chuyá»ƒn sang KhÃ´ng hiá»ƒn thá»‹ (Trang_Thai = false)
+        private void SyncPhongTroVisibility(int idPhongTro)
+        {
+            var phong = db.Phong_Tro.FirstOrDefault(p => p.ID_Phong_Tro == idPhongTro);
+            if (phong != null)
             {
+                bool coNguoiO = db.Hop_Dong.Any(h => h.ID_Phong_Tro == idPhongTro && h.Trang_Thai == true);
+                if (coNguoiO && phong.Trang_Thai == true)
+                {
+                    phong.Trang_Thai = false;
+                    db.SaveChanges();
+                }
+            }
+        }
+
+        private void SyncAllHostRoomsVisibility(int maTK)
+        {
+            var roomsWithActiveContract = db.Phong_Tro
+                .Where(p => p.ID_TK == maTK && p.Trang_Thai == true && p.Hop_Dong.Any(h => h.Trang_Thai))
+                .ToList();
+            if (roomsWithActiveContract.Any())
+            {
+                foreach (var r in roomsWithActiveContract)
+                {
+                    r.Trang_Thai = false;
+                }
+                db.SaveChanges();
+            }
+        }
+
+        public ActionResult DSTinDang()
+        {
             int maTK = 0;
             if (Session["UserID"] != null)
                 int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            SyncAllHostRoomsVisibility(maTK);
+
             var listPhong = db.Phong_Tro
                 .Where(x => x.ID_TK == maTK)
+                .OrderByDescending(x => x.ID_Phong_Tro)
                 .Select(x => new PhongTroListVM
-                    {
+                {
                     ID_Phong_Tro = x.ID_Phong_Tro,
                     Ten_Phong = x.Ten_Phong,
                     Ngay_Dang = x.Ngay_Dang,
-                    Trang_Thai = x.Trang_Thai
-                    })
+                    Trang_Thai = x.Trang_Thai,
+                    DangCoKhachThue = x.Hop_Dong.Any(h => h.Trang_Thai)
+                })
                 .ToList();
 
             var vm = new ChuNha
-                {
+            {
                 PhongTros = listPhong
-                // nếu view này cần thêm KhuVuc, LoaiTin thì gán tiếp
-                };
+            };
 
             return View(vm);
-            }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeletePhongTro(int id)
-            {
-            // tìm phòng
-            var phong = db.Phong_Tro.FirstOrDefault(x => x.ID_Phong_Tro == id);
-            if (phong == null)
-                {
-                return RedirectToAction("DSTinDang");
-                }
+        }
 
-            // xóa các bảng liên quan
-            // 1. hình ảnh
+        [HttpPost]
+        public ActionResult ToggleHienThiTin(int id)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var phong = db.Phong_Tro.FirstOrDefault(x => x.ID_Phong_Tro == id && x.ID_TK == maTK);
+            if (phong == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y bÃ i Ä‘Äƒng." });
+
+            bool coNguoiO = db.Hop_Dong.Any(h => h.ID_Phong_Tro == id && h.Trang_Thai);
+            if (coNguoiO)
+            {
+                phong.Trang_Thai = false;
+                db.SaveChanges();
+                return Json(new { success = false, message = "PhÃ²ng Ä‘ang cÃ³ ngÆ°á»i á»Ÿ nÃªn bÃ i Ä‘Äƒng báº¯t buá»™c á»Ÿ tráº¡ng thÃ¡i KhÃ´ng hiá»ƒn thá»‹!" });
+            }
+
+            phong.Trang_Thai = !(phong.Trang_Thai ?? false);
+            db.SaveChanges();
+            return Json(new { success = true, trangThai = phong.Trang_Thai, message = (phong.Trang_Thai == true ? "ÄÃ£ báº­t hiá»ƒn thá»‹ bÃ i Ä‘Äƒng!" : "ÄÃ£ chuyá»ƒn bÃ i Ä‘Äƒng sang tráº¡ng thÃ¡i KhÃ´ng hiá»ƒn thá»‹!") });
+        }
+
+        private void DeletePhongTroCascade(int id)
+        {
+            var phong = db.Phong_Tro.FirstOrDefault(x => x.ID_Phong_Tro == id);
+            if (phong == null) return;
+
+            var hopDongs = db.Hop_Dong.Where(h => h.ID_Phong_Tro == id).ToList();
+            foreach (var hd in hopDongs)
+            {
+                var hoaDons = db.Hoa_Don_Dien_Nuoc.Where(b => b.ID_Hop_Dong == hd.ID_Hop_Dong).ToList();
+                db.Hoa_Don_Dien_Nuoc.RemoveRange(hoaDons);
+            }
+            db.Hop_Dong.RemoveRange(hopDongs);
+
+            var yeuThichs = db.Yeu_Thich.Where(y => y.ID_Phong_Tro == id).ToList();
+            db.Yeu_Thich.RemoveRange(yeuThichs);
+
             var imgs = db.Hinh_Anh.Where(x => x.ID_Phong_Tro == id).ToList();
             foreach (var img in imgs)
-                {
+            {
                 var path = Server.MapPath("~/Kho/Img/" + img.Url_Anh);
                 if (System.IO.File.Exists(path))
                     System.IO.File.Delete(path);
-                }
+            }
             db.Hinh_Anh.RemoveRange(imgs);
-            // 2. video
+
             var videos = db.Video.Where(x => x.ID_Phong_Tro == id).ToList();
             foreach (var v in videos)
-                {
+            {
                 var path = Server.MapPath("~/Kho/Video/" + v.Url_Video);
                 if (System.IO.File.Exists(path))
                     System.IO.File.Delete(path);
-                }
+            }
             db.Video.RemoveRange(videos);
+
             var noiBat = db.Noi_Bat.Where(x => x.ID_Phong_Tro == id).ToList();
             db.Noi_Bat.RemoveRange(noiBat);
 
-            // 4. xóa phòng trọ
             db.Phong_Tro.Remove(phong);
-
             db.SaveChanges();
-            TempData["SuccessMessage"] = "Xóa thành công";
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeletePhongTro(int id)
+        {
+            DeletePhongTroCascade(id);
+            TempData["SuccessMessage"] = "XÃ³a phÃ²ng trá» thÃ nh cÃ´ng";
             return RedirectToAction("DSTinDang");
-            }
-
-       
-
+        }
         public ActionResult UpdateData(int id)
             {
             // lấy phòng trọ
@@ -856,11 +921,17 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             return View(vm);
         }
 
+        // =========================================================================
+        // 1. QUáº¢N LÃ PHÃ’NG TRá»Œ (DANH SÃCH + THÃŠM + Sá»¬A + XÃ“A)
+        // =========================================================================
         public ActionResult QuanLyPhongTro(string search, int? idKv, string status)
         {
             int maTK = 0;
             if (Session["UserID"] != null)
                 int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            // Tá»± Ä‘á»™ng chuyá»ƒn bÃ i Ä‘Äƒng cá»§a cÃ¡c phÃ²ng Ä‘ang cÃ³ ngÆ°á»i á»Ÿ sang KhÃ´ng hiá»ƒn thá»‹
+            SyncAllHostRoomsVisibility(maTK);
 
             var query = db.Phong_Tro.Where(p => p.ID_TK == maTK);
 
@@ -885,14 +956,17 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 return new PhongTroQuanLyItem
                 {
                     ID_Phong_Tro = p.ID_Phong_Tro,
+                    ID_KV = p.ID_KV,
+                    ID_CD = p.ID_CD,
                     TenPhong = p.Ten_Phong,
                     TenKhuVuc = p.Khu_Vuc != null ? p.Khu_Vuc.Ten_KV : "",
                     DiaChi = p.Dia_Chi,
+                    MoTa = p.Mo_Ta != null ? p.Mo_Ta.Replace("##split##", "\n") : "",
                     DienTich = p.Dien_Tich,
                     GiaThue = p.Gia_Ca,
                     NgayDang = p.Ngay_Dang,
                     NgayHetHan = p.Ngay_Het_Han,
-                    TrangThaiDuyet = p.Trang_Thai ?? false,
+                    TrangThaiDuyet = hdHienTai != null ? false : (p.Trang_Thai ?? false),
                     DangCoKhachThue = hdHienTai != null,
                     TenKhachThue = hdHienTai != null && hdHienTai.Khach_Thue != null ? hdHienTai.Khach_Thue.Ho_Ten : "",
                     SDTKhachThue = hdHienTai != null && hdHienTai.Khach_Thue != null ? hdHienTai.Khach_Thue.SDT : "",
@@ -945,40 +1019,149 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             return View(vm);
         }
 
+        [HttpPost]
+        public ActionResult ThemPhongNhanh(string TenPhong, int? ID_KV, int? ID_CD, string DiaChi, double? DienTich, decimal? GiaThue, string MoTa)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            if (string.IsNullOrWhiteSpace(TenPhong))
+                return Json(new { success = false, message = "Vui lÃ²ng nháº­p tÃªn phÃ²ng trá»!" });
+
+            var firstLoaiTin = db.Loai_Tin.Select(l => (int?)l.ID_LoaiTin).FirstOrDefault() ?? 1;
+            var pt = new Phong_Tro
+            {
+                ID_TK = maTK,
+                Ten_Phong = TenPhong.Trim(),
+                ID_KV = ID_KV ?? db.Khu_Vuc.Select(k => (int?)k.ID_KV).FirstOrDefault(),
+                ID_CD = ID_CD ?? 4,
+                ID_LoaiTin = firstLoaiTin,
+                Dia_Chi = DiaChi ?? "",
+                Dien_Tich = DienTich ?? 20,
+                Gia_Ca = GiaThue ?? 0,
+                Mo_Ta = (MoTa ?? "").Replace("\r\n", "##split##").Replace("\n", "##split##"),
+                Ngay_Dang = DateTime.Now,
+                Ngay_Het_Han = DateTime.Now.AddDays(30),
+                Gia_Duyet = 0,
+                Trang_Thai = true
+            };
+            db.Phong_Tro.Add(pt);
+            db.SaveChanges();
+
+            db.Noi_Bat.Add(new Noi_Bat
+            {
+                ID_Phong_Tro = pt.ID_Phong_Tro,
+                Day_du_noi_that = true,
+                Gio_giac_tu_do = true
+            });
+            db.SaveChanges();
+
+            return Json(new { success = true, message = "ÄÃ£ thÃªm phÃ²ng trá» má»›i thÃ nh cÃ´ng!" });
+        }
+
+        [HttpPost]
+        public ActionResult SuaPhongNhanh(int ID_Phong_Tro, string TenPhong, int? ID_KV, string DiaChi, double? DienTich, decimal? GiaThue, bool? TrangThaiHienThi)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var phong = db.Phong_Tro.FirstOrDefault(p => p.ID_Phong_Tro == ID_Phong_Tro && p.ID_TK == maTK);
+            if (phong == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y phÃ²ng trá» cáº§n sá»­a!" });
+
+            phong.Ten_Phong = string.IsNullOrWhiteSpace(TenPhong) ? phong.Ten_Phong : TenPhong.Trim();
+            if (ID_KV.HasValue && ID_KV.Value > 0) phong.ID_KV = ID_KV.Value;
+            phong.Dia_Chi = DiaChi ?? phong.Dia_Chi;
+            if (DienTich.HasValue) phong.Dien_Tich = DienTich.Value;
+            if (GiaThue.HasValue) phong.Gia_Ca = GiaThue.Value;
+
+            bool dangCoNguoiO = db.Hop_Dong.Any(h => h.ID_Phong_Tro == ID_Phong_Tro && h.Trang_Thai);
+            if (dangCoNguoiO)
+            {
+                // Khi Ä‘ang cÃ³ ngÆ°á»i á»Ÿ thÃ¬ bÃ i Ä‘Äƒng báº¯t buá»™c khÃ´ng hiá»ƒn thá»‹
+                phong.Trang_Thai = false;
+            }
+            else if (TrangThaiHienThi.HasValue)
+            {
+                phong.Trang_Thai = TrangThaiHienThi.Value;
+            }
+
+            db.SaveChanges();
+            return Json(new { success = true, message = "Cáº­p nháº­t thÃ´ng tin phÃ²ng trá» thÃ nh cÃ´ng!" });
+        }
+
+        [HttpPost]
+        public ActionResult XoaPhongTroAjax(int id)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var phong = db.Phong_Tro.FirstOrDefault(p => p.ID_Phong_Tro == id && p.ID_TK == maTK);
+            if (phong == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y phÃ²ng trá» cáº§n xÃ³a!" });
+
+            DeletePhongTroCascade(id);
+            return Json(new { success = true, message = "ÄÃ£ xÃ³a phÃ²ng trá» vÃ  dá»¯ liá»‡u liÃªn quan thÃ nh cÃ´ng!" });
+        }
+
+        // =========================================================================
+        // 2. QUáº¢N LÃ KHÃCH THUÃŠ (DANH SÃCH + THÃŠM + Sá»¬A + XÃ“A)
+        // =========================================================================
         public ActionResult QuanLyKhachThue(string search, string status)
         {
             int maTK = 0;
             if (Session["UserID"] != null)
                 int.TryParse(Session["UserID"].ToString(), out maTK);
 
-            var query = db.Hop_Dong.Where(h => h.Phong_Tro.ID_TK == maTK);
+            var khachListRaw = db.Khach_Thue
+                .Where(k => k.ID_TK == maTK || k.Hop_Dong.Any(h => h.Phong_Tro.ID_TK == maTK))
+                .OrderByDescending(k => k.ID_Khach_Thue)
+                .ToList();
+
+            var listKhach = new List<KhachThueItem>();
+            foreach (var k in khachListRaw)
+            {
+                var hd = k.Hop_Dong
+                    .Where(h => h.Phong_Tro != null && h.Phong_Tro.ID_TK == maTK)
+                    .OrderByDescending(h => h.Trang_Thai)
+                    .ThenByDescending(h => h.ID_Hop_Dong)
+                    .FirstOrDefault();
+
+                listKhach.Add(new KhachThueItem
+                {
+                    ID_Khach_Thue = k.ID_Khach_Thue,
+                    HoTen = k.Ho_Ten ?? "",
+                    CCCD = k.CCCD ?? "",
+                    SDT = k.SDT ?? "",
+                    NgaySinh = k.Ngay_Sinh,
+                    GioiTinh = k.Gioi_Tinh ?? "Nam",
+                    DiaChi = k.Dia_Chi ?? "",
+                    TenPhong = hd != null && hd.Phong_Tro != null ? hd.Phong_Tro.Ten_Phong : "ChÆ°a xáº¿p phÃ²ng",
+                    ID_HopDong = hd != null ? hd.ID_Hop_Dong : 0,
+                    NgayBatDau = hd != null ? hd.Ngay_Bat_Dau : k.Ngay_Tao,
+                    NgayKetThuc = hd != null ? hd.Ngay_Ket_Thuc : null,
+                    GiaThue = hd != null ? hd.Gia_Thue : 0,
+                    HopDongHieuLuc = hd != null ? hd.Trang_Thai : k.Trang_Thai
+                });
+            }
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(h => h.Khach_Thue.Ho_Ten.Contains(search) ||
-                                         h.Khach_Thue.SDT.Contains(search) ||
-                                         h.Khach_Thue.CCCD.Contains(search) ||
-                                         h.Phong_Tro.Ten_Phong.Contains(search));
+                string kw = search.Trim().ToLower();
+                listKhach = listKhach.Where(k =>
+                    (k.HoTen != null && k.HoTen.ToLower().Contains(kw)) ||
+                    (k.SDT != null && k.SDT.ToLower().Contains(kw)) ||
+                    (k.CCCD != null && k.CCCD.ToLower().Contains(kw)) ||
+                    (k.TenPhong != null && k.TenPhong.ToLower().Contains(kw))
+                ).ToList();
             }
 
-            var rawList = query.OrderByDescending(h => h.ID_Hop_Dong).ToList();
-
-            var listKhach = rawList.Select(h => new KhachThueItem
-            {
-                ID_Khach_Thue = h.ID_Khach_Thue,
-                HoTen = h.Khach_Thue != null ? h.Khach_Thue.Ho_Ten : "",
-                CCCD = h.Khach_Thue != null ? h.Khach_Thue.CCCD : "",
-                SDT = h.Khach_Thue != null ? h.Khach_Thue.SDT : "",
-                NgaySinh = h.Khach_Thue != null ? h.Khach_Thue.Ngay_Sinh : null,
-                GioiTinh = h.Khach_Thue != null ? h.Khach_Thue.Gioi_Tinh : "",
-                DiaChi = h.Khach_Thue != null ? h.Khach_Thue.Dia_Chi : "",
-                TenPhong = h.Phong_Tro != null ? h.Phong_Tro.Ten_Phong : "",
-                ID_HopDong = h.ID_Hop_Dong,
-                NgayBatDau = h.Ngay_Bat_Dau,
-                NgayKetThuc = h.Ngay_Ket_Thuc,
-                GiaThue = h.Gia_Thue,
-                HopDongHieuLuc = h.Trang_Thai
-            }).ToList();
+            int tongKhach = listKhach.Count;
+            int khachDangThue = listKhach.Count(k => k.HopDongHieuLuc);
+            int khachDaKetThuc = listKhach.Count(k => !k.HopDongHieuLuc);
 
             if (!string.IsNullOrEmpty(status))
             {
@@ -990,18 +1173,120 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
 
             var vm = new QuanLyKhachThueVM
             {
-                TongKhach = rawList.Select(h => h.ID_Khach_Thue).Distinct().Count(),
-                KhachDangThue = rawList.Where(h => h.Trang_Thai).Select(h => h.ID_Khach_Thue).Distinct().Count(),
-                KhachDaKetThuc = rawList.Where(h => !h.Trang_Thai).Select(h => h.ID_Khach_Thue).Distinct().Count(),
+                TongKhach = tongKhach,
+                KhachDangThue = khachDangThue,
+                KhachDaKetThuc = khachDaKetThuc,
                 DanhSachKhach = listKhach
             };
 
+            ViewBag.DanhSachPhong = db.Phong_Tro.Where(p => p.ID_TK == maTK).OrderByDescending(p => p.ID_Phong_Tro).ToList();
             ViewBag.Search = search;
             ViewBag.Status = status;
 
             return View(vm);
         }
 
+        [HttpPost]
+        public ActionResult ThemKhachThue(string HoTen, string SDT, string CCCD, DateTime? NgaySinh, string GioiTinh, string DiaChi, int? ID_Phong_Tro, decimal? GiaThue, DateTime? NgayBatDau, DateTime? NgayKetThuc)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            if (string.IsNullOrWhiteSpace(HoTen))
+                return Json(new { success = false, message = "Vui lÃ²ng nháº­p há» tÃªn khÃ¡ch thuÃª!" });
+
+            var kt = new Khach_Thue
+            {
+                ID_TK = maTK,
+                Ho_Ten = HoTen.Trim(),
+                SDT = SDT ?? "",
+                CCCD = CCCD ?? "",
+                Ngay_Sinh = NgaySinh,
+                Gioi_Tinh = string.IsNullOrWhiteSpace(GioiTinh) ? "Nam" : GioiTinh,
+                Dia_Chi = DiaChi ?? "",
+                Ngay_Tao = DateTime.Now,
+                Trang_Thai = true
+            };
+            db.Khach_Thue.Add(kt);
+            db.SaveChanges();
+
+            // Náº¿u chá»n phÃ²ng thuÃª luÃ´n thÃ¬ tá»± Ä‘á»™ng láº­p há»£p Ä‘á»“ng vÃ  áº©n bÃ i Ä‘Äƒng phÃ²ng
+            if (ID_Phong_Tro.HasValue && ID_Phong_Tro.Value > 0)
+            {
+                var phong = db.Phong_Tro.FirstOrDefault(p => p.ID_Phong_Tro == ID_Phong_Tro.Value && p.ID_TK == maTK);
+                if (phong != null)
+                {
+                    var hd = new Hop_Dong
+                    {
+                        ID_Phong_Tro = phong.ID_Phong_Tro,
+                        ID_Khach_Thue = kt.ID_Khach_Thue,
+                        Ngay_Ky = DateTime.Now.Date,
+                        Ngay_Bat_Dau = NgayBatDau ?? DateTime.Now.Date,
+                        Ngay_Ket_Thuc = NgayKetThuc,
+                        Gia_Thue = GiaThue ?? (phong.Gia_Ca ?? 0),
+                        Ky_Thanh_Toan = 1,
+                        Trang_Thai = true
+                    };
+                    db.Hop_Dong.Add(hd);
+                    phong.Trang_Thai = false; // CÃ³ ngÆ°á»i á»Ÿ -> KhÃ´ng hiá»ƒn thá»‹ bÃ i Ä‘Äƒng
+                    db.SaveChanges();
+                }
+            }
+
+            return Json(new { success = true, message = "ÄÃ£ thÃªm khÃ¡ch thuÃª thÃ nh cÃ´ng!" });
+        }
+
+        [HttpPost]
+        public ActionResult SuaKhachThue(int ID_Khach_Thue, string HoTen, string SDT, string CCCD, DateTime? NgaySinh, string GioiTinh, string DiaChi, bool? TrangThai)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var kt = db.Khach_Thue.FirstOrDefault(k => k.ID_Khach_Thue == ID_Khach_Thue && (k.ID_TK == maTK || k.Hop_Dong.Any(h => h.Phong_Tro.ID_TK == maTK)));
+            if (kt == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y khÃ¡ch thuÃª!" });
+
+            if (!string.IsNullOrWhiteSpace(HoTen)) kt.Ho_Ten = HoTen.Trim();
+            kt.SDT = SDT ?? kt.SDT;
+            kt.CCCD = CCCD ?? kt.CCCD;
+            kt.Ngay_Sinh = NgaySinh;
+            kt.Gioi_Tinh = GioiTinh ?? kt.Gioi_Tinh;
+            kt.Dia_Chi = DiaChi ?? kt.Dia_Chi;
+            if (TrangThai.HasValue) kt.Trang_Thai = TrangThai.Value;
+
+            db.SaveChanges();
+            return Json(new { success = true, message = "ÄÃ£ cáº­p nháº­t thÃ´ng tin khÃ¡ch thuÃª!" });
+        }
+
+        [HttpPost]
+        public ActionResult XoaKhachThue(int id)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var kt = db.Khach_Thue.FirstOrDefault(k => k.ID_Khach_Thue == id && (k.ID_TK == maTK || k.Hop_Dong.Any(h => h.Phong_Tro.ID_TK == maTK)));
+            if (kt == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y khÃ¡ch thuÃª cáº§n xÃ³a!" });
+
+            var hopDongs = db.Hop_Dong.Where(h => h.ID_Khach_Thue == id).ToList();
+            foreach (var hd in hopDongs)
+            {
+                var hoaDons = db.Hoa_Don_Dien_Nuoc.Where(b => b.ID_Hop_Dong == hd.ID_Hop_Dong).ToList();
+                db.Hoa_Don_Dien_Nuoc.RemoveRange(hoaDons);
+            }
+            db.Hop_Dong.RemoveRange(hopDongs);
+            db.Khach_Thue.Remove(kt);
+            db.SaveChanges();
+
+            return Json(new { success = true, message = "ÄÃ£ xÃ³a khÃ¡ch thuÃª thÃ nh cÃ´ng!" });
+        }
+
+        // =========================================================================
+        // 3. QUáº¢N LÃ ÄIá»†N NÆ¯á»šC (DANH SÃCH + THÃŠM + Sá»¬A + XÃ“A + THU TIá»€N)
+        // =========================================================================
         public ActionResult QuanLyDienNuoc(int? thang, int? nam, bool? trangThai)
         {
             int maTK = 0;
@@ -1011,9 +1296,9 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             var baseQuery = db.Hoa_Don_Dien_Nuoc.Where(h => h.Hop_Dong.Phong_Tro.ID_TK == maTK);
 
             var danhSachNam = baseQuery.Select(h => h.Nam).Distinct().OrderByDescending(x => x).ToList();
-            if (!danhSachNam.Any())
+            if (!danhSachNam.Contains(DateTime.Now.Year))
             {
-                danhSachNam.Add(DateTime.Now.Year);
+                danhSachNam.Insert(0, DateTime.Now.Year);
             }
 
             var query = baseQuery;
@@ -1037,6 +1322,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 .Select(h => new HoaDonChiTietItem
                 {
                     ID_Hoa_Don = h.ID_Hoa_Don,
+                    ID_Hop_Dong = h.ID_Hop_Dong,
                     TenPhong = h.Hop_Dong.Phong_Tro.Ten_Phong,
                     TenKhach = h.Hop_Dong.Khach_Thue.Ho_Ten,
                     SDT = h.Hop_Dong.Khach_Thue.SDT,
@@ -1070,7 +1356,93 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 DanhSachHoaDon = listHoaDon
             };
 
+            ViewBag.DanhSachHopDong = db.Hop_Dong
+                .Include(h => h.Phong_Tro)
+                .Include(h => h.Khach_Thue)
+                .Where(h => h.Phong_Tro.ID_TK == maTK)
+                .OrderByDescending(h => h.Trang_Thai)
+                .ThenByDescending(h => h.ID_Hop_Dong)
+                .ToList();
+
             return View(vm);
+        }
+
+        [HttpPost]
+        public ActionResult ThemHoaDonDienNuoc(int ID_Hop_Dong, int Thang, int Nam, decimal SoDien, decimal TienDien, decimal SoNuoc, decimal TienNuoc, decimal TienPhong, decimal TienWifi, DateTime? HanThanhToan, bool TrangThai)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var hd = db.Hop_Dong.FirstOrDefault(h => h.ID_Hop_Dong == ID_Hop_Dong && h.Phong_Tro.ID_TK == maTK);
+            if (hd == null)
+                return Json(new { success = false, message = "Vui lÃ²ng chá»n há»£p Ä‘á»“ng / phÃ²ng há»£p lá»‡!" });
+
+            decimal tongTien = TienDien + TienNuoc + TienPhong + TienWifi;
+            var bill = new Hoa_Don_Dien_Nuoc
+            {
+                ID_Hop_Dong = ID_Hop_Dong,
+                Thang = Thang > 0 ? Thang : DateTime.Now.Month,
+                Nam = Nam > 0 ? Nam : DateTime.Now.Year,
+                So_Dien = SoDien,
+                Tien_Dien = TienDien,
+                So_Nuoc = SoNuoc,
+                Tien_Nuoc = TienNuoc,
+                Tien_Phong = TienPhong,
+                Tien_Wifi = TienWifi,
+                Tong_Tien = tongTien,
+                Ngay_Lap = DateTime.Now.Date,
+                Han_Thanh_Toan = HanThanhToan ?? DateTime.Now.Date.AddDays(5),
+                Trang_Thai = TrangThai
+            };
+            db.Hoa_Don_Dien_Nuoc.Add(bill);
+            db.SaveChanges();
+
+            return Json(new { success = true, message = "ÄÃ£ thÃªm hÃ³a Ä‘Æ¡n Ä‘iá»‡n nÆ°á»›c thÃ nh cÃ´ng!" });
+        }
+
+        [HttpPost]
+        public ActionResult SuaHoaDonDienNuoc(int ID_Hoa_Don, int ID_Hop_Dong, int Thang, int Nam, decimal SoDien, decimal TienDien, decimal SoNuoc, decimal TienNuoc, decimal TienPhong, decimal TienWifi, DateTime? HanThanhToan, bool TrangThai)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var bill = db.Hoa_Don_Dien_Nuoc.FirstOrDefault(b => b.ID_Hoa_Don == ID_Hoa_Don && b.Hop_Dong.Phong_Tro.ID_TK == maTK);
+            if (bill == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y hÃ³a Ä‘Æ¡n cáº§n sá»­a!" });
+
+            if (ID_Hop_Dong > 0) bill.ID_Hop_Dong = ID_Hop_Dong;
+            if (Thang > 0) bill.Thang = Thang;
+            if (Nam > 0) bill.Nam = Nam;
+            bill.So_Dien = SoDien;
+            bill.Tien_Dien = TienDien;
+            bill.So_Nuoc = SoNuoc;
+            bill.Tien_Nuoc = TienNuoc;
+            bill.Tien_Phong = TienPhong;
+            bill.Tien_Wifi = TienWifi;
+            bill.Tong_Tien = TienDien + TienNuoc + TienPhong + TienWifi;
+            bill.Han_Thanh_Toan = HanThanhToan;
+            bill.Trang_Thai = TrangThai;
+
+            db.SaveChanges();
+            return Json(new { success = true, message = "ÄÃ£ cáº­p nháº­t hÃ³a Ä‘Æ¡n Ä‘iá»‡n nÆ°á»›c thÃ nh cÃ´ng!" });
+        }
+
+        [HttpPost]
+        public ActionResult XoaHoaDonDienNuoc(int id)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var bill = db.Hoa_Don_Dien_Nuoc.FirstOrDefault(b => b.ID_Hoa_Don == id && b.Hop_Dong.Phong_Tro.ID_TK == maTK);
+            if (bill == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y hÃ³a Ä‘Æ¡n cáº§n xÃ³a!" });
+
+            db.Hoa_Don_Dien_Nuoc.Remove(bill);
+            db.SaveChanges();
+            return Json(new { success = true, message = "ÄÃ£ xÃ³a hÃ³a Ä‘Æ¡n Ä‘iá»‡n nÆ°á»›c thÃ nh cÃ´ng!" });
         }
 
         [HttpPost]
@@ -1090,11 +1462,16 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             return Json(new { success = false });
         }
 
+        // =========================================================================
+        // 4. QUáº¢N LÃ Há»¢P Äá»’NG (DANH SÃCH + THÃŠM + Sá»¬A + XÃ“A + Äá»’NG Bá»˜ áº¨N BÃ€I ÄÄ‚NG)
+        // =========================================================================
         public ActionResult QuanLyHopDong(string search, string status)
         {
             int maTK = 0;
             if (Session["UserID"] != null)
                 int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            SyncAllHostRoomsVisibility(maTK);
 
             var query = db.Hop_Dong.Where(h => h.Phong_Tro.ID_TK == maTK);
 
@@ -1142,10 +1519,134 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 DanhSachHopDong = listHopDong
             };
 
+            ViewBag.DanhSachPhong = db.Phong_Tro.Where(p => p.ID_TK == maTK).OrderByDescending(p => p.ID_Phong_Tro).ToList();
+            ViewBag.DanhSachKhach = db.Khach_Thue.Where(k => k.ID_TK == maTK || k.Hop_Dong.Any(h => h.Phong_Tro.ID_TK == maTK)).OrderByDescending(k => k.ID_Khach_Thue).ToList();
             ViewBag.Search = search;
             ViewBag.Status = status;
 
             return View(vm);
+        }
+
+        [HttpPost]
+        public ActionResult ThemHopDong(int ID_Phong_Tro, int? ID_Khach_Thue, string TenKhachMoi, string SDTMoi, string CCCDMoi, string DiaChiMoi, DateTime? NgayKy, DateTime? NgayBatDau, DateTime? NgayKetThuc, decimal GiaThue, int? KyThanhToan, bool TrangThai)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var phong = db.Phong_Tro.FirstOrDefault(p => p.ID_Phong_Tro == ID_Phong_Tro && p.ID_TK == maTK);
+            if (phong == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y phÃ²ng trá»!" });
+
+            int khachId = ID_Khach_Thue ?? 0;
+            if (khachId <= 0)
+            {
+                if (string.IsNullOrWhiteSpace(TenKhachMoi))
+                    return Json(new { success = false, message = "Vui lÃ²ng chá»n khÃ¡ch thuÃª hoáº·c nháº­p tÃªn khÃ¡ch thuÃª má»›i!" });
+
+                var newKhach = new Khach_Thue
+                {
+                    ID_TK = maTK,
+                    Ho_Ten = TenKhachMoi.Trim(),
+                    SDT = SDTMoi ?? "",
+                    CCCD = CCCDMoi ?? "",
+                    Dia_Chi = DiaChiMoi ?? "",
+                    Gioi_Tinh = "Nam",
+                    Ngay_Tao = DateTime.Now,
+                    Trang_Thai = true
+                };
+                db.Khach_Thue.Add(newKhach);
+                db.SaveChanges();
+                khachId = newKhach.ID_Khach_Thue;
+            }
+
+            if (TrangThai)
+            {
+                // Káº¿t thÃºc cÃ¡c há»£p Ä‘á»“ng cÅ© Ä‘ang hiá»‡u lá»±c cá»§a cÃ¹ng phÃ²ng nÃ y (náº¿u cÃ³)
+                var oldActive = db.Hop_Dong.Where(h => h.ID_Phong_Tro == ID_Phong_Tro && h.Trang_Thai).ToList();
+                foreach (var old in oldActive)
+                {
+                    old.Trang_Thai = false;
+                }
+                // Khi cÃ³ ngÆ°á»i á»Ÿ -> bÃ i Ä‘Äƒng chuyá»ƒn sang tráº¡ng thÃ¡i KhÃ´ng hiá»ƒn thá»‹
+                phong.Trang_Thai = false;
+            }
+
+            var hd = new Hop_Dong
+            {
+                ID_Phong_Tro = ID_Phong_Tro,
+                ID_Khach_Thue = khachId,
+                Ngay_Ky = NgayKy ?? DateTime.Now.Date,
+                Ngay_Bat_Dau = NgayBatDau ?? DateTime.Now.Date,
+                Ngay_Ket_Thuc = NgayKetThuc,
+                Gia_Thue = GiaThue > 0 ? GiaThue : (phong.Gia_Ca ?? 0),
+                Ky_Thanh_Toan = KyThanhToan ?? 1,
+                Trang_Thai = TrangThai
+            };
+            db.Hop_Dong.Add(hd);
+            db.SaveChanges();
+
+            SyncPhongTroVisibility(ID_Phong_Tro);
+
+            return Json(new { success = true, message = "ÄÃ£ táº¡o há»£p Ä‘á»“ng thÃ nh cÃ´ng! BÃ i Ä‘Äƒng cá»§a phÃ²ng Ä‘Ã£ tá»± Ä‘á»™ng chuyá»ƒn sang KhÃ´ng hiá»ƒn thá»‹." });
+        }
+
+        [HttpPost]
+        public ActionResult SuaHopDong(int ID_Hop_Dong, int ID_Phong_Tro, string TenKhach, string SDT, string CCCD, DateTime? NgayKy, DateTime? NgayBatDau, DateTime? NgayKetThuc, decimal GiaThue, int? KyThanhToan, bool TrangThai)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var hd = db.Hop_Dong.FirstOrDefault(h => h.ID_Hop_Dong == ID_Hop_Dong && h.Phong_Tro.ID_TK == maTK);
+            if (hd == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y há»£p Ä‘á»“ng cáº§n sá»­a!" });
+
+            int oldPhongId = hd.ID_Phong_Tro;
+            hd.ID_Phong_Tro = ID_Phong_Tro > 0 ? ID_Phong_Tro : hd.ID_Phong_Tro;
+            if (NgayKy.HasValue) hd.Ngay_Ky = NgayKy.Value;
+            if (NgayBatDau.HasValue) hd.Ngay_Bat_Dau = NgayBatDau.Value;
+            hd.Ngay_Ket_Thuc = NgayKetThuc;
+            hd.Gia_Thue = GiaThue;
+            if (KyThanhToan.HasValue && KyThanhToan.Value > 0) hd.Ky_Thanh_Toan = KyThanhToan.Value;
+            hd.Trang_Thai = TrangThai;
+
+            if (hd.Khach_Thue != null)
+            {
+                if (!string.IsNullOrWhiteSpace(TenKhach)) hd.Khach_Thue.Ho_Ten = TenKhach.Trim();
+                if (SDT != null) hd.Khach_Thue.SDT = SDT.Trim();
+                if (CCCD != null) hd.Khach_Thue.CCCD = CCCD.Trim();
+            }
+
+            db.SaveChanges();
+
+            // Äá»“ng bá»™ tráº¡ng thÃ¡i áº©n bÃ i Ä‘Äƒng khi phÃ²ng cÃ³ ngÆ°á»i á»Ÿ
+            SyncPhongTroVisibility(oldPhongId);
+            SyncPhongTroVisibility(hd.ID_Phong_Tro);
+
+            return Json(new { success = true, message = "Cáº­p nháº­t há»£p Ä‘á»“ng thÃ nh cÃ´ng!" });
+        }
+
+        [HttpPost]
+        public ActionResult XoaHopDong(int id)
+        {
+            int maTK = 0;
+            if (Session["UserID"] != null)
+                int.TryParse(Session["UserID"].ToString(), out maTK);
+
+            var hd = db.Hop_Dong.FirstOrDefault(h => h.ID_Hop_Dong == id && h.Phong_Tro.ID_TK == maTK);
+            if (hd == null)
+                return Json(new { success = false, message = "KhÃ´ng tÃ¬m tháº¥y há»£p Ä‘á»“ng cáº§n xÃ³a!" });
+
+            int idPhong = hd.ID_Phong_Tro;
+            var bills = db.Hoa_Don_Dien_Nuoc.Where(b => b.ID_Hop_Dong == id).ToList();
+            db.Hoa_Don_Dien_Nuoc.RemoveRange(bills);
+            db.Hop_Dong.Remove(hd);
+            db.SaveChanges();
+
+            SyncPhongTroVisibility(idPhong);
+
+            return Json(new { success = true, message = "ÄÃ£ xÃ³a há»£p Ä‘á»“ng thÃ nh cÃ´ng!" });
         }
 
         }

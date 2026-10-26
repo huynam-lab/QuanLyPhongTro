@@ -4,6 +4,8 @@
     Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
     string search = ViewBag.Search as string;
     string status = ViewBag.Status as string;
+    var danhSachPhong = ViewBag.DanhSachPhong as List<QuanLyPhongTro.Models.Phong_Tro>;
+    var danhSachKhach = ViewBag.DanhSachKhach as List<QuanLyPhongTro.Models.Khach_Thue>;
 }
 
 <div class="container-fluid py-3 px-3">
@@ -12,33 +14,39 @@
             <h5 class="fw-bold mb-0 text-dark text-nowrap">
                 <i class="bi bi-file-earmark-text text-primary me-2"></i>Quản Lý Hợp Đồng Thuê Phòng
             </h5>
-            <div class="text-muted small text-nowrap">
-                Theo dõi thời hạn hợp đồng, giá thuê và tình trạng pháp lý giữa chủ nhà và khách thuê
+            <div class="text-muted small">
+                Thêm, sửa, xóa hợp đồng — Khi hợp đồng có hiệu lực (có người ở), bài đăng phòng sẽ tự động chuyển sang <b>Không hiển thị</b>
             </div>
         </div>
 
-        <form method="get" action="@Url.Action("QuanLyHopDong", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
-            <div class="input-group input-group-sm" style="width: 240px;">
-                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="text" name="search" class="form-control text-nowrap" placeholder="Phòng, khách, SĐT, CCCD..." value="@search" />
-            </div>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <form method="get" action="@Url.Action("QuanLyHopDong", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
+                <div class="input-group input-group-sm" style="width: 220px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="Phòng, khách, SĐT, CCCD..." value="@search" />
+                </div>
 
-            <div class="input-group input-group-sm" style="width: 170px;">
-                <span class="input-group-text bg-white"><i class="bi bi-shield-check"></i></span>
-                <select name="status" class="form-select text-nowrap">
-                    <option value="">-- Tất cả trạng thái --</option>
-                    <option value="active" @(status == "active" ? "selected" : "")>Đang hiệu lực</option>
-                    <option value="expired" @(status == "expired" ? "selected" : "")>Đã kết thúc</option>
-                </select>
-            </div>
+                <div class="input-group input-group-sm" style="width: 165px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-shield-check"></i></span>
+                    <select name="status" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="active" @(status == "active" ? "selected" : "")>Đang hiệu lực</option>
+                        <option value="expired" @(status == "expired" ? "selected" : "")>Đã kết thúc</option>
+                    </select>
+                </div>
 
-            <button type="submit" class="btn btn-sm btn-primary text-nowrap">
-                <i class="bi bi-filter me-1"></i>Lọc
+                <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">
+                    <i class="bi bi-filter me-1"></i>Lọc
+                </button>
+                <a href="@Url.Action("QuanLyHopDong", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </form>
+
+            <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="moModalThemHopDong()">
+                <i class="bi bi-plus-circle me-1"></i>Thêm hợp đồng mới
             </button>
-            <a href="@Url.Action("QuanLyHopDong", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
-                <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
-            </a>
-        </form>
+        </div>
     </div>
 
     <div class="row g-2 mb-3">
@@ -118,7 +126,8 @@
                                 <th class="text-nowrap text-center">Thời hạn hợp đồng</th>
                                 <th class="text-nowrap text-end">Giá thuê</th>
                                 <th class="text-nowrap text-center">Kỳ thanh toán</th>
-                                <th class="text-nowrap text-center pe-3">Trạng thái</th>
+                                <th class="text-nowrap text-center">Trạng thái</th>
+                                <th class="text-nowrap text-center pe-3">Thao tác (Sửa / Xóa)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -127,7 +136,7 @@
                                 <tr>
                                     <td class="ps-3 text-nowrap"><span class="badge bg-light text-dark border">#@hd.ID_Hop_Dong</span></td>
                                     <td class="text-nowrap">
-                                        <div class="fw-semibold text-dark text-truncate" style="max-width: 220px;" title="@hd.TenPhong">@hd.TenPhong</div>
+                                        <div class="fw-semibold text-dark text-truncate" style="max-width: 200px;" title="@hd.TenPhong">@hd.TenPhong</div>
                                         <small class="text-muted">Mã phòng: #@hd.ID_Phong_Tro</small>
                                     </td>
                                     <td class="text-nowrap fw-semibold text-dark">@hd.TenKhach</td>
@@ -139,7 +148,7 @@
                                     </td>
                                     <td class="text-nowrap text-end fw-bold text-dark">@hd.GiaThue.ToString("N0") đ</td>
                                     <td class="text-nowrap text-center"><span class="badge bg-light text-dark border">@hd.KyThanhToan tháng / lần</span></td>
-                                    <td class="text-nowrap text-center pe-3">
+                                    <td class="text-nowrap text-center">
                                         @if (hd.TrangThai)
                                         {
                                             <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Đang hiệu lực</span>
@@ -148,6 +157,17 @@
                                         {
                                             <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Đã kết thúc</span>
                                         }
+                                    </td>
+                                    <td class="text-nowrap text-center pe-3">
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-outline-primary" title="Sửa hợp đồng"
+                                                    onclick="moModalSuaHopDong(@hd.ID_Hop_Dong, @hd.ID_Phong_Tro, '@Html.Raw(HttpUtility.JavaScriptStringEncode(hd.TenKhach))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(hd.SDT))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(hd.CCCD))', '@hd.NgayKy.ToString("yyyy-MM-dd")', '@hd.NgayBatDau.ToString("yyyy-MM-dd")', '@(hd.NgayKetThuc.HasValue ? hd.NgayKetThuc.Value.ToString("yyyy-MM-dd") : "")', @hd.GiaThue, @hd.KyThanhToan, @(hd.TrangThai ? "true" : "false"))">
+                                                <i class="bi bi-pencil-square"></i> Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" title="Xóa hợp đồng" onclick="xoaHopDong(@hd.ID_Hop_Dong, '@Html.Raw(HttpUtility.JavaScriptStringEncode(hd.TenPhong))')">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -166,3 +186,323 @@
     </div>
 </div>
 
+<!-- MODAL THÊM HỢP ĐỒNG -->
+<div class="modal fade" id="modalThemHopDong" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white py-2">
+                <h6 class="modal-title fw-bold"><i class="bi bi-file-earmark-plus me-2"></i>Tạo Hợp Đồng Thuê Phòng Mới</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2 mb-2">
+                    <div class="col-md-7">
+                        <label class="form-label small fw-semibold">Chọn phòng trọ <span class="text-danger">*</span></label>
+                        <select id="addHdPhong" class="form-select form-select-sm" onchange="capNhatGiaPhongTuDong()">
+                            @if (danhSachPhong != null && danhSachPhong.Any())
+                            {
+                                foreach (var p in danhSachPhong)
+                                {
+                                    <option value="@p.ID_Phong_Tro" data-gia="@(p.Gia_Ca ?? 0)">#@p.ID_Phong_Tro - @p.Ten_Phong (@((p.Gia_Ca ?? 0).ToString("N0")) đ/tháng)</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="">-- Chưa có phòng trọ --</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label small fw-semibold">Chọn khách thuê có sẵn (hoặc tạo mới bên dưới)</label>
+                        <select id="addHdKhachCoSan" class="form-select form-select-sm" onchange="toggleKhachMoi()">
+                            <option value="0">-- Nhập khách thuê mới --</option>
+                            @if (danhSachKhach != null)
+                            {
+                                foreach (var k in danhSachKhach)
+                                {
+                                    <option value="@k.ID_Khach_Thue">@k.Ho_Ten - @k.SDT (@k.CCCD)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div id="boxKhachMoi" class="border rounded p-2 mb-2 bg-light">
+                    <div class="small fw-bold text-primary mb-2"><i class="bi bi-person-plus me-1"></i>Thông tin khách thuê mới</div>
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" id="addHdTenKhach" class="form-control form-control-sm" placeholder="Nguyễn Văn A" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Số điện thoại</label>
+                            <input type="text" id="addHdSDT" class="form-control form-control-sm" placeholder="0987xxxxxx" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">CCCD / CMND</label>
+                            <input type="text" id="addHdCCCD" class="form-control form-control-sm" placeholder="0012xxxxxxxx" />
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label small fw-semibold">Quê quán / Địa chỉ thường trú</label>
+                            <input type="text" id="addHdDiaChi" class="form-control form-control-sm" placeholder="Địa chỉ thường trú của khách..." />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Ngày ký hợp đồng</label>
+                        <input type="date" id="addHdNgayKy" class="form-control form-control-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Ngày bắt đầu ở</label>
+                        <input type="date" id="addHdNgayBatDau" class="form-control form-control-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Ngày kết thúc (để trống nếu vô thời hạn)</label>
+                        <input type="date" id="addHdNgayKetThuc" class="form-control form-control-sm" value="@DateTime.Now.AddMonths(6).ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Giá thuê thỏa thuận (VNĐ/tháng)</label>
+                        <input type="number" id="addHdGiaThue" class="form-control form-control-sm" step="100000" value="3500000" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Kỳ thanh toán (tháng/lần)</label>
+                        <input type="number" id="addHdKyThanhToan" class="form-control form-control-sm" value="1" min="1" max="12" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Trạng thái hợp đồng</label>
+                        <select id="addHdTrangThai" class="form-select form-select-sm">
+                            <option value="true">Đang hiệu lực (Đang ở)</option>
+                            <option value="false">Đã kết thúc / Thanh lý</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="luuThemHopDong()">
+                    <i class="bi bi-check2-circle me-1"></i>Lưu hợp đồng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SỬA HỢP ĐỒNG -->
+<div class="modal fade" id="modalSuaHopDong" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white py-2">
+                <h6 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>Cập Nhật Hợp Đồng Thuê Phòng</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editHdId" />
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Phòng trọ</label>
+                    <select id="editHdPhong" class="form-select form-select-sm">
+                        @if (danhSachPhong != null)
+                        {
+                            foreach (var p in danhSachPhong)
+                            {
+                                <option value="@p.ID_Phong_Tro">#@p.ID_Phong_Tro - @p.Ten_Phong</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Tên khách thuê</label>
+                        <input type="text" id="editHdTenKhach" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Số điện thoại</label>
+                        <input type="text" id="editHdSDT" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">CCCD / CMND</label>
+                        <input type="text" id="editHdCCCD" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Ngày ký</label>
+                        <input type="date" id="editHdNgayKy" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Ngày bắt đầu</label>
+                        <input type="date" id="editHdNgayBatDau" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Ngày kết thúc</label>
+                        <input type="date" id="editHdNgayKetThuc" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Giá thuê (VNĐ/tháng)</label>
+                        <input type="number" id="editHdGiaThue" class="form-control form-control-sm" step="100000" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Kỳ thanh toán (tháng/lần)</label>
+                        <input type="number" id="editHdKyThanhToan" class="form-control form-control-sm" min="1" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Trạng thái hợp đồng</label>
+                        <select id="editHdTrangThai" class="form-select form-select-sm">
+                            <option value="true">Đang hiệu lực (Đang ở)</option>
+                            <option value="false">Đã kết thúc / Thanh lý</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="luuSuaHopDong()">
+                    <i class="bi bi-save me-1"></i>Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function capNhatGiaPhongTuDong() {
+            const sel = document.getElementById('addHdPhong');
+            if (!sel || sel.selectedIndex < 0) return;
+            const opt = sel.options[sel.selectedIndex];
+            const gia = opt.getAttribute('data-gia');
+            if (gia && parseFloat(gia) > 0) {
+                document.getElementById('addHdGiaThue').value = gia;
+            }
+        }
+
+        function toggleKhachMoi() {
+            const val = document.getElementById('addHdKhachCoSan').value;
+            const box = document.getElementById('boxKhachMoi');
+            if (val === '0') {
+                box.classList.remove('d-none');
+            } else {
+                box.classList.add('d-none');
+            }
+        }
+
+        function moModalThemHopDong() {
+            capNhatGiaPhongTuDong();
+            toggleKhachMoi();
+            new bootstrap.Modal(document.getElementById('modalThemHopDong')).show();
+        }
+
+        function luuThemHopDong() {
+            const params = new URLSearchParams();
+            params.append('ID_Phong_Tro', document.getElementById('addHdPhong').value);
+            params.append('ID_Khach_Thue', document.getElementById('addHdKhachCoSan').value);
+            params.append('TenKhachMoi', document.getElementById('addHdTenKhach').value);
+            params.append('SDTMoi', document.getElementById('addHdSDT').value);
+            params.append('CCCDMoi', document.getElementById('addHdCCCD').value);
+            params.append('DiaChiMoi', document.getElementById('addHdDiaChi').value);
+            params.append('NgayKy', document.getElementById('addHdNgayKy').value);
+            params.append('NgayBatDau', document.getElementById('addHdNgayBatDau').value);
+            params.append('NgayKetThuc', document.getElementById('addHdNgayKetThuc').value);
+            params.append('GiaThue', document.getElementById('addHdGiaThue').value);
+            params.append('KyThanhToan', document.getElementById('addHdKyThanhToan').value);
+            params.append('TrangThai', document.getElementById('addHdTrangThai').value);
+
+            fetch('@Url.Action("ThemHopDong", "Admin", new { area = "Host" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({ icon: 'success', title: 'Thành công', text: data.message, timer: 1800, showConfirmButton: false })
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire({ icon: 'warning', title: 'Thông báo', text: data.message });
+                }
+            });
+        }
+
+        function moModalSuaHopDong(id, idPhong, tenKhach, sdt, cccd, ngayKy, ngayBatDau, ngayKetThuc, giaThue, kyThanhToan, trangThai) {
+            document.getElementById('editHdId').value = id;
+            document.getElementById('editHdPhong').value = idPhong;
+            document.getElementById('editHdTenKhach').value = tenKhach;
+            document.getElementById('editHdSDT').value = sdt;
+            document.getElementById('editHdCCCD').value = cccd;
+            document.getElementById('editHdNgayKy').value = ngayKy;
+            document.getElementById('editHdNgayBatDau').value = ngayBatDau;
+            document.getElementById('editHdNgayKetThuc').value = ngayKetThuc;
+            document.getElementById('editHdGiaThue').value = giaThue;
+            document.getElementById('editHdKyThanhToan').value = kyThanhToan;
+            document.getElementById('editHdTrangThai').value = trangThai ? 'true' : 'false';
+
+            new bootstrap.Modal(document.getElementById('modalSuaHopDong')).show();
+        }
+
+        function luuSuaHopDong() {
+            const params = new URLSearchParams();
+            params.append('ID_Hop_Dong', document.getElementById('editHdId').value);
+            params.append('ID_Phong_Tro', document.getElementById('editHdPhong').value);
+            params.append('TenKhach', document.getElementById('editHdTenKhach').value);
+            params.append('SDT', document.getElementById('editHdSDT').value);
+            params.append('CCCD', document.getElementById('editHdCCCD').value);
+            params.append('NgayKy', document.getElementById('editHdNgayKy').value);
+            params.append('NgayBatDau', document.getElementById('editHdNgayBatDau').value);
+            params.append('NgayKetThuc', document.getElementById('editHdNgayKetThuc').value);
+            params.append('GiaThue', document.getElementById('editHdGiaThue').value);
+            params.append('KyThanhToan', document.getElementById('editHdKyThanhToan').value);
+            params.append('TrangThai', document.getElementById('editHdTrangThai').value);
+
+            fetch('@Url.Action("SuaHopDong", "Admin", new { area = "Host" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({ icon: 'success', title: 'Đã cập nhật', text: data.message, timer: 1500, showConfirmButton: false })
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message });
+                }
+            });
+        }
+
+        function xoaHopDong(id, tenPhong) {
+            Swal.fire({
+                title: 'Xóa hợp đồng?',
+                text: 'Bạn có chắc chắn muốn xóa hợp đồng của phòng "' + tenPhong + '" khỏi hệ thống?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Đồng ý xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('@Url.Action("XoaHopDong", "Admin", new { area = "Host" })', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'id=' + id
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({ icon: 'success', title: 'Đã xóa!', text: data.message, timer: 1500, showConfirmButton: false })
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

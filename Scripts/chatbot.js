@@ -13,7 +13,6 @@
     const windowEl = document.getElementById("aiChatWindow");
     const closeBtn = document.getElementById("aiChatCloseBtn");
     const clearBtn = document.getElementById("aiChatClearBtn");
-    const checkApiBtn = document.getElementById("aiChatCheckApiBtn");
     const bodyEl = document.getElementById("aiChatBody");
     const inputEl = document.getElementById("aiChatInput");
     const sendBtn = document.getElementById("aiChatSendBtn");
@@ -387,13 +386,6 @@
             }
         } catch (e) { }
     });
-
-    // Nút kiểm tra API Key
-    if (checkApiBtn) {
-        checkApiBtn.addEventListener("click", () => {
-            sendMessage("kiểm tra api");
-        });
-    }
 
     // Quick buttons click (cả nút ban đầu và các gợi ý sau từng câu trả lời)
     bodyEl.addEventListener("click", (e) => {

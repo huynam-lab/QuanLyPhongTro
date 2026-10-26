@@ -271,12 +271,6 @@ namespace QuanLyPhongTro.Models
                 return UserChatIntent.FaqMarketPriceOverview;
             }
 
-            // 8. Kiểm tra trạng thái API / Token
-            if (lower.Contains("kiem tra api") || lower.Contains("check api") || lower.Contains("test api") || lower.Contains("trang thai api") || lower.Contains("token con khong") || lower.Contains("api key con khong"))
-            {
-                return UserChatIntent.CheckApiStatus;
-            }
-
             // 8b. So sánh giữa các phòng trọ
             if (lower.Contains("so voi") || lower.Contains("so sanh") || lower.Contains("khac gi") ||
                 lower.Contains("tot hon can nao") || lower.Contains("nen chon can nao") || lower.Contains("nen thue can nao") ||

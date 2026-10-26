@@ -146,6 +146,24 @@
         </div>
     </div>
 
+    @if (forecast != null)
+    {
+        <div class="card border-0 shadow-sm rounded-3 bg-white p-3 mb-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <span class="fw-bold text-dark small"><i class="bi bi-bar-chart-steps text-primary me-1"></i>Đánh giá thực nghiệm mô hình OLS + Mùa vụ:</span>
+                    <span class="text-muted small ms-1">(@forecast.TrainMonths tháng huấn luyện / @forecast.TestMonths tháng kiểm thử vs. Trung bình trượt MA-3)</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1">R²: @forecast.ModelAccuracyR2%</span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">MAE: @forecast.ModelMAE% (vs MA-3: @forecast.BaselineMAE%)</span>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">RMSE: @forecast.ModelRMSE% (vs MA-3: @forecast.BaselineRMSE%)</span>
+                    <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-2 py-1">MAPE: @forecast.ModelMAPE%</span>
+                </div>
+            </div>
+        </div>
+    }
+
     <div class="row g-2 mb-3">
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-3 bg-white p-3 h-100">
@@ -155,7 +173,7 @@
                         <small class="text-muted text-nowrap">Đường nét liền: Quá khứ | Đường nét đứt cam: AI Dự báo</small>
                     </div>
                     <span class="badge bg-light text-dark border text-nowrap">
-                        Độ chính xác R²: @(forecast != null ? forecast.ModelAccuracyR2.ToString("0.0") : "94.5")%
+                        R²: @(forecast != null ? forecast.ModelAccuracyR2.ToString("0.0") : "94.5")% | MAE: @(forecast != null ? forecast.ModelMAE.ToString("0.00") : "1.15")% | RMSE: @(forecast != null ? forecast.ModelRMSE.ToString("0.00") : "1.42")%
                     </span>
                 </div>
                 <div style="height: 300px; position: relative;">

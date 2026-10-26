@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewBag.Title = "Đăng Nhập";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -47,8 +47,16 @@
                 </span>
             </div>
 
+            <!-- Ghi nhớ phiên đăng nhập 7 ngày -->
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-1" style="font-size: 14px;">
+                <label class="d-flex align-items-center gap-2" style="cursor: pointer; user-select: none; color: #333;">
+                    <input type="checkbox" name="RememberMe" value="true" checked style="width: 16px; height: 16px; accent-color: #0d6efd; cursor: pointer;" />
+                    <span>Ghi nhớ đăng nhập (7 ngày)</span>
+                </label>
+                <a href="@Url.Action("QuenMatKhau", "User")" class="forgot-link m-0">Bạn quên mật khẩu?</a>
+            </div>
+
             <button type="submit" class="btn-primary-custom">Đăng nhập</button>
-            <a href="@Url.Action("QuenMatKhau", "User")" class="forgot-link">Bạn quên mật khẩu?</a>
         </form>
 
         <!-- Điều khoản -->
@@ -101,7 +109,7 @@
         // ==================== ICON MẮT XEM/ẨN MẬT KHẨU ====================
         $('#togglePassword').on('click', function () {
             const passwordInput = $('#password');
-            const icon = $('#eye');
+            const icon = $('#eyeIcon');
 
             if (passwordInput.attr('type') === 'password') {
                 passwordInput.attr('type', 'text');

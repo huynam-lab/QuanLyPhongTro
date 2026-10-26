@@ -92,10 +92,10 @@ namespace QuanLyPhongTro.Models
         private readonly string _modelName;
         private static int _keyRotationCounter = 0;
 
-        public GeminiAiProvider(string apiKeyString, string modelName = "gemini-3.6-flash")
+        public GeminiAiProvider(string apiKeyString, string modelName = "gemini-2.0-flash")
         {
             _apiKeys = ParseKeys(apiKeyString);
-            _modelName = string.IsNullOrWhiteSpace(modelName) ? "gemini-3.6-flash" : modelName.Trim();
+            _modelName = string.IsNullOrWhiteSpace(modelName) ? "gemini-2.0-flash" : modelName.Trim();
         }
 
         private static List<string> ParseKeys(string raw)
@@ -405,7 +405,7 @@ namespace QuanLyPhongTro.Models
                 {
                     using (var client = new HttpClient())
                     {
-                        client.Timeout = TimeSpan.FromSeconds(30);
+                        client.Timeout = TimeSpan.FromSeconds(20);
                         client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Antigravity-AI/1.0");
                         if (!string.IsNullOrWhiteSpace(currentKey))
                         {
@@ -714,86 +714,55 @@ namespace QuanLyPhongTro.Models
             string vilaoUrl = ConfigurationManager.AppSettings["VilaoBaseUrl"] ?? ConfigurationManager.AppSettings["OpenAiBaseUrl"] ?? "https://api.vilao.ai/v1";
             var vilao = new OpenAiCompatibleProvider("Vilao", vilaoKey, vilaoUrl, vilaoModel);
 
-            // 1. Google Gemini
+            // 1. Google Gemini (Khuyên dùng: Siêu thông minh, tiếng Việt chuẩn, 1-2s)
             string geminiKey = ConfigurationManager.AppSettings["GeminiApiKey"];
-            string geminiModel = ConfigurationManager.AppSettings["GeminiModel"] ?? "gemini-3.6-flash";
+            string geminiModel = ConfigurationManager.AppSettings["GeminiModel"] ?? "gemini-2.0-flash";
             var gemini = new GeminiAiProvider(geminiKey, geminiModel);
 
-            // 2. OpenAI
-            string openAiKey = ConfigurationManager.AppSettings["OpenAiApiKey"];
-            string openAiModel = ConfigurationManager.AppSettings["OpenAiModel"] ?? "gpt-4o-mini";
-            string openAiUrl = ConfigurationManager.AppSettings["OpenAiBaseUrl"] ?? "https://api.openai.com/v1";
-            var openAi = new OpenAiCompatibleProvider("OpenAI", openAiKey, openAiUrl, openAiModel);
-
-            // 3. DeepSeek
-            string deepseekKey = ConfigurationManager.AppSettings["DeepSeekApiKey"];
-            string deepseekModel = ConfigurationManager.AppSettings["DeepSeekModel"] ?? "deepseek-chat";
-            string deepseekUrl = ConfigurationManager.AppSettings["DeepSeekBaseUrl"] ?? "https://api.deepseek.com/v1";
-            var deepseek = new OpenAiCompatibleProvider("DeepSeek", deepseekKey, deepseekUrl, deepseekModel);
-
-            // 4. Groq (Miễn phí & Cực nhanh)
+            // 2. Groq (Khuyên dùng: Siêu tốc độ 0.5s - 1s, Llama 3.3 70B, Miễn phí)
             string groqKey = ConfigurationManager.AppSettings["GroqApiKey"];
             string groqModel = ConfigurationManager.AppSettings["GroqModel"] ?? "llama-3.3-70b-versatile";
             string groqUrl = ConfigurationManager.AppSettings["GroqBaseUrl"] ?? "https://api.groq.com/openai/v1";
             var groq = new OpenAiCompatibleProvider("Groq", groqKey, groqUrl, groqModel);
 
-            // 5. Ollama / Local AI
+            // 3. OpenAI (ChatGPT chính chủ: gpt-4o-mini / gpt-4o)
+            string openAiKey = ConfigurationManager.AppSettings["OpenAiApiKey"];
+            string openAiModel = ConfigurationManager.AppSettings["OpenAiModel"] ?? "gpt-4o-mini";
+            string openAiUrl = ConfigurationManager.AppSettings["OpenAiBaseUrl"] ?? "https://api.openai.com/v1";
+            var openAi = new OpenAiCompatibleProvider("OpenAI", openAiKey, openAiUrl, openAiModel);
+
+            // 4. OpenRouter (Cổng kết nối 100+ mô hình: Claude 3.5, DeepSeek, Qwen 2.5...)
+            string openRouterKey = ConfigurationManager.AppSettings["OpenRouterApiKey"];
+            string openRouterModel = ConfigurationManager.AppSettings["OpenRouterModel"] ?? "deepseek/deepseek-chat";
+            string openRouterUrl = ConfigurationManager.AppSettings["OpenRouterBaseUrl"] ?? "https://openrouter.ai/api/v1";
+            var openRouter = new OpenAiCompatibleProvider("OpenRouter", openRouterKey, openRouterUrl, openRouterModel);
+
+            // 5. DeepSeek Chính chủ (https://api.deepseek.com)
+            string deepseekKey = ConfigurationManager.AppSettings["DeepSeekApiKey"];
+            string deepseekModel = ConfigurationManager.AppSettings["DeepSeekModel"] ?? "deepseek-chat";
+            string deepseekUrl = ConfigurationManager.AppSettings["DeepSeekBaseUrl"] ?? "https://api.deepseek.com/v1";
+            var deepseek = new OpenAiCompatibleProvider("DeepSeek", deepseekKey, deepseekUrl, deepseekModel);
+
+            // 6. Ollama / Local AI (Chạy offline trên máy cá nhân)
             string ollamaUrl = ConfigurationManager.AppSettings["OllamaBaseUrl"] ?? "http://localhost:11434/v1";
             string ollamaModel = ConfigurationManager.AppSettings["OllamaModel"] ?? "llama3";
             var ollama = new OpenAiCompatibleProvider("Ollama (Local)", "", ollamaUrl, ollamaModel);
 
-            switch (activeProvider.ToLower())
+            var all = new List<IAiProvider> { vilao, gemini, groq, openAi, openRouter, deepseek, ollama };
+
+            // Đưa Provider được cấu hình trong ActiveAiProvider lên ưu tiên số 1
+            var matched = all.FirstOrDefault(p => p.ProviderName.Equals(activeProvider, StringComparison.OrdinalIgnoreCase));
+            if (matched != null)
             {
-                case "vilao":
-                    list.Add(vilao);
-                    list.Add(openAi);
-                    list.Add(gemini);
-                    list.Add(deepseek);
-                    list.Add(groq);
-                    break;
-                case "openai":
-                    list.Add(openAi);
-                    list.Add(vilao);
-                    list.Add(gemini);
-                    list.Add(deepseek);
-                    list.Add(groq);
-                    break;
-                case "deepseek":
-                    list.Add(deepseek);
-                    list.Add(vilao);
-                    list.Add(gemini);
-                    list.Add(openAi);
-                    list.Add(groq);
-                    break;
-                case "groq":
-                    list.Add(groq);
-                    list.Add(vilao);
-                    list.Add(gemini);
-                    list.Add(openAi);
-                    list.Add(deepseek);
-                    break;
-                case "ollama":
-                    list.Add(ollama);
-                    list.Add(vilao);
-                    list.Add(gemini);
-                    break;
-                default: // Vilao hoặc Gemini
-                    if (vilao.IsConfigured())
-                    {
-                        list.Add(vilao);
-                        list.Add(openAi);
-                        list.Add(gemini);
-                        list.Add(deepseek);
-                        list.Add(groq);
-                    }
-                    else
-                    {
-                        list.Add(gemini);
-                        list.Add(openAi);
-                        list.Add(deepseek);
-                        list.Add(groq);
-                    }
-                    break;
+                list.Add(matched);
+                foreach (var p in all)
+                {
+                    if (p != matched) list.Add(p);
+                }
+            }
+            else
+            {
+                list.AddRange(all);
             }
 
             return list;

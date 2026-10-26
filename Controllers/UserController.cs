@@ -1,4 +1,4 @@
-using PagedList; // <-- 1. THÊM THƯ VIỆN NÀY
+﻿using PagedList; // <-- 1. THÊM THƯ VIỆN NÀY
 using QuanLyPhongTro.Models;
 using QuanLyPhongTro.Models.ViewModels;
 using System;
@@ -20,6 +20,10 @@ namespace QuanLyPhongTro.Controllers
         private DaTa_Phong_TroEntities db = new DaTa_Phong_TroEntities();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            if (Session["UserID"] == null)
+            {
+                Utilities.TryRestoreSessionFromCookie(System.Web.HttpContext.Current);
+            }
             // Lấy danh sách Khu_Vuc có Trang_Thai = true (hoặc logic lọc phù hợp)
             // và sắp xếp theo thứ tự mong muốn
             var khuVucList = db.Khu_Vuc
@@ -67,7 +71,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
-                          .Where(p => p.ID_CD == 4 && p.Trang_Thai == true); // Chỉ lấy tin đã duyệt
+                          .Where(p => p.ID_CD == 4 && (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai))); // Chỉ lấy tin đã duyệt
             if (minPrice.HasValue)
             {
                 query = query.Where(p => p.Gia_Ca >= minPrice.Value);
@@ -110,7 +114,7 @@ namespace QuanLyPhongTro.Controllers
             // 2. LẤY TOP 10 TIN MỚI NHẤT ĐÃ DUYỆT (CHO SIDEBAR)
             var newestPosts = db.Phong_Tro
                                 .Include(p => p.Hinh_Anh)
-                                .Where(p => p.Trang_Thai == true)
+                                .Where(p => (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai)))
                                 .OrderByDescending(p => p.Ngay_Dang)
                                 .Take(10)
                                 .ToList();
@@ -192,13 +196,13 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
-                          .Where(p => p.ID_CD == 6 && p.Trang_Thai == true); // <-- LỌC THEO ID_CD = 6 & ĐÃ DUYỆT
+                          .Where(p => p.ID_CD == 6 && (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai))); // <-- LỌC THEO ID_CD = 6 & ĐÃ DUYỆT
 
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
                                    .ThenByDescending(p => p.Ngay_Dang);
             var newestPosts = db.Phong_Tro
                         .Include(p => p.Hinh_Anh)
-                        .Where(p => p.Trang_Thai == true)
+                        .Where(p => (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai)))
                         .OrderByDescending(p => p.Ngay_Dang)
                         .Take(10)
                         .ToList();
@@ -227,14 +231,14 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
-                          .Where(p => p.ID_CD == 5 && p.Trang_Thai == true); // <-- LỌC THEO ID_CD = 5 & ĐÃ DUYỆT
+                          .Where(p => p.ID_CD == 5 && (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai))); // <-- LỌC THEO ID_CD = 5 & ĐÃ DUYỆT
 
             var sortedQuery = query.OrderBy(p => p.ID_LoaiTin)
                                    .ThenByDescending(p => p.Ngay_Dang);
 
             var newestPosts = db.Phong_Tro
                         .Include(p => p.Hinh_Anh)
-                        .Where(p => p.Trang_Thai == true)
+                        .Where(p => (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai)))
                         .OrderByDescending(p => p.Ngay_Dang)
                         .Take(10)
                         .ToList();
@@ -296,7 +300,7 @@ namespace QuanLyPhongTro.Controllers
                     .Include(p => p.Khu_Vuc)
                     .Include(p => p.Loai_Tin) // Cần để hiển thị banner
                     .Include(p => p.Video)
-                    .Where(p => p.ID_KV == phongTro.ID_KV.Value && p.ID_Phong_Tro != id && p.Trang_Thai == true) // Lọc cùng KV, trừ tin này & đã duyệt
+                    .Where(p => p.ID_KV == phongTro.ID_KV.Value && p.ID_Phong_Tro != id && (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai))) // Lọc cùng KV, trừ tin này & đã duyệt
                     .OrderBy(p => p.ID_LoaiTin) // Sắp xếp theo ưu tiên
                     .ThenByDescending(p => p.Ngay_Dang)
                     .Take(8)
@@ -311,7 +315,7 @@ namespace QuanLyPhongTro.Controllers
                 .Include(p => p.Khu_Vuc)
                 .Include(p => p.Loai_Tin) // Cần để hiển thị banner
                 .Include(p => p.Video)
-                .Where(p => p.ID_Phong_Tro != id && p.Trang_Thai == true) // Trừ tin này & đã duyệt
+                .Where(p => p.ID_Phong_Tro != id && (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai))) // Trừ tin này & đã duyệt
                 .OrderByDescending(p => p.Ngay_Dang) // Mới nhất
                 .Take(8)
                 .ToList();
@@ -320,7 +324,7 @@ namespace QuanLyPhongTro.Controllers
             ViewBag.UserFavorites = userFavorites;
 
             var featuredPosts = db.Phong_Tro
-                .Where(p => (p.ID_LoaiTin == 1 || p.ID_LoaiTin == 2) && p.ID_Phong_Tro != id && p.Trang_Thai == true)
+                .Where(p => (p.ID_LoaiTin == 1 || p.ID_LoaiTin == 2) && p.ID_Phong_Tro != id && (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai)))
                 .OrderByDescending(p => p.Ngay_Dang)
                 .Take(5)
                 .ToList();
@@ -390,7 +394,7 @@ namespace QuanLyPhongTro.Controllers
                                    .Include(p => p.Hinh_Anh)
                                    .Include(p => p.Loai_Tin)
                                    .Include(p => p.Video)
-                                   .Where(p => favoritedIds.Contains(p.ID_Phong_Tro) && p.Trang_Thai == true) // Chỉ hiện tin đã duyệt
+                                   .Where(p => favoritedIds.Contains(p.ID_Phong_Tro) && (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai))) // Chỉ hiện tin đã duyệt
                                    .OrderByDescending(p => p.Ngay_Dang); // Sắp xếp mới nhất
 
             // 4. Phân trang
@@ -466,7 +470,7 @@ namespace QuanLyPhongTro.Controllers
         }
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult DangNhap(string SDT, string Pass) // Đổi tên tham số đầu vào thành SDT
+        public ActionResult DangNhap(string SDT, string Pass, bool? RememberMe) // Đổi tên tham số đầu vào thành SDT
         {
             // --- BƯỚC 0: KIỂM TRA INPUT (Xử lý lỗi thiếu thông tin) ---
             // SDT lúc này chính là User_Name hoặc số điện thoại mà người dùng nhập
@@ -505,12 +509,9 @@ namespace QuanLyPhongTro.Controllers
                     db.SaveChanges();
                 }
 
-                // 3. Đăng nhập THÀNH CÔNG
-                Session["UserID"] = account.ID_Tk;
-                Session["UserName"] = account.Name;
-                Session["SDT"] = account.SDT;
-                Session["Avatar"] = account.Avata;
-                Session["PhanQuyen"] = account.ID_Phan_Quyen;
+                // 3. Đăng nhập THÀNH CÔNG & Ghi nhớ phiên đăng nhập hạn 7 ngày
+                bool remember = RememberMe ?? (Request.Form["RememberMe"] != null);
+                Utilities.SetLoginSessionAndCookie(Response, Session, account, remember);
                 ViewBag.ID_Phan_Quyen = account.ID_Phan_Quyen;
                 ViewBag.LoginSuccess = true;
 
@@ -543,20 +544,9 @@ namespace QuanLyPhongTro.Controllers
         }
         public ActionResult DangXuat()
         {
-            // 1. Xóa tất cả các Session liên quan đến thông tin đăng nhập
-            Session.Clear(); // Xóa tất cả Session trong phiên hiện tại
-                             // HOẶC: Session.Abandon(); // Kết thúc toàn bộ Session
-
-            // Nếu bạn chỉ muốn xóa các Session cụ thể:
-            Session.Remove("UserID");
-            Session.Remove("UserName");
-            Session.Remove("SDT");
-            Session.Remove("Avatar");
-            Session.Remove("PhanQuyen");
-            // Session.Remove("ID_PhanQuyen"); // Nếu có
-
-            // 2. Chuyển hướng người dùng về trang chủ (hoặc trang đăng nhập)
-            return RedirectToAction("Index", "User"); // Chuyển về trang Index của Home Controller
+            // Xóa toàn bộ Session và Cookie ghi nhớ đăng nhập 7 ngày
+            Utilities.ClearLoginSessionAndCookie(Response, Session);
+            return RedirectToAction("Index", "User");
         }
         //  =============== start chi tiet tin
         public ActionResult ChiTietTinTuc(int id)
@@ -596,7 +586,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
-                          .Where(p => p.Trang_Thai == true);
+                          .Where(p => (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai)));
 
             // Nếu có danh sách khu vực → lọc
             if (kvIds != null && kvIds.Any())
@@ -628,7 +618,7 @@ namespace QuanLyPhongTro.Controllers
 
             var newestPosts = db.Phong_Tro
                                 .Include(p => p.Hinh_Anh)
-                                .Where(p => p.Trang_Thai == true)
+                                .Where(p => (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai)))
                                 .OrderByDescending(p => p.Ngay_Dang)
                                 .Take(10)
                                 .ToList();
@@ -658,7 +648,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Loai_Tin)
                           .Include(p => p.Video)
-                          .Where(p => p.Trang_Thai == true)
+                          .Where(p => (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai)))
                           .AsQueryable();
 
             // Danh mục
@@ -710,7 +700,7 @@ namespace QuanLyPhongTro.Controllers
             // Lấy newest posts nếu cần (như Index)
             var newestPosts = db.Phong_Tro
                                 .Include(p => p.Hinh_Anh)
-                                .Where(p => p.Trang_Thai == true)
+                                .Where(p => (p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai)))
                                 .OrderByDescending(p => p.Ngay_Dang)
                                 .Take(10)
                                 .ToList();

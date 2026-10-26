@@ -1,4 +1,4 @@
-﻿@model QuanLyPhongTro.Models.ForecastResult
+@model QuanLyPhongTro.Models.ForecastResult
 @{
     ViewBag.Title = "Dự đoán tỷ lệ lấp đầy (AI)";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -69,7 +69,7 @@
     </div>
 
     <!-- KHỐI 4 THẺ KPI -->
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-3">
         <!-- KPI 1: Tỷ lệ hiện tại -->
         <div class="col-xl-3 col-sm-6">
             <div class="card border-0 shadow-sm rounded-3 h-100 bg-white border-start border-4 border-primary">
@@ -125,10 +125,25 @@
                     <span class="text-muted small fw-semibold text-uppercase">Độ chính xác mô hình (R²)</span>
                     <div class="d-flex align-items-baseline justify-content-between mt-2">
                         <h2 class="fw-bold mb-0 text-info">@Model.ModelAccuracyR2%</h2>
-                        <span class="badge bg-info-subtle text-info px-2 py-1">R-Squared</span>
+                        <span class="badge bg-info-subtle text-info px-2 py-1">MAE: @Model.ModelMAE% | RMSE: @Model.ModelRMSE%</span>
                     </div>
-                    <small class="text-muted mt-2 d-block">Độ khớp thuật toán chuỗi thời gian</small>
+                    <small class="text-muted mt-2 d-block">Kiểm định @Model.TrainMonths tháng Train / @Model.TestMonths tháng Test</small>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THANH ĐÁNH GIÁ THỰC NGHIỆM MAE, RMSE, MAPE & SO SÁNH BASELINE MA-3 -->
+    <div class="card border-0 shadow-sm rounded-3 bg-white p-3 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <span class="fw-bold text-dark small"><i class="bi bi-bar-chart-steps text-primary me-1"></i>Đánh giá thực nghiệm mô hình OLS + Mùa vụ:</span>
+                <span class="text-muted small ms-1">Chia tập dữ liệu @Model.TrainMonths tháng đầu huấn luyện / @Model.TestMonths tháng cuối kiểm tra, đối sánh với phương pháp cơ sở Trung bình trượt 3 tháng (MA-3)</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">MAE (OLS): @Model.ModelMAE% vs MA-3: @Model.BaselineMAE%</span>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">RMSE (OLS): @Model.ModelRMSE% vs MA-3: @Model.BaselineRMSE%</span>
+                <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-2 py-1">MAPE: @Model.ModelMAPE%</span>
             </div>
         </div>
     </div>

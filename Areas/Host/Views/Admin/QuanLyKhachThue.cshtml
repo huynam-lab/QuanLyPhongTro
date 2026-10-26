@@ -4,6 +4,7 @@
     Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
     string search = ViewBag.Search as string;
     string status = ViewBag.Status as string;
+    var danhSachPhong = ViewBag.DanhSachPhong as List<QuanLyPhongTro.Models.Phong_Tro>;
 }
 
 <div class="container-fluid py-3 px-3">
@@ -12,33 +13,39 @@
             <h5 class="fw-bold mb-0 text-dark text-nowrap">
                 <i class="bi bi-people text-primary me-2"></i>Quản Lý Khách Thuê
             </h5>
-            <div class="text-muted small text-nowrap">
-                Danh sách khách thuê phòng trọ, thông tin cá nhân và tình trạng hợp đồng
+            <div class="text-muted small">
+                Thêm, sửa, xóa hồ sơ khách thuê và gán phòng trực tiếp
             </div>
         </div>
 
-        <form method="get" action="@Url.Action("QuanLyKhachThue", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
-            <div class="input-group input-group-sm" style="width: 240px;">
-                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="text" name="search" class="form-control text-nowrap" placeholder="Tên, SĐT, CCCD, phòng..." value="@search" />
-            </div>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <form method="get" action="@Url.Action("QuanLyKhachThue", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
+                <div class="input-group input-group-sm" style="width: 220px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="Tên, SĐT, CCCD, phòng..." value="@search" />
+                </div>
 
-            <div class="input-group input-group-sm" style="width: 170px;">
-                <span class="input-group-text bg-white"><i class="bi bi-shield-check"></i></span>
-                <select name="status" class="form-select text-nowrap">
-                    <option value="">-- Tất cả trạng thái --</option>
-                    <option value="active" @(status == "active" ? "selected" : "")>Đang thuê</option>
-                    <option value="expired" @(status == "expired" ? "selected" : "")>Đã kết thúc</option>
-                </select>
-            </div>
+                <div class="input-group input-group-sm" style="width: 165px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-shield-check"></i></span>
+                    <select name="status" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="active" @(status == "active" ? "selected" : "")>Đang thuê</option>
+                        <option value="expired" @(status == "expired" ? "selected" : "")>Đã kết thúc</option>
+                    </select>
+                </div>
 
-            <button type="submit" class="btn btn-sm btn-primary text-nowrap">
-                <i class="bi bi-filter me-1"></i>Lọc
+                <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">
+                    <i class="bi bi-filter me-1"></i>Lọc
+                </button>
+                <a href="@Url.Action("QuanLyKhachThue", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </form>
+
+            <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="moModalThemKhach()">
+                <i class="bi bi-person-plus me-1"></i>Thêm khách thuê
             </button>
-            <a href="@Url.Action("QuanLyKhachThue", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
-                <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
-            </a>
-        </form>
+        </div>
     </div>
 
     <div class="row g-2 mb-3">
@@ -51,7 +58,7 @@
                     </div>
                 </div>
                 <div class="fs-4 fw-bold text-dark text-nowrap">@Model.TongKhach <span class="fs-6 fw-normal text-muted">người</span></div>
-                <div class="small text-muted text-nowrap">Toàn bộ khách từng thuê</div>
+                <div class="small text-muted text-nowrap">Toàn bộ khách thuê thuộc hệ thống</div>
             </div>
         </div>
 
@@ -104,9 +111,8 @@
                                 <th class="text-nowrap">Quê quán / Địa chỉ</th>
                                 <th class="text-nowrap">Phòng đang thuê</th>
                                 <th class="text-end text-nowrap">Giá thuê</th>
-                                <th class="text-center text-nowrap">Thời hạn hợp đồng</th>
                                 <th class="text-center text-nowrap">Trạng thái</th>
-                                <th class="text-center text-nowrap pe-3">Liên hệ</th>
+                                <th class="text-center text-nowrap pe-3">Thao tác (Sửa / Xóa)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -116,7 +122,10 @@
                                     <td class="ps-3 text-nowrap"><span class="badge bg-light text-dark border">#@kt.ID_Khach_Thue</span></td>
                                     <td class="text-nowrap">
                                         <div class="fw-semibold text-dark">@kt.HoTen</div>
-                                        <small class="text-muted">Mã HĐ: #@kt.ID_HopDong</small>
+                                        @if (kt.ID_HopDong > 0)
+                                        {
+                                            <small class="text-muted">Mã HĐ: #@kt.ID_HopDong</small>
+                                        }
                                     </td>
                                     <td class="text-nowrap">
                                         <span class="fw-semibold text-primary">@kt.SDT</span>
@@ -130,10 +139,7 @@
                                         <span class="text-truncate d-inline-block" style="max-width: 160px;" title="@kt.DiaChi">@kt.DiaChi</span>
                                     </td>
                                     <td class="fw-semibold text-dark text-nowrap">@kt.TenPhong</td>
-                                    <td class="text-end fw-bold text-dark text-nowrap">@kt.GiaThue.ToString("N0") đ</td>
-                                    <td class="text-center text-nowrap">
-                                        <div class="small fw-semibold">@kt.NgayBatDau.ToString("dd/MM/yyyy") &rarr; @(kt.NgayKetThuc.HasValue ? kt.NgayKetThuc.Value.ToString("dd/MM/yyyy") : "Vô thời hạn")</div>
-                                    </td>
+                                    <td class="text-end fw-bold text-dark text-nowrap">@(kt.GiaThue > 0 ? kt.GiaThue.ToString("N0") + " đ" : "-")</td>
                                     <td class="text-center text-nowrap">
                                         @if (kt.HopDongHieuLuc)
                                         {
@@ -145,21 +151,15 @@
                                         }
                                     </td>
                                     <td class="text-center text-nowrap pe-3">
-                                        @if (!string.IsNullOrEmpty(kt.SDT))
-                                        {
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="tel:@kt.SDT" class="btn btn-outline-success" title="Gọi điện">
-                                                    <i class="bi bi-telephone-fill"></i>
-                                                </a>
-                                                <a href="sms:@kt.SDT" class="btn btn-outline-primary" title="Nhắn tin">
-                                                    <i class="bi bi-chat-dots-fill"></i>
-                                                </a>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">-</span>
-                                        }
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-outline-primary" title="Sửa khách thuê"
+                                                    onclick="moModalSuaKhach(@kt.ID_Khach_Thue, '@Html.Raw(HttpUtility.JavaScriptStringEncode(kt.HoTen))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(kt.SDT))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(kt.CCCD))', '@(kt.NgaySinh.HasValue ? kt.NgaySinh.Value.ToString("yyyy-MM-dd") : "")', '@Html.Raw(HttpUtility.JavaScriptStringEncode(kt.GioiTinh))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(kt.DiaChi))', @(kt.HopDongHieuLuc ? "true" : "false"))">
+                                                <i class="bi bi-pencil-square"></i> Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" title="Xóa khách thuê" onclick="xoaKhachThue(@kt.ID_Khach_Thue, '@Html.Raw(HttpUtility.JavaScriptStringEncode(kt.HoTen))')">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -177,3 +177,222 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL THÊM KHÁCH THUÊ -->
+<div class="modal fade" id="modalThemKhach" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white py-2">
+                <h6 class="modal-title fw-bold"><i class="bi bi-person-plus me-2"></i>Thêm Khách Thuê Mới</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Họ và tên khách thuê <span class="text-danger">*</span></label>
+                    <input type="text" id="addKtHoTen" class="form-control form-control-sm" placeholder="Nguyễn Văn A" />
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">Số điện thoại</label>
+                        <input type="text" id="addKtSDT" class="form-control form-control-sm" placeholder="0987xxxxxx" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">CCCD / CMND</label>
+                        <input type="text" id="addKtCCCD" class="form-control form-control-sm" placeholder="0012xxxxxxxx" />
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">Giới tính</label>
+                        <select id="addKtGioiTinh" class="form-select form-select-sm">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">Ngày sinh</label>
+                        <input type="date" id="addKtNgaySinh" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Quê quán / Địa chỉ</label>
+                    <input type="text" id="addKtDiaChi" class="form-control form-control-sm" placeholder="Quê quán hoặc địa chỉ thường trú..." />
+                </div>
+                <hr class="my-2" />
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold text-primary">Xếp vào phòng trọ ngay (Tùy chọn)</label>
+                    <select id="addKtPhong" class="form-select form-select-sm">
+                        <option value="">-- Chưa xếp phòng (Chỉ lưu hồ sơ khách) --</option>
+                        @if (danhSachPhong != null)
+                        {
+                            foreach (var p in danhSachPhong)
+                            {
+                                <option value="@p.ID_Phong_Tro">#@p.ID_Phong_Tro - @p.Ten_Phong (@((p.Gia_Ca ?? 0).ToString("N0")) đ)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="luuThemKhach()">
+                    <i class="bi bi-check2-circle me-1"></i>Lưu khách thuê
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SỬA KHÁCH THUÊ -->
+<div class="modal fade" id="modalSuaKhach" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white py-2">
+                <h6 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>Cập Nhật Thông Tin Khách Thuê</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editKtId" />
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                    <input type="text" id="editKtHoTen" class="form-control form-control-sm" />
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">Số điện thoại</label>
+                        <input type="text" id="editKtSDT" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">CCCD / CMND</label>
+                        <input type="text" id="editKtCCCD" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">Giới tính</label>
+                        <select id="editKtGioiTinh" class="form-select form-select-sm">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">Ngày sinh</label>
+                        <input type="date" id="editKtNgaySinh" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Quê quán / Địa chỉ</label>
+                    <input type="text" id="editKtDiaChi" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="luuSuaKhach()">
+                    <i class="bi bi-save me-1"></i>Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function moModalThemKhach() {
+            new bootstrap.Modal(document.getElementById('modalThemKhach')).show();
+        }
+
+        function luuThemKhach() {
+            const params = new URLSearchParams();
+            params.append('HoTen', document.getElementById('addKtHoTen').value);
+            params.append('SDT', document.getElementById('addKtSDT').value);
+            params.append('CCCD', document.getElementById('addKtCCCD').value);
+            params.append('GioiTinh', document.getElementById('addKtGioiTinh').value);
+            params.append('NgaySinh', document.getElementById('addKtNgaySinh').value);
+            params.append('DiaChi', document.getElementById('addKtDiaChi').value);
+            params.append('ID_Phong_Tro', document.getElementById('addKtPhong').value);
+
+            fetch('@Url.Action("ThemKhachThue", "Admin", new { area = "Host" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({ icon: 'success', title: 'Thành công', text: data.message, timer: 1500, showConfirmButton: false })
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire({ icon: 'warning', title: 'Thông báo', text: data.message });
+                }
+            });
+        }
+
+        function moModalSuaKhach(id, hoTen, sdt, cccd, ngaySinh, gioiTinh, diaChi) {
+            document.getElementById('editKtId').value = id;
+            document.getElementById('editKtHoTen').value = hoTen;
+            document.getElementById('editKtSDT').value = sdt;
+            document.getElementById('editKtCCCD').value = cccd;
+            document.getElementById('editKtNgaySinh').value = ngaySinh;
+            document.getElementById('editKtGioiTinh').value = gioiTinh || 'Nam';
+            document.getElementById('editKtDiaChi').value = diaChi;
+
+            new bootstrap.Modal(document.getElementById('modalSuaKhach')).show();
+        }
+
+        function luuSuaKhach() {
+            const params = new URLSearchParams();
+            params.append('ID_Khach_Thue', document.getElementById('editKtId').value);
+            params.append('HoTen', document.getElementById('editKtHoTen').value);
+            params.append('SDT', document.getElementById('editKtSDT').value);
+            params.append('CCCD', document.getElementById('editKtCCCD').value);
+            params.append('GioiTinh', document.getElementById('editKtGioiTinh').value);
+            params.append('NgaySinh', document.getElementById('editKtNgaySinh').value);
+            params.append('DiaChi', document.getElementById('editKtDiaChi').value);
+
+            fetch('@Url.Action("SuaKhachThue", "Admin", new { area = "Host" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({ icon: 'success', title: 'Đã cập nhật', text: data.message, timer: 1500, showConfirmButton: false })
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message });
+                }
+            });
+        }
+
+        function xoaKhachThue(id, ten) {
+            Swal.fire({
+                title: 'Xóa khách thuê?',
+                text: 'Bạn có chắc chắn muốn xóa khách thuê "' + ten + '" khỏi hệ thống?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Đồng ý xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('@Url.Action("XoaKhachThue", "Admin", new { area = "Host" })', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'id=' + id
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({ icon: 'success', title: 'Đã xóa!', text: data.message, timer: 1500, showConfirmButton: false })
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

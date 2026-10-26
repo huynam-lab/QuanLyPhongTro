@@ -12,6 +12,12 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
         protected DaTa_Phong_TroEntities db = new DaTa_Phong_TroEntities();
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            if (Session["UserID"] == null)
+            {
+                // Ưu tiên khôi phục phiên đăng nhập từ Cookie ghi nhớ 7 ngày
+                Utilities.TryRestoreSessionFromCookie(System.Web.HttpContext.Current);
+            }
+
             // Nếu chưa đăng nhập → Tự động khởi tạo phiên Admin cho môi trường demo / kiểm thử
             if (Session["UserID"] == null)
             {
@@ -43,9 +49,7 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
 
             int pending = db.Phong_Tro.Count(x => x.Trang_Thai == false);
             ViewBag.PendingCount = pending;
-            // Admin → cho đi tiếp
             base.OnActionExecuting(filterContext);
         }
-
-        }
     }
+}

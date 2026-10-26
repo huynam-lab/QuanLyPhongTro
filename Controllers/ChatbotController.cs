@@ -36,6 +36,108 @@ namespace QuanLyPhongTro.Controllers
             public string imageUrl { get; set; }
         }
 
+        // =======================================================
+        // RESTFUL API CHUẨN CHO MÔ HÌNH DỰ BÁO AI (/api/forecast)
+        // =======================================================
+        [HttpGet]
+        public JsonResult ForecastApi(int? idKv = null, int months = 6)
+        {
+            try
+            {
+                if (months < 1) months = 3;
+                if (months > 24) months = 12;
+
+                string connStr = db.Database.Connection.ConnectionString;
+                var service = new OccupancyForecastService(connStr);
+                var res = service.CalculateForecast(idKv, months);
+
+                return Json(new
+                {
+                    success = true,
+                    endpoint = "/api/forecast",
+                    model = "Time-Series Decomposition (OLS Linear Trend + 12-Month Multiplicative Seasonality)",
+                    district = res.DistrictName,
+                    currentRate = res.CurrentRate,
+                    nextMonthRate = res.NextMonthRate,
+                    rateChange = res.RateChange,
+                    trendSlopePerYear = Math.Round(res.TrendSlope * 12, 2),
+                    evaluation = new
+                    {
+                        trainMonths = res.TrainMonths,
+                        testMonths = res.TestMonths,
+                        r2Percent = res.ModelAccuracyR2,
+                        mae = res.ModelMAE,
+                        rmse = res.ModelRMSE,
+                        mapePercent = res.ModelMAPE,
+                        baselineMethod = "Moving Average 3 Months (MA-3)",
+                        baselineMae = res.BaselineMAE,
+                        baselineRmse = res.BaselineRMSE,
+                        baselineMapePercent = res.BaselineMAPE,
+                        improvementOverBaselinePercent = res.ImprovementPercent
+                    },
+                    historical = res.HistoricalPoints,
+                    forecast = res.ForecastPoints,
+                    recommendations = res.AiRecommendations
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // =======================================================
+        // RESTFUL API THỐNG KÊ QUẢN TRỊ (/api/management-stats)
+        // =======================================================
+        [HttpGet]
+        public JsonResult ManagementStatsApi()
+        {
+            try
+            {
+                int totalRooms = db.Phong_Tro.Count();
+                int rentedRooms = db.Phong_Tro.Count(p => p.Hop_Dong.Any(h => h.Trang_Thai));
+                int vacantRooms = Math.Max(0, totalRooms - rentedRooms);
+                double occupancyRate = totalRooms > 0 ? Math.Round((double)rentedRooms * 100.0 / totalRooms, 1) : 0;
+
+                int activeContracts = db.Hop_Dong.Count(h => h.Trang_Thai);
+                int totalTenants = db.Khach_Thue.Count(k => k.Trang_Thai);
+
+                decimal billPaid = db.Hoa_Don_Dien_Nuoc.Where(b => b.Trang_Thai).Select(b => (decimal?)b.Tong_Tien).Sum() ?? 0m;
+                decimal billUnpaid = db.Hoa_Don_Dien_Nuoc.Where(b => !b.Trang_Thai).Select(b => (decimal?)b.Tong_Tien).Sum() ?? 0m;
+                decimal monthlyContractRent = db.Hop_Dong.Where(h => h.Trang_Thai).Select(h => (decimal?)h.Gia_Thue).Sum() ?? 0m;
+
+                return Json(new
+                {
+                    success = true,
+                    endpoint = "/api/management-stats",
+                    timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    rooms = new
+                    {
+                        total = totalRooms,
+                        rented = rentedRooms,
+                        vacant = vacantRooms,
+                        occupancyRatePercent = occupancyRate
+                    },
+                    contractsAndTenants = new
+                    {
+                        activeContracts,
+                        totalTenants,
+                        monthlyContractRent
+                    },
+                    revenue = new
+                    {
+                        utilityBillsPaid = billPaid,
+                        utilityBillsUnpaid = billUnpaid,
+                        estimatedMonthlyTotal = monthlyContractRent + billPaid + billUnpaid
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpPost]
         public async Task<JsonResult> Ask(ChatRequest request)
         {
@@ -44,7 +146,7 @@ namespace QuanLyPhongTro.Controllers
                 return Json(new
                 {
                     success = false,
-                    reply = "Xin chào! Mình là **Mia** — trợ lý AI của QuanLyPhongTro.vn 🏠 Mình vừa có thể tư vấn tìm phòng trọ, pháp lý, giá cả tại Hà Nội, vừa có thể trò chuyện, giải đáp thắc mắc cùng bạn. Bạn cần Mia hỗ trợ gì nè?"
+                    reply = "Xin chào! Mình là **Mia** — trợ lý AI của QuanLyPhongTro.vn 🏠 Mình vừa có thể tư vấn tìm phòng trọ, pháp lý, giá cả tại Hà Nội, vừa hỗ trợ thống kê quản trị cho chủ nhà/quản trị viên. Bạn cần Mia hỗ trợ gì nè?"
                 });
             }
 
@@ -52,6 +154,30 @@ namespace QuanLyPhongTro.Controllers
 
             try
             {
+                // =======================================================
+                // 0. KIỂM TRA Ý ĐỊNH TRỢ LÝ QUẢN TRỊ & DỰ BÁO AI (ADMIN/HOST ASSISTANT)
+                // Hỗ trợ truy vấn nhanh số liệu phòng trống, hợp đồng, doanh thu, hóa đơn, dự báo lấp đầy
+                // =======================================================
+                if (IsManagementOrForecastQuery(question))
+                {
+                    var mgmtReply = BuildManagementAndForecastReply(question);
+                    return Json(new
+                    {
+                        success = true,
+                        reply = mgmtReply,
+                        rooms = new List<RoomDto>(),
+                        suggestions = new List<string>
+                        {
+                            "Báo cáo thống kê doanh thu và hóa đơn điện nước",
+                            "Dự báo tỷ lệ lấp đầy 6 tháng tới bằng AI",
+                            "Hiện tại hệ thống còn bao nhiêu phòng trống?"
+                        },
+                        provider = "Management AI Engine",
+                        model = "Mia — Trợ Lý Quản Trị & Dự Báo",
+                        intent = "ManagementQuery"
+                    });
+                }
+
                 // =======================================================
                 // 1. TRÍCH XUẤT TIÊU CHÍ & PHÂN LOẠI Ý ĐỊNH
                 // =======================================================
@@ -86,34 +212,6 @@ namespace QuanLyPhongTro.Controllers
                 }
 
                 var intent = AiConsultationEngine.ClassifyIntent(question, criteria);
-
-                // Xử lý kiểm tra tình trạng API Key trực tiếp khi khách gõ "kiểm tra api"
-                if (intent == UserChatIntent.CheckApiStatus)
-                {
-                    var healthList = await AiServiceManager.CheckAllProvidersHealthAsync();
-                    var sbStatus = new StringBuilder();
-                    sbStatus.Append("📊 **BÁO CÁO KIỂM TRA TRẠNG THÁI API KEY & MÔ HÌNH AI:**\n\n");
-                    foreach (var h in healthList)
-                    {
-                        string icon = h.Status.Contains("Sẵn Sàng") ? "🟢" : (h.Status.Contains("Hết Quota") ? "🔴" : "⚪");
-                        sbStatus.AppendFormat("{0} **{1}** ({2}): *{3}*\n   - Chi tiết: {4}\n\n",
-                            icon, h.ProviderName, h.ModelName, h.Status, h.DetailMessage);
-                    }
-                    sbStatus.Append("💡 **Cơ chế hoạt động khi hết Token / Quota:**\n");
-                    sbStatus.Append("1. Hệ thống tự động Failover sang nhà cung cấp dự phòng tiếp theo cấu hình trong Web.config.\n");
-                    sbStatus.Append("2. Nếu toàn bộ API trực tuyến hết hạn mức, **Cỗ máy AI Ngoại Tuyến (Offline Expert Engine)** sẽ tự động tiếp quản, đảm bảo 100% không bao giờ gián đoạn dịch vụ.\n");
-                    sbStatus.Append("3. Để đổi API Key mới: Mở file `Web.config` và cập nhật khóa tại `<appSettings>`.");
-
-                    return Json(new
-                    {
-                        success = true,
-                        reply = sbStatus.ToString(),
-                        rooms = new List<RoomDto>(),
-                        provider = "Diagnostics System",
-                        model = "Health Check Monitor",
-                        intent = intent.ToString()
-                    });
-                }
 
                 // =======================================================
                 // 2. PHÁT HIỆN PHÒNG ĐƯỢC NHẮC ĐẾN TRONG CÂU HỎI (ROOM RECOGNITION)
@@ -392,14 +490,71 @@ namespace QuanLyPhongTro.Controllers
             }
         }
 
-        /// <summary>
-        /// API kiểm tra sức khỏe của các Provider (GET /Chatbot/CheckApiStatus)
-        /// </summary>
-        [HttpGet]
-        public async Task<JsonResult> CheckApiStatus()
+        // =======================================================
+        // TRỢ LÝ AI HỖ TRỢ QUẢN TRỊ & DỰ BÁO LẤP ĐẦY (HOST / ADMIN)
+        // =======================================================
+        private bool IsManagementOrForecastQuery(string question)
         {
-            var results = await AiServiceManager.CheckAllProvidersHealthAsync();
-            return Json(results, JsonRequestBehavior.AllowGet);
+            if (string.IsNullOrWhiteSpace(question)) return false;
+            string norm = AiConsultationEngine.RemoveDiacritics(question.ToLower());
+
+            string[] managementKeywords =
+            {
+                "thong ke", "doanh thu", "bao cao quan tri", "hoa don chua thu",
+                "hoa don dien nuoc", "bao nhieu hop dong", "hop dong hieu luc",
+                "ty le lap day", "du bao lap day", "du doan lap day",
+                "bao nhieu phong trong", "con may phong trong", "tong so phong",
+                "mae", "rmse", "r2", "mo hinh du bao"
+            };
+
+            return managementKeywords.Any(kw => norm.Contains(kw));
+        }
+
+        private string BuildManagementAndForecastReply(string question)
+        {
+            int totalRooms = db.Phong_Tro.Count();
+            int rentedRooms = db.Phong_Tro.Count(p => p.Hop_Dong.Any(h => h.Trang_Thai));
+            int vacantRooms = Math.Max(0, totalRooms - rentedRooms);
+            double currentOccupancy = totalRooms > 0 ? Math.Round((double)rentedRooms * 100.0 / totalRooms, 1) : 0;
+
+            int activeContracts = db.Hop_Dong.Count(h => h.Trang_Thai);
+            int totalTenants = db.Khach_Thue.Count(k => k.Trang_Thai);
+            decimal totalContractRent = db.Hop_Dong.Where(h => h.Trang_Thai).Select(h => (decimal?)h.Gia_Thue).Sum() ?? 0m;
+
+            int paidBillsCount = db.Hoa_Don_Dien_Nuoc.Count(b => b.Trang_Thai);
+            int unpaidBillsCount = db.Hoa_Don_Dien_Nuoc.Count(b => !b.Trang_Thai);
+            decimal billPaid = db.Hoa_Don_Dien_Nuoc.Where(b => b.Trang_Thai).Select(b => (decimal?)b.Tong_Tien).Sum() ?? 0m;
+            decimal billUnpaid = db.Hoa_Don_Dien_Nuoc.Where(b => !b.Trang_Thai).Select(b => (decimal?)b.Tong_Tien).Sum() ?? 0m;
+
+            string connStr = db.Database.Connection.ConnectionString;
+            var forecastService = new OccupancyForecastService(connStr);
+            var forecast = forecastService.CalculateForecast(null, 3);
+
+            var sb = new StringBuilder();
+            sb.AppendLine("📊 **BÁO CÁO QUẢN TRỊ & DỰ BÁO AI THỜI GIAN THỰC**");
+            sb.AppendLine();
+            sb.AppendLine("🏠 **1. Tình trạng Phòng trọ & Lấp đầy hiện tại:**");
+            sb.AppendLine($"• Tổng số phòng trên hệ thống: **{totalRooms} phòng**");
+            sb.AppendLine($"• Đang có khách thuê (có hợp đồng hiệu lực): **{rentedRooms} phòng** ({currentOccupancy}%)");
+            sb.AppendLine($"• Phòng đang còn trống (hiển thị tìm khách): **{vacantRooms} phòng**");
+            sb.AppendLine();
+            sb.AppendLine("📝 **2. Hợp đồng, Khách thuê & Doanh thu:**");
+            sb.AppendLine($"• Hợp đồng đang hiệu lực: **{activeContracts} hợp đồng** ({totalTenants} khách thuê)");
+            sb.AppendLine($"• Doanh thu tiền phòng định kỳ: **{totalContractRent:N0} đ/tháng**");
+            sb.AppendLine($"• Hóa đơn điện nước đã thu ({paidBillsCount} HĐ): **{billPaid:N0} đ**");
+            sb.AppendLine($"• Hóa đơn điện nước chờ thu ({unpaidBillsCount} HĐ): **{billUnpaid:N0} đ**");
+            sb.AppendLine();
+            sb.AppendLine("📈 **3. Dự báo tỷ lệ lấp đầy thị trường bằng AI (OLS + Seasonality):**");
+            sb.AppendLine($"• Dự báo tháng kế tiếp: **{forecast.NextMonthRate}%** ({(forecast.RateChange >= 0 ? "+" : "")}{forecast.RateChange}% so với hiện tại)");
+            sb.AppendLine($"• Độ chính xác thực nghiệm ({forecast.TrainMonths} tháng Train / {forecast.TestMonths} tháng Test): **R² = {forecast.ModelAccuracyR2}%**, **MAE = {forecast.ModelMAE}%**, **RMSE = {forecast.ModelRMSE}%** (vượt trội hơn Trung bình trượt MA-3 có MAE = {forecast.BaselineMAE}%, RMSE = {forecast.BaselineRMSE}%).");
+
+            if (forecast.AiRecommendations != null && forecast.AiRecommendations.Any())
+            {
+                sb.AppendLine();
+                sb.AppendLine("💡 **Khuyến nghị điều hành:** " + forecast.AiRecommendations.First().Replace("**", ""));
+            }
+
+            return sb.ToString();
         }
 
         // =======================================================
@@ -412,7 +567,7 @@ namespace QuanLyPhongTro.Controllers
                           .Include(p => p.Hinh_Anh)
                           .Include(p => p.Video)
                           .Include(p => p.Loai_Tin)
-                          .Where(p => p.Trang_Thai == true);
+                          .Where(p => p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai));
 
             // 1. Lọc theo giá nếu có
             if (criteria.MinPrice.HasValue)
@@ -540,7 +695,7 @@ namespace QuanLyPhongTro.Controllers
                              .Include(p => p.Khu_Vuc)
                              .Include(p => p.Hinh_Anh)
                              .Include(p => p.Loai_Tin)
-                             .Where(p => p.Trang_Thai == true)
+                             .Where(p => p.Trang_Thai == true && !p.Hop_Dong.Any(h => h.Trang_Thai))
                              .AsEnumerable()
                              .OrderBy(p => Math.Abs((p.Gia_Ca ?? 0) - targetFallback))
                              .Take(3)

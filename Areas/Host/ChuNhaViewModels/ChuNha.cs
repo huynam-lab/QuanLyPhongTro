@@ -58,7 +58,8 @@ namespace QuanLyPhongTro.Areas.Admin.ChuNhaViewModels
         public int ID_Phong_Tro { get; set; }
         public string Ten_Phong { get; set; }
         public DateTime? Ngay_Dang { get; set; }
-        public bool? Trang_Thai { get; set; }  
+        public bool? Trang_Thai { get; set; }
+        public bool DangCoKhachThue { get; set; }
         }
 
     public class HostRoomStatusItem
@@ -116,6 +117,7 @@ namespace QuanLyPhongTro.Areas.Admin.ChuNhaViewModels
     public class HoaDonChiTietItem
     {
         public int ID_Hoa_Don { get; set; }
+        public int ID_Hop_Dong { get; set; }
         public string TenPhong { get; set; }
         public string TenKhach { get; set; }
         public string SDT { get; set; }
@@ -160,9 +162,12 @@ namespace QuanLyPhongTro.Areas.Admin.ChuNhaViewModels
     public class PhongTroQuanLyItem
     {
         public int ID_Phong_Tro { get; set; }
+        public int? ID_KV { get; set; }
+        public int? ID_CD { get; set; }
         public string TenPhong { get; set; }
         public string TenKhuVuc { get; set; }
         public string DiaChi { get; set; }
+        public string MoTa { get; set; }
         public double? DienTich { get; set; }
         public decimal? GiaThue { get; set; }
         public DateTime? NgayDang { get; set; }

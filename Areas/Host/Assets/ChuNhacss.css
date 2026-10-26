@@ -5,6 +5,7 @@
     top: 40px; /* height of your top navbar */
     z-index: 1000;
     background: #fff;
+    margin-bottom: 20px;
 }
 
 .section-title {
@@ -112,12 +113,16 @@ h5 {
 }
 
 .card {
-    top: 40px;
+    top: 0;
     border: none;
-    border-radius: 8px;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     background-color: #fff;
     margin-bottom: 20px;
+}
+
+.card.h-100 {
+    margin-bottom: 0;
 }
 
 .form-label {
@@ -130,9 +135,20 @@ h5 {
 .form-select {
     border-radius: 6px;
     border: 1px solid #ddd;
-    font-size: 15px;
-    height: 42px;
+    font-size: 14px;
+    height: 40px;
     transition: all 0.2s ease;
+}
+
+.form-control-sm,
+.form-select-sm,
+.input-group-sm > .form-control,
+.input-group-sm > .form-select {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 13px !important;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
 }
 
     .form-control:focus,
@@ -304,9 +320,10 @@ h5 {
     display: none;
 }
 
-    .tab-content.active {
-        display: block;
-    }
+.tab-content.active,
+.tab-content:has(> .tab-pane) {
+    display: block;
+}
 
 /* Nút cập nhật */
 .btn-update {

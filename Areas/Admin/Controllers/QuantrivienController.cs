@@ -1,4 +1,4 @@
-using QuanLyPhongTro.Areas.Admin.AdminViewModels;
+﻿using QuanLyPhongTro.Areas.Admin.AdminViewModels;
 using QuanLyPhongTro.Models;
 using System;
 using System.Collections.Generic;
@@ -24,6 +24,30 @@ namespace QuanLyPhongTro.Areas.Admin.Controllers
 
             ViewBag.PhongHienThi = db.Phong_Tro.Count(x => x.Trang_Thai == true);
             ViewBag.PhongChoDuyet = db.Phong_Tro.Count(x => x.Trang_Thai == false);
+
+            // --- Thống kê Tỷ lệ lấp đầy, Hợp đồng & Doanh thu toàn hệ thống ---
+            int tongSoPhong = db.Phong_Tro.Count();
+            int soPhongDangThue = db.Phong_Tro.Count(p => p.Hop_Dong.Any(h => h.Trang_Thai));
+            int soPhongTrong = Math.Max(0, tongSoPhong - soPhongDangThue);
+            double tyLeLapDay = tongSoPhong > 0 ? Math.Round((double)soPhongDangThue * 100.0 / tongSoPhong, 1) : 0;
+
+            int tongHopDong = db.Hop_Dong.Count(h => h.Trang_Thai);
+            int tongKhachThue = db.Khach_Thue.Count(k => k.Trang_Thai);
+
+            decimal doanhThuHopDong = db.Hop_Dong.Where(h => h.Trang_Thai).Select(h => (decimal?)h.Gia_Thue).Sum() ?? 0m;
+            decimal dienNuocDaThu = db.Hoa_Don_Dien_Nuoc.Where(b => b.Trang_Thai).Select(b => (decimal?)b.Tong_Tien).Sum() ?? 0m;
+            decimal dienNuocChuaThu = db.Hoa_Don_Dien_Nuoc.Where(b => !b.Trang_Thai).Select(b => (decimal?)b.Tong_Tien).Sum() ?? 0m;
+
+            ViewBag.TongSoPhong = tongSoPhong;
+            ViewBag.SoPhongDangThue = soPhongDangThue;
+            ViewBag.SoPhongTrong = soPhongTrong;
+            ViewBag.TyLeLapDay = tyLeLapDay;
+            ViewBag.TongHopDong = tongHopDong;
+            ViewBag.TongKhachThue = tongKhachThue;
+            ViewBag.DoanhThuHopDong = doanhThuHopDong;
+            ViewBag.DienNuocDaThu = dienNuocDaThu;
+            ViewBag.DienNuocChuaThu = dienNuocChuaThu;
+            ViewBag.TongDoanhThu = doanhThuHopDong + dienNuocDaThu;
 
             // --- Tin mới nhất ---
             var latest = db.Phong_Tro

@@ -15,7 +15,13 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
         {
             if (Session["UserID"] == null)
             {
-                var hostUser = db.Tai_Khoan.FirstOrDefault(x => x.ID_Tk  == 2);
+                // 1. Ưu tiên khôi phục phiên đăng nhập từ Cookie ghi nhớ 7 ngày
+                Utilities.TryRestoreSessionFromCookie(System.Web.HttpContext.Current);
+            }
+
+            if (Session["UserID"] == null)
+            {
+                var hostUser = db.Tai_Khoan.FirstOrDefault(x => x.ID_Tk == 2);
                 if (hostUser != null)
                 {
                     Session["UserID"] = hostUser.ID_Tk;
@@ -34,7 +40,7 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
             if (Session["UserID"] != null)
                 int.TryParse(Session["UserID"].ToString(), out maTK);
             if (maTK > 0)
-                {
+            {
                 var user = db.Tai_Khoan
                     .Where(x => x.ID_Tk == maTK)
                     .Select(x => new { x.Name, x.Avata, x.SDT })
@@ -48,9 +54,9 @@ namespace QuanLyPhongTro.Areas.Host.Controllers
                 ViewBag.Name = user?.Name ?? "";
                 ViewBag.SDT = user?.SDT ?? "";
                 ViewBag.Avata = user?.Avata ?? "";
-                }
+            }
 
             base.OnActionExecuting(filterContext);
-            }
         }
+    }
 }

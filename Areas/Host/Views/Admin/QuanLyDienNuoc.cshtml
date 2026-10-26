@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Quản lý điện nước";
     Layout = "~/Areas/Host/Views/Shared/_Layout.cshtml";
+    var danhSachHopDong = ViewBag.DanhSachHopDong as List<QuanLyPhongTro.Models.Hop_Dong>;
 }
 
 <div class="container-fluid py-3 px-3">
@@ -10,53 +11,59 @@
             <h5 class="fw-bold mb-0 text-dark text-nowrap">
                 <i class="bi bi-lightning-charge text-warning me-2"></i>Quản Lý Điện Nước & Dịch Vụ
             </h5>
-            <div class="text-muted small text-nowrap">
-                Theo dõi chỉ số tiêu thụ điện nước, đơn giá và trạng thái thanh toán hóa đơn từng phòng
+            <div class="text-muted small">
+                Lập hóa đơn mới, chỉnh sửa chỉ số điện nước, thu tiền và xóa hóa đơn
             </div>
         </div>
 
-        <form method="get" action="@Url.Action("QuanLyDienNuoc", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
-            <div class="input-group input-group-sm" style="width: 130px;">
-                <span class="input-group-text bg-white"><i class="bi bi-calendar-event"></i></span>
-                <select name="thang" class="form-select text-nowrap">
-                    <option value="">-- Tháng --</option>
-                    @for (int m = 1; m <= 12; m++)
-                    {
-                        <option value="@m" @(Model.SelectedThang == m ? "selected" : "")>Tháng @m</option>
-                    }
-                </select>
-            </div>
-
-            <div class="input-group input-group-sm" style="width: 125px;">
-                <span class="input-group-text bg-white"><i class="bi bi-calendar3"></i></span>
-                <select name="nam" class="form-select text-nowrap">
-                    <option value="">-- Năm --</option>
-                    @if (Model.DanhSachNam != null)
-                    {
-                        foreach (var y in Model.DanhSachNam)
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <form method="get" action="@Url.Action("QuanLyDienNuoc", "Admin", new { area = "Host" })" class="d-flex flex-wrap align-items-center gap-2">
+                <div class="input-group input-group-sm" style="width: 130px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-calendar-event"></i></span>
+                    <select name="thang" class="form-select">
+                        <option value="">-- Tháng --</option>
+                        @for (int m = 1; m <= 12; m++)
                         {
-                            <option value="@y" @(Model.SelectedNam == y ? "selected" : "")>Năm @y</option>
+                            <option value="@m" @(Model.SelectedThang == m ? "selected" : "")>Tháng @m</option>
                         }
-                    }
-                </select>
-            </div>
+                    </select>
+                </div>
 
-            <div class="input-group input-group-sm" style="width: 165px;">
-                <span class="input-group-text bg-white"><i class="bi bi-check2-circle"></i></span>
-                <select name="trangThai" class="form-select text-nowrap">
-                    <option value="">-- Tất cả TT --</option>
-                    <option value="true" @(Model.SelectedTrangThai == true ? "selected" : "")>Đã thanh toán</option>
-                    <option value="false" @(Model.SelectedTrangThai == false ? "selected" : "")>Chưa thanh toán</option>
-                </select>
-            </div>
+                <div class="input-group input-group-sm" style="width: 125px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-calendar3"></i></span>
+                    <select name="nam" class="form-select">
+                        <option value="">-- Năm --</option>
+                        @if (Model.DanhSachNam != null)
+                        {
+                            foreach (var y in Model.DanhSachNam)
+                            {
+                                <option value="@y" @(Model.SelectedNam == y ? "selected" : "")>Năm @y</option>
+                            }
+                        }
+                    </select>
+                </div>
 
-            <button type="submit" class="btn btn-sm btn-primary text-nowrap">
-                <i class="bi bi-filter me-1"></i>Lọc
+                <div class="input-group input-group-sm" style="width: 160px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-check2-circle"></i></span>
+                    <select name="trangThai" class="form-select">
+                        <option value="">-- Tất cả TT --</option>
+                        <option value="true" @(Model.SelectedTrangThai == true ? "selected" : "")>Đã thanh toán</option>
+                        <option value="false" @(Model.SelectedTrangThai == false ? "selected" : "")>Chưa thanh toán</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">
+                    <i class="bi bi-filter me-1"></i>Lọc
+                </button>
+                <a href="@Url.Action("QuanLyDienNuoc", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </form>
+
+            <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="moModalThemHoaDon()">
+                <i class="bi bi-plus-circle me-1"></i>Lập hóa đơn mới
             </button>
-            <a href="@Url.Action("QuanLyDienNuoc", "Admin", new { area = "Host" })" class="btn btn-sm btn-outline-secondary text-nowrap">
-                <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
-            </a>
-        </form>
+        </div>
     </div>
 
     <div class="row g-2 mb-3">
@@ -134,7 +141,7 @@
                                 <th class="text-end text-nowrap">Tổng tiền</th>
                                 <th class="text-center text-nowrap">Hạn nộp</th>
                                 <th class="text-center text-nowrap">Trạng thái</th>
-                                <th class="text-center text-nowrap pe-3">Thao tác</th>
+                                <th class="text-center text-nowrap pe-3">Thao tác (Thu / Sửa / Xóa)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -171,9 +178,18 @@
                                         }
                                     </td>
                                     <td class="text-center text-nowrap pe-3">
-                                        <button type="button" class="btn btn-sm @(item.TrangThai ? "btn-outline-secondary" : "btn-outline-success") text-nowrap" onclick="togglePayment(@item.ID_Hoa_Don, this)">
-                                            <i class="bi @(item.TrangThai ? "bi-arrow-repeat" : "bi-check2") me-1"></i>@(item.TrangThai ? "Hủy thu" : "Thu tiền")
-                                        </button>
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn @(item.TrangThai ? "btn-outline-secondary" : "btn-outline-success")" onclick="togglePayment(@item.ID_Hoa_Don)" title="@(item.TrangThai ? "Hủy thu" : "Đánh dấu đã thu tiền")">
+                                                <i class="bi @(item.TrangThai ? "bi-arrow-repeat" : "bi-check2")"></i> @(item.TrangThai ? "Hủy thu" : "Thu tiền")
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary" title="Sửa hóa đơn"
+                                                    onclick="moModalSuaHoaDon(@item.ID_Hoa_Don, @item.ID_Hop_Dong, @item.Thang, @item.Nam, @item.SoDien, @item.TienDien, @item.SoNuoc, @item.TienNuoc, @item.TienPhong, @item.TienWifi, '@(item.HanThanhToan.HasValue ? item.HanThanhToan.Value.ToString("yyyy-MM-dd") : "")', @(item.TrangThai ? "true" : "false"))">
+                                                <i class="bi bi-pencil-square"></i> Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" title="Xóa hóa đơn" onclick="xoaHoaDon(@item.ID_Hoa_Don, '@Html.Raw(HttpUtility.JavaScriptStringEncode(item.TenPhong))', '@item.Thang/@item.Nam')">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -192,29 +208,366 @@
     </div>
 </div>
 
+<!-- MODAL LẬP HÓA ĐƠN ĐIỆN NƯỚC MỚI -->
+<div class="modal fade" id="modalThemHoaDon" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white py-2">
+                <h6 class="modal-title fw-bold"><i class="bi bi-receipt me-2"></i>Lập Hóa Đơn Điện Nước & Tiền Phòng</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2 mb-2">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Chọn hợp đồng / Phòng đang thuê <span class="text-danger">*</span></label>
+                        <select id="addBillHopDong" class="form-select form-select-sm" onchange="chonHopDongBill()">
+                            @if (danhSachHopDong != null && danhSachHopDong.Any())
+                            {
+                                foreach (var hd in danhSachHopDong)
+                                {
+                                    <option value="@hd.ID_Hop_Dong" data-giaphong="@hd.Gia_Thue">
+                                        HĐ #@hd.ID_Hop_Dong - @(hd.Phong_Tro != null ? hd.Phong_Tro.Ten_Phong : "") (@(hd.Khach_Thue != null ? hd.Khach_Thue.Ho_Ten : "")) @(hd.Trang_Thai ? "[Đang thuê]" : "[Đã kết thúc]")
+                                    </option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="">-- Vui lòng lập hợp đồng trước --</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold">Tháng</label>
+                        <input type="number" id="addBillThang" class="form-control form-control-sm" value="@DateTime.Now.Month" min="1" max="12" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold">Năm</label>
+                        <input type="number" id="addBillNam" class="form-control form-control-sm" value="@DateTime.Now.Year" min="2020" max="2035" />
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Số điện tiêu thụ (kWh)</label>
+                        <input type="number" id="addBillSoDien" class="form-control form-control-sm" value="50" min="0" oninput="tinhTienDienNuoc('add')" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Đơn giá điện (VNĐ/kWh)</label>
+                        <input type="number" id="addBillDonGiaDien" class="form-control form-control-sm" value="3500" step="100" oninput="tinhTienDienNuoc('add')" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Thành tiền điện (VNĐ)</label>
+                        <input type="number" id="addBillTienDien" class="form-control form-control-sm fw-bold" value="175000" oninput="tinhTongBill('add')" />
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Số nước tiêu thụ (m³)</label>
+                        <input type="number" id="addBillSoNuoc" class="form-control form-control-sm" value="4" min="0" oninput="tinhTienDienNuoc('add')" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Đơn giá nước (VNĐ/m³)</label>
+                        <input type="number" id="addBillDonGiaNuoc" class="form-control form-control-sm" value="25000" step="1000" oninput="tinhTienDienNuoc('add')" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Thành tiền nước (VNĐ)</label>
+                        <input type="number" id="addBillTienNuoc" class="form-control form-control-sm fw-bold" value="100000" oninput="tinhTongBill('add')" />
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Tiền thuê phòng (VNĐ)</label>
+                        <input type="number" id="addBillTienPhong" class="form-control form-control-sm" value="3500000" step="100000" oninput="tinhTongBill('add')" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Tiền Wifi & dịch vụ (VNĐ)</label>
+                        <input type="number" id="addBillTienWifi" class="form-control form-control-sm" value="100000" step="10000" oninput="tinhTongBill('add')" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold text-primary">Tổng cộng hóa đơn (VNĐ)</label>
+                        <input type="text" id="addBillTongTien" class="form-control form-control-sm fw-bold text-primary bg-light" readonly />
+                    </div>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Hạn thanh toán</label>
+                        <input type="date" id="addBillHanThanhToan" class="form-control form-control-sm" value="@DateTime.Now.AddDays(5).ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Trạng thái thanh toán</label>
+                        <select id="addBillTrangThai" class="form-select form-select-sm">
+                            <option value="false">Chưa thanh toán</option>
+                            <option value="true">Đã thanh toán</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="luuThemHoaDon()">
+                    <i class="bi bi-check2-circle me-1"></i>Lưu hóa đơn
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SỬA HÓA ĐƠN ĐIỆN NƯỚC -->
+<div class="modal fade" id="modalSuaHoaDon" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white py-2">
+                <h6 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>Cập Nhật Hóa Đơn Điện Nước</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editBillId" />
+                <div class="row g-2 mb-2">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Hợp đồng / Phòng trọ</label>
+                        <select id="editBillHopDong" class="form-select form-select-sm">
+                            @if (danhSachHopDong != null)
+                            {
+                                foreach (var hd in danhSachHopDong)
+                                {
+                                    <option value="@hd.ID_Hop_Dong">
+                                        HĐ #@hd.ID_Hop_Dong - @(hd.Phong_Tro != null ? hd.Phong_Tro.Ten_Phong : "") (@(hd.Khach_Thue != null ? hd.Khach_Thue.Ho_Ten : ""))
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold">Tháng</label>
+                        <input type="number" id="editBillThang" class="form-control form-control-sm" min="1" max="12" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold">Năm</label>
+                        <input type="number" id="editBillNam" class="form-control form-control-sm" min="2020" max="2035" />
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Số điện (kWh)</label>
+                        <input type="number" id="editBillSoDien" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Tiền điện (VNĐ)</label>
+                        <input type="number" id="editBillTienDien" class="form-control form-control-sm" oninput="tinhTongBill('edit')" />
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Số nước (m³)</label>
+                        <input type="number" id="editBillSoNuoc" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Tiền nước (VNĐ)</label>
+                        <input type="number" id="editBillTienNuoc" class="form-control form-control-sm" oninput="tinhTongBill('edit')" />
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Tiền phòng (VNĐ)</label>
+                        <input type="number" id="editBillTienPhong" class="form-control form-control-sm" oninput="tinhTongBill('edit')" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Tiền Wifi (VNĐ)</label>
+                        <input type="number" id="editBillTienWifi" class="form-control form-control-sm" oninput="tinhTongBill('edit')" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold text-primary">Tổng cộng (VNĐ)</label>
+                        <input type="text" id="editBillTongTien" class="form-control form-control-sm fw-bold text-primary bg-light" readonly />
+                    </div>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Hạn thanh toán</label>
+                        <input type="date" id="editBillHanThanhToan" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Trạng thái</label>
+                        <select id="editBillTrangThai" class="form-select form-select-sm">
+                            <option value="false">Chưa thanh toán</option>
+                            <option value="true">Đã thanh toán</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="luuSuaHoaDon()">
+                    <i class="bi bi-save me-1"></i>Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
-        function togglePayment(id, btn) {
+        function chonHopDongBill() {
+            const sel = document.getElementById('addBillHopDong');
+            if (!sel || sel.selectedIndex < 0) return;
+            const giaPhong = sel.options[sel.selectedIndex].getAttribute('data-giaphong');
+            if (giaPhong) {
+                document.getElementById('addBillTienPhong').value = giaPhong;
+                tinhTongBill('add');
+            }
+        }
+
+        function tinhTienDienNuoc(prefix) {
+            const soDien = parseFloat(document.getElementById(prefix + 'BillSoDien').value) || 0;
+            const giaDien = parseFloat(document.getElementById(prefix + 'BillDonGiaDien').value) || 0;
+            const soNuoc = parseFloat(document.getElementById(prefix + 'BillSoNuoc').value) || 0;
+            const giaNuoc = parseFloat(document.getElementById(prefix + 'BillDonGiaNuoc').value) || 0;
+
+            document.getElementById(prefix + 'BillTienDien').value = Math.round(soDien * giaDien);
+            document.getElementById(prefix + 'BillTienNuoc').value = Math.round(soNuoc * giaNuoc);
+            tinhTongBill(prefix);
+        }
+
+        function tinhTongBill(prefix) {
+            const td = parseFloat(document.getElementById(prefix + 'BillTienDien').value) || 0;
+            const tn = parseFloat(document.getElementById(prefix + 'BillTienNuoc').value) || 0;
+            const tp = parseFloat(document.getElementById(prefix + 'BillTienPhong').value) || 0;
+            const tw = parseFloat(document.getElementById(prefix + 'BillTienWifi').value) || 0;
+            const tong = td + tn + tp + tw;
+            document.getElementById(prefix + 'BillTongTien').value = tong.toLocaleString('vi-VN') + ' đ';
+        }
+
+        function moModalThemHoaDon() {
+            chonHopDongBill();
+            tinhTienDienNuoc('add');
+            new bootstrap.Modal(document.getElementById('modalThemHoaDon')).show();
+        }
+
+        function luuThemHoaDon() {
+            const params = new URLSearchParams();
+            params.append('ID_Hop_Dong', document.getElementById('addBillHopDong').value);
+            params.append('Thang', document.getElementById('addBillThang').value);
+            params.append('Nam', document.getElementById('addBillNam').value);
+            params.append('SoDien', document.getElementById('addBillSoDien').value);
+            params.append('TienDien', document.getElementById('addBillTienDien').value);
+            params.append('SoNuoc', document.getElementById('addBillSoNuoc').value);
+            params.append('TienNuoc', document.getElementById('addBillTienNuoc').value);
+            params.append('TienPhong', document.getElementById('addBillTienPhong').value);
+            params.append('TienWifi', document.getElementById('addBillTienWifi').value);
+            params.append('HanThanhToan', document.getElementById('addBillHanThanhToan').value);
+            params.append('TrangThai', document.getElementById('addBillTrangThai').value);
+
+            fetch('@Url.Action("ThemHoaDonDienNuoc", "Admin", new { area = "Host" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({ icon: 'success', title: 'Thành công', text: data.message, timer: 1500, showConfirmButton: false })
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire({ icon: 'warning', title: 'Thông báo', text: data.message });
+                }
+            });
+        }
+
+        function moModalSuaHoaDon(id, idHd, thang, nam, soDien, tienDien, soNuoc, tienNuoc, tienPhong, tienWifi, hanTt, trangThai) {
+            document.getElementById('editBillId').value = id;
+            document.getElementById('editBillHopDong').value = idHd;
+            document.getElementById('editBillThang').value = thang;
+            document.getElementById('editBillNam').value = nam;
+            document.getElementById('editBillSoDien').value = soDien;
+            document.getElementById('editBillTienDien').value = tienDien;
+            document.getElementById('editBillSoNuoc').value = soNuoc;
+            document.getElementById('editBillTienNuoc').value = tienNuoc;
+            document.getElementById('editBillTienPhong').value = tienPhong;
+            document.getElementById('editBillTienWifi').value = tienWifi;
+            document.getElementById('editBillHanThanhToan').value = hanTt;
+            document.getElementById('editBillTrangThai').value = trangThai ? 'true' : 'false';
+            tinhTongBill('edit');
+
+            new bootstrap.Modal(document.getElementById('modalSuaHoaDon')).show();
+        }
+
+        function luuSuaHoaDon() {
+            const params = new URLSearchParams();
+            params.append('ID_Hoa_Don', document.getElementById('editBillId').value);
+            params.append('ID_Hop_Dong', document.getElementById('editBillHopDong').value);
+            params.append('Thang', document.getElementById('editBillThang').value);
+            params.append('Nam', document.getElementById('editBillNam').value);
+            params.append('SoDien', document.getElementById('editBillSoDien').value);
+            params.append('TienDien', document.getElementById('editBillTienDien').value);
+            params.append('SoNuoc', document.getElementById('editBillSoNuoc').value);
+            params.append('TienNuoc', document.getElementById('editBillTienNuoc').value);
+            params.append('TienPhong', document.getElementById('editBillTienPhong').value);
+            params.append('TienWifi', document.getElementById('editBillTienWifi').value);
+            params.append('HanThanhToan', document.getElementById('editBillHanThanhToan').value);
+            params.append('TrangThai', document.getElementById('editBillTrangThai').value);
+
+            fetch('@Url.Action("SuaHoaDonDienNuoc", "Admin", new { area = "Host" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({ icon: 'success', title: 'Đã cập nhật', text: data.message, timer: 1500, showConfirmButton: false })
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message });
+                }
+            });
+        }
+
+        function togglePayment(id) {
             fetch('@Url.Action("CapNhatTrangThaiHoaDon", "Admin", new { area = "Host" })', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: 'id=' + id
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    var cell = document.getElementById('status-cell-' + id);
-                    if (data.trangThai) {
-                        cell.innerHTML = '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Đã thanh toán</span>';
-                        btn.className = 'btn btn-sm btn-outline-secondary text-nowrap';
-                        btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Hủy thu';
-                    } else {
-                        cell.innerHTML = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">Chưa thanh toán</span>';
-                        btn.className = 'btn btn-sm btn-outline-success text-nowrap';
-                        btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Thu tiền';
-                    }
+                    location.reload();
+                }
+            });
+        }
+
+        function xoaHoaDon(id, tenPhong, ky) {
+            Swal.fire({
+                title: 'Xóa hóa đơn điện nước?',
+                text: 'Bạn có chắc chắn muốn xóa hóa đơn kỳ ' + ky + ' của phòng "' + tenPhong + '"?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Đồng ý xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('@Url.Action("XoaHoaDonDienNuoc", "Admin", new { area = "Host" })', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'id=' + id
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({ icon: 'success', title: 'Đã xóa!', text: data.message, timer: 1500, showConfirmButton: false })
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message });
+                        }
+                    });
                 }
             });
         }
